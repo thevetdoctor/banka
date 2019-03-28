@@ -148,6 +148,14 @@ input {
     background-color: cornflowerblue;
     color: #fff;}
 
+/* --------------------------------------------------------- */
+
+.form {
+    border-top: 1px solid;
+}
+
+
+
 
 @media screen and (max-width: 550px) {
 
