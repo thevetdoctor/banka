@@ -36,6 +36,7 @@ header {
 .block2 {
     display: flex;
     flex-flow: column wrap;
+    width: 80%;
 }
 
 
@@ -109,6 +110,39 @@ nav {
     color: #fff;
     border-radius: 5px;
 }
+
+/* ----------------------------------------------------------------- */
+
+input {
+    padding: 8px;
+    margin-top: 5px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.create-btn {
+    background-color: cornflowerblue;
+    color: #fff;
+}
+
+.create-btn:hover {
+    background-color: rgb(187, 19, 131);
+    color: rgb(248, 245, 245);
+}
+
+.staff-users {
+    border-top: 2px solid;
+    margin-top: 10px;
+}
+
+
+.staff-btn {
+    border: 1px solid;
+    border-radius: 8px;
+    padding: 5px;
+    background-color: cornflowerblue;
+    color: #fff;}
+
 
 @media screen and (max-width: 550px) {
 
