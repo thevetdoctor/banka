@@ -42,7 +42,7 @@ header {
 .content {
     display: flex;
     flex-flow: row;
-    height: 70vh;
+    /* height: 70vh; */
     margin: auto;
     border-radius: 10px;
     background-color: #fff;
@@ -50,8 +50,8 @@ header {
 }
 
 .content div {
-    padding: 10px;
-   overflow: hidden;
+    padding: 5px;
+   /* overflow: scroll; */
 }
 
 footer {
@@ -88,13 +88,27 @@ footer {
 nav {
     display: flex;
     justify-content: center;
+    margin-bottom: 8px;
 }
 
 .menu-tab {
     display: none;
 }
 
+/* --------------------------------------------------------------- */
 
+.user-div {
+    border: 1px solid;
+    border-radius: 10px;
+    margin-bottom: 5px;
+}
+
+.user-div button {
+    padding: 8px;
+    background-color: cornflowerblue;
+    color: #fff;
+    border-radius: 5px;
+}
 
 @media screen and (max-width: 550px) {
 
