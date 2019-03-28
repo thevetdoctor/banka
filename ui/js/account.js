@@ -1,7 +1,10 @@
-console.log('All Bank accounts displayed');
+console.log('Specific Bank account displayed');
 
-const accountDisplay = document.querySelector('.bank-accounts');
+const accountDisplay = document.querySelector('.account');
+const account = document.querySelector('.account-number');
+const view = document.querySelector('.view');
 
+console.log(account.value);
 
 const bankAccounts = [
     {
@@ -48,25 +51,30 @@ const bankAccounts = [
         updateType: 'credit',
         status: 'active',
     }
-]
+];
 
 
-
-const displayAccounts = () => {
+const viewAccount = () => {
     let accountList = '';
 
-    bankAccounts.forEach(account => {
-        accountList += `<div class="user-div" id="${account.id}"> Type: ${account.type}
-                        <p> Customer ID: ${account.userId} </p>
-                        <p> Balance: ${account.balance} </p>
-                        <p>Account No: ${account.number}</p>
-                        <p>Last Transaction: ${account.updateType}<br>
-                         - ${account.lastUpdated}</p>
-                        <p>Status : ${account.status ? 'ACTIVE' : 'INACTIVE'}</p>
-                        <button id="status-btn">View Account</button>
-                    </div>`;
+    let acct = bankAccounts.map(account => {
+        if (account.number === account.number) {
+            return account;
+        }
     })
+    console.log(acct);
+
+        accountList = `<div class="user-div" id="${acct.id}"> Type: ${acct.type}
+                        <p> Customer ID: ${acct.userId} </p>
+                        <p> Balance: ${acct.balance} </p>
+                        <p>Account No: ${acct.number}</p>
+                        <p>Last Transaction: ${acct.updateType}<br>
+                         - ${acct.lastUpdated}</p>
+                        <p>Status : ${acct.status ? 'ACTIVE' : 'INACTIVE'}</p>
+                        <button id="status-btn">View Account</button>
+                    </div>`
+
     accountDisplay.innerHTML = accountList;
 };
 
-displayAccounts();
+view.addEventListener('click', viewAccount);
