@@ -1,0 +1,72 @@
+console.log('All Bank accounts displayed');
+
+const accountDisplay = document.querySelector('.bank-accounts');
+
+
+const bankAccounts = [
+    {
+        id: 1,
+        type: 'Savings',
+        number: '2019030002',
+        userId: 2,
+        dateOpened: new Date(),
+        balance: 2000,
+        lastUpdated: new Date(),
+        updateType: 'credit',
+        status: 'active',
+    },
+    {
+        id: 2,
+        type: 'Corporate',
+        number: '2019030001',
+        userId: 1,
+        dateOpened: new Date(),
+        balance: 30000,
+        lastUpdated: new Date(),
+        updateType: 'debit',
+        status: 'active',
+    },
+    {
+        id: 3,
+        type: 'Savings',
+        number: '2019030001',
+        userId: 4,
+        dateOpened: new Date(),
+        balance: 12000,
+        lastUpdated: new Date(),
+        updateType: 'credit',
+        status: 'active',
+    },
+    {
+        id: 4,
+        type: 'Corporate',
+        number: '2019030001',
+        userId: 3,
+        dateOpened: new Date(),
+        balance: 2000,
+        lastUpdated: new Date(),
+        updateType: 'credit',
+        status: 'active',
+    }
+]
+
+
+
+const displayUsers = () => {
+    let accountList = '';
+
+    bankAccounts.forEach(account => {
+        accountList += `<div class="user-div" id="${account.id}"> Type: ${account.type}
+                        <p> Customer ID: ${account.userId} </p>
+                        <p> Balance: ${account.balance} </p>
+                        <p>Account No: ${account.number}</p>
+                        <p>Last Transaction: ${account.updateType}<br>
+                         - ${account.lastUpdated}</p>
+                        <p>Status : ${account.status ? 'ACTIVE' : 'INACTIVE'}</p>
+                        <button id="status-btn">View Account</button>
+                    </div>`;
+    })
+    accountDisplay.innerHTML = accountList;
+};
+
+displayUsers();
