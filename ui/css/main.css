@@ -37,6 +37,7 @@ header {
     display: flex;
     flex-flow: column wrap;
     width: 80%;
+    text-align: center;
 }
 
 
@@ -97,6 +98,10 @@ nav {
 }
 
 /* --------------------------------------------------------------- */
+
+/* .users {
+    text-align: center;
+} */
 
 .user-div {
     border: 1px solid;
