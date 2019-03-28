@@ -154,6 +154,20 @@ input {
     border-top: 1px solid;
 }
 
+.get-account {
+    background-color: cornflowerblue;
+    color: #fff;
+}
+
+.credit-account {
+background-color: green;
+    color: #fff;
+}
+
+.debit-account {
+    background-color: crimson;
+    color: #fff;
+}
 
 
 
