@@ -11,7 +11,7 @@ const userAccounts = JSON.parse(localStorage.getItem('accounts')) || [
         sex: 'M',
         mobile: '08001234567',
         accountNo: '201903001',
-        dateOpened: new Date(),
+        dateOpened: new Date().toDateString(),
         active: true,
     },
     {
@@ -21,7 +21,7 @@ const userAccounts = JSON.parse(localStorage.getItem('accounts')) || [
         sex: 'M',
         mobile: '08011234567',
         accountNo: '201903002',
-        dateOpened: new Date(),
+        dateOpened: new Date().toDateString(),
         active: true,
     },
     {
@@ -31,7 +31,7 @@ const userAccounts = JSON.parse(localStorage.getItem('accounts')) || [
         sex: 'M',
         mobile: '08021234567',
         accountNo: '201903003',
-        dateOpened: new Date(),
+        dateOpened: new Date().toDateString(),
         active: true,
     },
     {
@@ -41,7 +41,7 @@ const userAccounts = JSON.parse(localStorage.getItem('accounts')) || [
         sex: 'M',
         mobile: '08031234567',
         accountNo: '201903004',
-        dateOpened: new Date(),
+        dateOpened: new Date().toDateString(),
         active: true,
     },
     {
@@ -51,7 +51,7 @@ const userAccounts = JSON.parse(localStorage.getItem('accounts')) || [
         sex: 'M',
         mobile: '08041234567',
         accountNo: '201903005',
-        dateOpened: new Date(),
+        dateOpened: new Date().toDateString(),
         active: true,
     }
 ];
