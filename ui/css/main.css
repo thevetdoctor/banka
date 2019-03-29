@@ -31,19 +31,21 @@ header {
 .block-list {
     display: flex;
     flex-flow: row;
+    justify-content: center;
 }
 
 .block2 {
     display: flex;
     flex-flow: column wrap;
     width: 80%;
-    text-align: center;
+    justify-content: center;
 }
 
 
 .content {
     display: flex;
     flex-flow: row;
+    justify-content: center;
     /* height: 70vh; */
     margin: auto;
     border-radius: 10px;
@@ -160,12 +162,26 @@ input {
 }
 
 .credit-account {
-background-color: green;
+    background-color: green;
     color: #fff;
 }
 
 .debit-account {
     background-color: crimson;
+    color: #fff;
+}
+
+
+/* ------------------------------------------------------ */
+
+#delete-btn {
+    background-color: crimson;
+    color: #fff;
+    border-radius: 5px;
+}
+
+.view {
+    background-color: green;
     color: #fff;
 }
 

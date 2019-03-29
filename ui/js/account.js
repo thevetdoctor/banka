@@ -1,10 +1,10 @@
 console.log('Specific Bank account displayed');
 
 const accountDisplay = document.querySelector('.account');
-const account = document.querySelector('.account-number');
-const view = document.querySelector('.view');
+const accountInput = document.querySelector('.account-number');
+const viewBtn = document.querySelector('.view');
 
-console.log(account.value);
+console.log(accountInput.value);
 
 const bankAccounts = [
     {
@@ -32,7 +32,7 @@ const bankAccounts = [
     {
         id: 3,
         type: 'Savings',
-        number: '2019030001',
+        number: '2019030003',
         userId: 4,
         dateOpened: new Date(),
         balance: 12000,
@@ -43,7 +43,7 @@ const bankAccounts = [
     {
         id: 4,
         type: 'Corporate',
-        number: '2019030001',
+        number: '2019030004',
         userId: 3,
         dateOpened: new Date(),
         balance: 2000,
@@ -57,14 +57,14 @@ const bankAccounts = [
 const viewAccount = () => {
     let accountList = '';
 
-    let acct = bankAccounts.map(account => {
-        if (account.number === account.number) {
-            return account;
-        }
-    })
+    let acct = bankAccounts.find(account =>  account.number === accountInput.value)
     console.log(acct);
+    if (acct === undefined) {
+        accountDisplay.innerHTML = `<div>Account does not exist!</div>`;
+        return;
+    }
 
-        accountList = `<div class="user-div" id="${acct.id}"> Type: ${acct.type}
+        accountHtml = `<div class="user-div" id="${acct.id}"> Type: ${acct.type}
                         <p> Customer ID: ${acct.userId} </p>
                         <p> Balance: ${acct.balance} </p>
                         <p>Account No: ${acct.number}</p>
@@ -72,9 +72,10 @@ const viewAccount = () => {
                          - ${acct.lastUpdated}</p>
                         <p>Status : ${acct.status ? 'ACTIVE' : 'INACTIVE'}</p>
                         <button id="status-btn">View Account</button>
+                        <button id="delete-btn">Delete Account</button>
                     </div>`
 
-    accountDisplay.innerHTML = accountList;
+    accountDisplay.innerHTML = accountHtml;
 };
 
-view.addEventListener('click', viewAccount);
+viewBtn.addEventListener('click', viewAccount);
