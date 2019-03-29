@@ -127,7 +127,7 @@ input {
     text-align: center;
 }
 
-.create-btn {
+.create-btn, .login-btn {
     background-color: cornflowerblue;
     color: #fff;
 }
@@ -161,7 +161,7 @@ input {
     color: #fff;
 }
 
-.credit-account {
+.credit-account, .signup-btn {
     background-color: green;
     color: #fff;
 }
