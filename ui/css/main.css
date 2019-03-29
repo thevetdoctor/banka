@@ -195,6 +195,17 @@ select {
     text-align: center;
 }
 
+/* ------------------------------------------------------------------- */
+
+.account-list li {
+    border: 1px solid;
+    padding: 10px;
+    margin: 5px;
+    border-radius: 10px;
+    text-align: start;
+    list-style: none;
+}
+
 
 
 
