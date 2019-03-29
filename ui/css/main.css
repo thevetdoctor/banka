@@ -186,6 +186,17 @@ input {
 }
 
 
+/* -------------------------------------------------------------- */
+
+select {
+    padding: 8px;
+    margin-top: 5px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+
+
 
 @media screen and (max-width: 550px) {
 
