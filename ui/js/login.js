@@ -4,8 +4,8 @@ const signupBtn = document.querySelector('.signup-btn');
 
 // Redirect to Login Page
 
-const goToSingup = () => {
+const goToSignup = () => {
     location.href = './signup.html';
 }
 
-signupBtn.addEventListener('click', goToSingup);
+signupBtn.addEventListener('click', goToSignup);
