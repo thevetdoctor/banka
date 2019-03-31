@@ -79,3 +79,4 @@ const viewAccount = () => {
 };
 
 viewBtn.addEventListener('click', viewAccount);
+// accountInput.addEventListener('blur', viewAccount);
