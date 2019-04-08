@@ -10,7 +10,7 @@ const port = process.env.PORT || 3000;
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use('/api/v1/users', users);
+app.use('/auth/', users);
 
 app.get('/', (req, res) => {
 //   res.end('<h1>Welcome to Banka</h1><h4>...financial transactions at your convenience!</h4>');
