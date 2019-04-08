@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
 const users = require('./server/routers/users');
+const accounts = require('./server/routers/accounts');
 
 
 const app = express();
@@ -11,6 +12,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use('/auth/', users);
+app.use('/api/v1/accounts', accounts);
 
 app.get('/', (req, res) => {
 //   res.end('<h1>Welcome to Banka</h1><h4>...financial transactions at your convenience!</h4>');

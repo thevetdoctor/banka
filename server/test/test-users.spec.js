@@ -23,7 +23,7 @@ describe('Signup Endpoint', () => {
     UserController.signup.should.exist;
   });
 
-  it('Signup POST should create a new user', (done) => {
+  it('Signup(POST) should create a new user', (done) => {
     chai.request(server)
       .post('/auth/signup')
       .send({
@@ -53,7 +53,7 @@ describe('Signin Endpoint', () => {
     UserController.signin.should.exist;
   });
 
-  it('Signin POST should sign in user', (done) => {
+  it('Signin(POST) should sign in user', (done) => {
     chai.request(server)
       .post('/auth/signin')
       .send({
