@@ -74,7 +74,7 @@ const UserController = {
     if (user.email !== '' && user.password !== '') {
       // Query User Record for credentials
       const newUser = userRecord.find(item => item.email === user.email);
-      console.log(newUser);
+      // console.log(newUser);
       if (newUser.email) {
         if (newUser.password === user.password) {
           // newUser.password = null;
