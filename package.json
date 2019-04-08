@@ -1,0 +1,36 @@
+{
+  "name": "banka",
+  "version": "1.0.0",
+  "description": "light-weight bankin app",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thevetdoctor/banka.git"
+  },
+  "keywords": [
+    "banking",
+    "app"
+  ],
+  "author": "animalworldng (thevetdoctor@gmail.com)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/thevetdoctor/banka/issues"
+  },
+  "homepage": "https://github.com/thevetdoctor/banka#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4"
+  },
+  "devDependencies": {
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-plugin-import": "^2.16.0",
+    "eslint-plugin-jsx-a11y": "^6.2.1",
+    "eslint-plugin-react": "^7.12.4",
+    "nodemon": "^1.18.10"
+  }
+}
