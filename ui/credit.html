@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Account Update</title>
+    <title>Account Credit Update</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" media="screen" href="./css/main.css">
 </head>
@@ -29,9 +29,9 @@
                 Account Debit/Credit.... So easy!
             </div>
             <div class="block2">
-                <div class="block-list">
+                <div id="credit" class="block-list">
                     <form class="form">
-                    <input type="button" value="Go to Debit page">
+                    <input id="debit-btn" type="button" value="Go to Debit page">
                         <p>Account Credit Page</p>
 
                         <label></label>
@@ -42,18 +42,18 @@
                         <input class="credit-account" type="button" value="Credit Account">
                     </form>
                 </div>
-                <div class="block-list">
+                <div id="debit" class="block-list">
                         <form class="form">
-                    <input type="button" value="Go to Credit page">
+                        <button id="credit-btn" value="d">Go to Credit page</button>
                             <p>Account Debit Page</p>
 
-                            <label></label>
-                            <input type="text" name="account-number" placeholder="Enter Account Number">
-                            <input class="get-account" type="button" value="Get Account">
-                            <hr>
-                            <input type="number" name="amount" placeholder="Amount to Debit">
-                            <input class="debit-account" type="button" value="Debit Account">
-                        </form>
+                        <label></label>
+                        <input type="text" name="account-number" placeholder="Enter Account Number">
+                        <input class="get-account" type="button" value="Get Account">
+                        <hr>
+                        <input type="number" name="amount" placeholder="Amount to Debit">
+                        <input class="debit-account" type="button" value="Debit Account">
+                    </form>
                 </div>
             </div>
 
