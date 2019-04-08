@@ -29,7 +29,7 @@ describe('Account Creation Endpoint', () => {
       .send({
         owner: 1,
         type: 'current',
-        status: 'dormant',
+        status: 'active',
       })
       .end((err, res) => {
         res.should.have.status(200);
