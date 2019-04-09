@@ -1,20 +1,20 @@
 /* eslint-disable max-len */
 /* eslint-disable no-console */
 const Account = require('../models/accounts');
-// const userRecord = require('../controllers/users');
+const { userRecord } = require('../controllers/users');
 
-const userRecord = [{
-  id: 1,
-  email: 'dami@gmail.com',
-  firstName: 'Dami',
-  lastName: 'Akande',
-  password: '123456',
-  type: 'staff',
-  isAdmin: false,
-  sex: 'M',
-  mobile: '1234567890',
-  active: false,
-}];
+// const userRecord = [{
+//   id: 1,
+//   email: 'dami@gmail.com',
+//   firstName: 'Dami',
+//   lastName: 'Akande',
+//   password: '123456',
+//   type: 'staff',
+//   isAdmin: false,
+//   sex: 'M',
+//   mobile: '1234567890',
+//   active: false,
+// }];
 
 const accountRecord = [{
   id: 1,
@@ -41,14 +41,29 @@ const AccountController = {
   create: (req, res) => {
     const { owner, type, status } = req.body;
 
+    // if (!req.body) {
+    //   res.status(400).json({
+    //     status: 400,
+    //     message: 'Please supply required details',
+    //   });
+    // }
+
     const account = new Account(owner, type, status);
 
     account.id = accountRecord.length ? accountRecord.length + 1 : 1;
     const accountArray = accountRecord.map(item => parseInt(item.accountNumber, 10));
     let newAccountNumber = Math.max(...accountArray);
     newAccountNumber += 1;
+    account.accountNumber = newAccountNumber;
 
     const accountOwner = userRecord.find(item => item.id === parseInt(account.owner, 10));
+    if (!accountOwner) {
+      res.status(400).json({
+        status: 400,
+        message: 'Account owner not available',
+      });
+    }
+    accountRecord.push(account);
     res.status(200).json({
       status: 200,
       data: {
@@ -113,4 +128,4 @@ const AccountController = {
 };
 
 
-module.exports = AccountController;
+module.exports = { AccountController, accountRecord };
