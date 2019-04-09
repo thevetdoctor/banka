@@ -1,39 +1,34 @@
-/* eslint-disable max-len */
-/* eslint-disable no-console */
 const Account = require('../models/accounts');
 const { userRecord } = require('../controllers/users');
 
-// const userRecord = [{
-//   id: 1,
-//   email: 'dami@gmail.com',
-//   firstName: 'Dami',
-//   lastName: 'Akande',
-//   password: '123456',
-//   type: 'staff',
-//   isAdmin: false,
-//   sex: 'M',
-//   mobile: '1234567890',
-//   active: false,
-// }];
-
-const accountRecord = [{
-  id: 1,
-  accountNumber: 2019030001,
-  createdOn: new Date().toDateString(),
-  owner: 1,
-  type: 'savings',
-  status: 'active',
-  balance: 12000.25,
-},
-{
-  id: 2,
-  accountNumber: 2019030002,
-  createdOn: new Date().toDateString(),
-  owner: 1,
-  type: 'current',
-  status: 'active',
-  balance: 400000.05,
-},
+const accountRecord = [
+  {
+    id: 1,
+    accountNumber: 2019031111,
+    createdOn: new Date().toDateString(),
+    owner: 1,
+    type: 'savings',
+    status: 'active',
+    balance: '12000.25',
+  },
+  {
+    id: 2,
+    accountNumber: 2019031112,
+    createdOn: new Date().toDateString(),
+    owner: 1,
+    type: 'current',
+    status: 'active',
+    balance: '4000.05',
+  },
+  {
+    id: 3,
+    accountNumber: 2019031113,
+    createdOn: new Date().toDateString(),
+    owner: 1,
+    type: 'current',
+    status: 'active',
+    balance: '40100.05',
+  },
 ];
 
 
@@ -92,8 +87,8 @@ const AccountController = {
         error: 'Account not available',
       });
     } else {
-      // eslint-disable-next-line no-unused-expressions
-      foundAccount.status === accountStatus ? foundAccount.status = foundAccount.status : foundAccount.status = accountStatus;
+      // eslint-disable-next-line max-len
+      foundAccount.status = foundAccount.status === accountStatus ? foundAccount.status : accountStatus;
       res.status(200).json({
         status: 200,
         data: {
@@ -121,7 +116,6 @@ const AccountController = {
       res.status(200).json({
         status: 200,
         message: `Account No: ${foundAccount.accountNumber} successfully deleted`,
-        accountRecord,
       });
     }
   },

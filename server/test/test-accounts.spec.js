@@ -52,7 +52,7 @@ describe('Account Activate/Deactivate Endpoint', () => {
 
   it('Activate(PATCH) should change account status', (done) => {
     chai.request(server)
-      .patch('/api/v1/accounts/2019030001')
+      .patch('/api/v1/accounts/2019031111')
       .send({
         status: 'active',
       })
@@ -77,7 +77,7 @@ describe('Account Delete Endpoint', () => {
 
   it('Delete(DELETE) should delete account from records', (done) => {
     chai.request(server)
-      .delete('/api/v1/accounts/2019030001')
+      .delete('/api/v1/accounts/2019031112')
       .end((err, res) => {
         res.should.have.status(200);
         res.should.be.json;
