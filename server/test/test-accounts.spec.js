@@ -68,3 +68,25 @@ describe('Account Activate/Deactivate Endpoint', () => {
     done();
   });
 });
+
+
+describe('Account Delete Endpoint', () => {
+  it('Account delete method should exist', () => {
+    AccountController.delete.should.exist;
+  });
+
+  it('Delete(DELETE) should delete account from records', (done) => {
+    chai.request(server)
+      .delete('/api/v1/accounts/2019030001')
+      .end((err, res) => {
+        res.should.have.status(200);
+        res.should.be.json;
+        res.body.should.be.a('object');
+        res.body.should.have.property('status');
+        res.body.status.should.equal(200);
+        res.body.should.have.property('message');
+        // res.body.data.should.be.a('string');
+      });
+    done();
+  });
+});
