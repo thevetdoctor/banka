@@ -6,7 +6,7 @@ const server = require('../../index');
 
 // eslint-disable-next-line no-unused-vars
 const should = chai.should();
-const UserController = require('../controllers/users');
+const { UserController } = require('../controllers/users');
 
 chai.use(chaiHttp);
 
