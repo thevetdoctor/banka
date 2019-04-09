@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 const Transaction = require('../models/transactions');
 const { accountRecord } = require('../controllers/accounts');
 
@@ -57,14 +58,15 @@ const cashierRecord = [
 
 const TransactionController = {
 
-  credit: (req, res) => {
+  creDebit: (req, res) => {
     const { amount } = req.body;
     const { accountNumber } = req.params;
-    const type = req.params.credit;
+    const { type } = req.params;
 
     const tranx = new Transaction(type, accountNumber, amount);
 
-    if (tranx.type !== 'credit') {
+
+    if (tranx.type !== 'credit' && tranx.type !== 'debit') {
       res.status(400).json({
         status: 400,
         message: 'Invalid Transaction type',
@@ -82,25 +84,55 @@ const TransactionController = {
           message: 'Account not available',
         });
       }
-      // else {
-      tranx.oldBalance = foundAccount.balance;
-      tranx.newBalance = tranx.oldBalance + parseFloat(tranx.amount);
-      const newBalance = parseFloat(tranx.newBalance).toFixed(2);
+      if (tranx.type === 'credit') {
+        tranx.oldBalance = Number(foundAccount.balance);
+        // console.log(tranx.oldBalance);
+        tranx.newBalance = tranx.oldBalance + Number(tranx.amount);
+        tranx.newBalance = tranx.newBalance.toFixed(2);
 
-      foundAccount.balance = tranx.newBalance;
+        foundAccount.balance = tranx.newBalance;
+        transactionRecord.push(tranx);
 
-      res.status(200).json({
-        status: 200,
-        data: {
-          transactionId: tranx.id,
-          accountNumber: tranx.accountNumber,
-          amount: tranx.amount,
-          cashier: foundCashier.id,
-          transactionType: tranx.type,
-          accountBalance: newBalance,
-        },
-      });
-      // }
+        // console.log(tranx);
+        res.status(200).json({
+          status: 200,
+          data: {
+            transactionId: tranx.id,
+            accountNumber: tranx.accountNumber,
+            amount: tranx.amount,
+            cashier: foundCashier.id,
+            transactionType: tranx.type,
+            accountBalance: tranx.newBalance,
+          },
+        });
+      } else {
+        tranx.oldBalance = Number(foundAccount.balance);
+        // console.log(tranx.oldBalance);
+        if (tranx.oldBalance < Number(tranx.amount)) {
+          res.status(400).json({
+            status: 400,
+            message: 'Insufficient balance in account',
+          });
+        } else {
+          tranx.newBalance = tranx.oldBalance - Number(tranx.amount);
+          foundAccount.balance = tranx.newBalance;
+          transactionRecord.push(tranx);
+
+          tranx.newBalance = tranx.newBalance.toFixed(2);
+
+          res.status(200).json({
+            status: 200,
+            data: {
+              transactionId: tranx.id,
+              accountNumber: tranx.accountNumber,
+              amount: tranx.amount,
+              cashier: foundCashier.id,
+              transactionType: tranx.type,
+              accountBalance: tranx.newBalance,
+            },
+          });
+        }
+      }
     }
   },
 

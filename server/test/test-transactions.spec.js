@@ -18,12 +18,12 @@ describe('Transaction Controller', () => {
 });
 
 
-describe('Credit Transaction Endpoint', () => {
-  it('Credit transaction method should exist', () => {
-    TransactionController.credit.should.exist;
+describe('Credit/Debit Transaction Endpoint', () => {
+  it('CreDebit transaction method should exist', () => {
+    TransactionController.creDebit.should.exist;
   });
 
-  it('Credit(POST) should credit an account with the specified amount', (done) => {
+  it('Credit/Debit(POST) should credit/debit an account with the specified amount', (done) => {
     chai.request(server)
       .post('api/v1/transactions/2019030001/credit')
       .send({
