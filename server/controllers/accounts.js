@@ -77,11 +77,6 @@ const AccountController = {
         error: 'Account not available',
       });
     } else {
-      // if (foundAccount.status === 'active') {
-      //   foundAccount.status = accountStatus;
-      // } else {
-      //   foundAccount.status = 'active';
-      // }
       // eslint-disable-next-line no-unused-expressions
       foundAccount.status === accountStatus ? foundAccount.status = foundAccount.status : foundAccount.status = accountStatus;
       res.status(200).json({
@@ -90,6 +85,28 @@ const AccountController = {
           accountNumber,
           status: foundAccount.status,
         },
+      });
+    }
+  },
+
+
+  delete: (req, res) => {
+    let { accountNumber } = req.params;
+    accountNumber = parseInt(accountNumber, 10);
+
+    const foundAccount = accountRecord.find(item => item.accountNumber === accountNumber);
+    if (foundAccount === undefined) {
+      res.status(400).json({
+        status: 400,
+        error: 'Account not available',
+      });
+    } else {
+      accountRecord.splice(foundAccount, 1);
+
+      res.status(200).json({
+        status: 200,
+        message: `Account No: ${foundAccount.accountNumber} successfully deleted`,
+        accountRecord,
       });
     }
   },

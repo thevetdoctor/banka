@@ -8,5 +8,7 @@ router.post('/', AccountController.create);
 
 router.patch('/:accountNumber', AccountController.activate);
 
+router.delete('/:accountNumber', AccountController.delete);
+
 
 module.exports = router;
