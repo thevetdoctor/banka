@@ -4,7 +4,7 @@ const router = express.Router();
 const { TransactionController } = require('../controllers/transactions');
 
 
-router.post('/:accountNumber/:credit', TransactionController.credit);
+router.post('/:accountNumber/:type', TransactionController.creDebit);
 
 
 module.exports = router;
