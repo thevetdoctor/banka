@@ -56,6 +56,7 @@ const cashierRecord = [
 
 
 const TransactionController = {
+
   credit: (req, res) => {
     const { amount } = req.body;
     const { accountNumber } = req.params;
@@ -63,10 +64,10 @@ const TransactionController = {
 
     const tranx = new Transaction(type, accountNumber, amount);
 
-    if (!tranx.accountNumber) {
+    if (tranx.type !== 'credit') {
       res.status(400).json({
         status: 400,
-        message: 'Transaction not successful',
+        message: 'Invalid Transaction type',
       });
     } else {
       tranx.id = transactionRecord.length ? transactionRecord.length + 1 : 1;
@@ -80,28 +81,30 @@ const TransactionController = {
           status: 401,
           message: 'Account not available',
         });
-      } else {
-        tranx.oldBalance = foundAccount.balance;
-        tranx.newBalance = tranx.oldBalance + parseFloat(tranx.amount);
-
-        foundAccount.balance = tranx.newBalance;
-
-        res.status(200).json({
-          status: 200,
-          data: {
-            transactionId: tranx.id,
-            accountNumber: tranx.accountNumber,
-            amount: tranx.amount,
-            cashier: foundCashier.id,
-            transactionType: tranx.type,
-            accountBalance: tranx.newBalance,
-          },
-          accountRecord,
-        });
       }
+      // else {
+      tranx.oldBalance = foundAccount.balance;
+      tranx.newBalance = tranx.oldBalance + parseFloat(tranx.amount);
+      const newBalance = parseFloat(tranx.newBalance).toFixed(2);
+
+      foundAccount.balance = tranx.newBalance;
+
+      res.status(200).json({
+        status: 200,
+        data: {
+          transactionId: tranx.id,
+          accountNumber: tranx.accountNumber,
+          amount: tranx.amount,
+          cashier: foundCashier.id,
+          transactionType: tranx.type,
+          accountBalance: newBalance,
+        },
+      });
+      // }
     }
   },
+
 };
 
 
-module.exports = TransactionController;
+module.exports = { TransactionController, transactionRecord };

@@ -85,7 +85,6 @@ describe('Account Delete Endpoint', () => {
         res.body.should.have.property('status');
         res.body.status.should.equal(200);
         res.body.should.have.property('message');
-        // res.body.data.should.be.a('string');
       });
     done();
   });

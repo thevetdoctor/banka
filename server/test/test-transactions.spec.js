@@ -6,7 +6,7 @@ const server = require('../../index');
 
 // eslint-disable-next-line no-unused-vars
 const should = chai.should();
-const TransactionController = require('../controllers/transactions');
+const { TransactionController } = require('../controllers/transactions');
 
 chai.use(chaiHttp);
 
@@ -27,9 +27,11 @@ describe('Credit Transaction Endpoint', () => {
     chai.request(server)
       .post('api/v1/transactions/2019030001/credit')
       .send({
-        amount: '30000',
+        amount: '30000.21',
       })
       .end((err, res) => {
+        // eslint-disable-next-line no-console
+        console.log(res);
         res.should.have.status(200);
         res.should.be.json;
         res.body.should.be.a('object');
