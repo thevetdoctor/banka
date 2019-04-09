@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable no-console */
 const Account = require('../models/accounts');
 // const userRecord = require('../controllers/users');
@@ -59,6 +60,38 @@ const AccountController = {
         openingBalance: account.balance,
       },
     });
+  },
+
+
+  activate: (req, res) => {
+    const accountStatus = req.body.status;
+    let { accountNumber } = req.params;
+    accountNumber = parseInt(accountNumber, 10);
+
+    // eslint-disable-next-line max-len
+    const foundAccount = accountRecord.find(item => item.accountNumber === accountNumber);
+
+    if (foundAccount === undefined) {
+      res.status(400).json({
+        status: 400,
+        error: 'Account not available',
+      });
+    } else {
+      // if (foundAccount.status === 'active') {
+      //   foundAccount.status = accountStatus;
+      // } else {
+      //   foundAccount.status = 'active';
+      // }
+      // eslint-disable-next-line no-unused-expressions
+      foundAccount.status === accountStatus ? foundAccount.status = foundAccount.status : foundAccount.status = accountStatus;
+      res.status(200).json({
+        status: 200,
+        data: {
+          accountNumber,
+          status: foundAccount.status,
+        },
+      });
+    }
   },
 };
 
