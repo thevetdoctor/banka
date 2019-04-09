@@ -6,5 +6,7 @@ const AccountController = require('../controllers/accounts');
 
 router.post('/', AccountController.create);
 
+router.patch('/:accountNumber', AccountController.activate);
+
 
 module.exports = router;

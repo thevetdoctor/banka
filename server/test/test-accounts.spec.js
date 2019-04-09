@@ -43,3 +43,28 @@ describe('Account Creation Endpoint', () => {
     done();
   });
 });
+
+
+describe('Account Activate/Deactivate Endpoint', () => {
+  it('Account activate method should exist', () => {
+    AccountController.activate.should.exist;
+  });
+
+  it('Activate(PATCH) should change account status', (done) => {
+    chai.request(server)
+      .patch('/api/v1/accounts/2019030001')
+      .send({
+        status: 'active',
+      })
+      .end((err, res) => {
+        res.should.have.status(200);
+        res.should.be.json;
+        res.body.should.be.a('object');
+        res.body.should.have.property('status');
+        res.body.status.should.equal(200);
+        res.body.should.have.property('data');
+        res.body.data.should.be.a('object');
+      });
+    done();
+  });
+});
