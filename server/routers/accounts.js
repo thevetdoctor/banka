@@ -10,5 +10,9 @@ router.patch('/:accountNumber', AccountController.activate);
 
 router.delete('/:accountNumber', AccountController.delete);
 
+router.get('/', AccountController.list);
+
+router.get('/:accountNumber', AccountController.listOne);
+
 
 module.exports = router;

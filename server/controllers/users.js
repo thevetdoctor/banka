@@ -32,10 +32,7 @@ const UserController = {
 
     // check validity of user name & password
     if (validUser(user)) {
-      // Assign user ID
-      user.id = userRecord.length ? userRecord.length + 1 : 1;
       const userEmails = userRecord.map(value => value.email);
-
       //   Validate if email is already registered
       if (userEmails.includes(user.email)) {
         res.status(400).json({
@@ -43,7 +40,9 @@ const UserController = {
           error: 'Email already used',
         });
       } else {
-        // save user in User table in User Record
+        // Assign user ID
+        user.id = userRecord.length ? userRecord.length + 1 : 1;
+        // save user in User Record
         const token = jwt.sign({ user }, 'secretKey', { expiresIn: '1min' });
         userRecord.push(user);
         res.status(200).json({
@@ -55,6 +54,7 @@ const UserController = {
             lastName: user.lastName,
             email: user.email,
           },
+          user,
         });
       }
     } else {
@@ -75,7 +75,7 @@ const UserController = {
       // Query User Record for credentials
       const newUser = userRecord.find(item => item.email === user.email);
       // console.log(newUser);
-      if (newUser.email) {
+      if (newUser) {
         if (newUser.password === user.password) {
           // newUser.password = null;
           const token = jwt.sign({ newUser }, 'secretKey', { expiresIn: '1min' });

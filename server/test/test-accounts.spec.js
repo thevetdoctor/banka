@@ -19,7 +19,7 @@ describe('Account Controller', () => {
 
 
 describe('Account Creation Endpoint', () => {
-  it('Account create method should exist', () => {
+  it('Account CREATE method should exist', () => {
     AccountController.create.should.exist;
   });
 
@@ -46,7 +46,7 @@ describe('Account Creation Endpoint', () => {
 
 
 describe('Account Activate/Deactivate Endpoint', () => {
-  it('Account activate method should exist', () => {
+  it('Account ACTIVATE method should exist', () => {
     AccountController.activate.should.exist;
   });
 
@@ -71,7 +71,7 @@ describe('Account Activate/Deactivate Endpoint', () => {
 
 
 describe('Account Delete Endpoint', () => {
-  it('Account delete method should exist', () => {
+  it('Account DELETE method should exist', () => {
     AccountController.delete.should.exist;
   });
 
@@ -85,6 +85,50 @@ describe('Account Delete Endpoint', () => {
         res.body.should.have.property('status');
         res.body.status.should.equal(200);
         res.body.should.have.property('message');
+      });
+    done();
+  });
+});
+
+
+describe('Accounts List Endpoint', () => {
+  it('Account LIST method should exist', () => {
+    AccountController.list.should.exist;
+  });
+
+  it('List(GET) should list all (available) accounts from records', (done) => {
+    chai.request(server)
+      .get('/api/v1/accounts')
+      .end((err, res) => {
+        res.should.have.status(200);
+        res.should.be.json;
+        res.body.should.be.a('object');
+        res.body.should.have.property('status');
+        res.body.status.should.equal(200);
+        res.body.should.have.property('data');
+        res.body.data.should.be.a('object');
+      });
+    done();
+  });
+});
+
+
+describe('Single Account List Endpoint', () => {
+  it('Account LISTONE method should exist', () => {
+    AccountController.listOne.should.exist;
+  });
+
+  it('ListOne(GET) should list a specific account from records', (done) => {
+    chai.request(server)
+      .get('/api/v1/accounts/2019031113')
+      .end((err, res) => {
+        res.should.have.status(200);
+        res.should.be.json;
+        res.body.should.be.a('object');
+        res.body.should.have.property('status');
+        res.body.status.should.equal(200);
+        res.body.should.have.property('data');
+        res.body.data.should.be.a('object');
       });
     done();
   });

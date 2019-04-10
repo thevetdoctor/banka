@@ -119,6 +119,46 @@ const AccountController = {
       });
     }
   },
+
+
+  list: (req, res) => {
+    const accountList = [...accountRecord];
+    if (accountList.length < 1) {
+      res.status(400).json({
+        status: 400,
+        message: 'No account available',
+      });
+    } else {
+      res.status(200).json({
+        status: 200,
+        data: {
+          accounts: accountList,
+        },
+      });
+    }
+  },
+
+
+  listOne: (req, res) => {
+    const { accountNumber } = req.params;
+    const accountList = [...accountRecord];
+    const account = accountList.find(item => item.accountNumber === Number(accountNumber));
+
+    if (!account) {
+      res.status(400).json({
+        status: 400,
+        message: `Account no: ${accountNumber} not available`,
+      });
+    } else {
+      res.status(200).json({
+        status: 200,
+        data: {
+          accountDetails: account,
+        },
+      });
+    }
+  },
+
 };
 
 
