@@ -25,13 +25,11 @@ describe('Credit/Debit Transaction Endpoint', () => {
 
   it('Credit/Debit(POST) should credit/debit an account with the specified amount', (done) => {
     chai.request(server)
-      .post('api/v1/transactions/2019030001/credit')
+      .post('/api/v1/transactions/2019031113/debit')
       .send({
         amount: '30000.21',
       })
       .end((err, res) => {
-        // eslint-disable-next-line no-console
-        console.log(res);
         res.should.have.status(200);
         res.should.be.json;
         res.body.should.be.a('object');
