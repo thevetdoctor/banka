@@ -1,7 +1,7 @@
 {
   "name": "banka",
   "version": "1.0.0",
-  "description": "light-weight bankin app",
+  "description": "banka",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
@@ -11,11 +11,7 @@
     "type": "git",
     "url": "git+https://github.com/thevetdoctor/banka.git"
   },
-  "keywords": [
-    "banking",
-    "app"
-  ],
-  "author": "animalworldng (thevetdoctor@gmail.com)",
+  "author": "",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/thevetdoctor/banka/issues"
