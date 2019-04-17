@@ -67,11 +67,29 @@ const TransactionController = {
 
     const tranx = new Transaction(type, accountNumber, amount);
 
+    // Validate amount to credit
+    if (amount === undefined || amount === '') {
+      res.status(400).json({
+        status: 400,
+        error: 'Amount not supplied',
+      });
+      return;
+    }
+
+    // eslint-disable-next-line no-restricted-globals
+    if (isNaN(amount)) {
+      res.status(400).json({
+        status: 400,
+        error: 'Invalid Amount',
+      });
+      return;
+    }
+
     // Run this block if type of transaction is neither credit nor debit
     if (tranx.type !== 'credit' && tranx.type !== 'debit') {
       res.status(400).json({
         status: 400,
-        message: 'Invalid Transaction type',
+        error: 'Invalid Transaction type',
       });
     } else {
     // Run this block for 'valid' transaction type
@@ -82,7 +100,7 @@ const TransactionController = {
       if (!foundAccount && foundAccount === undefined) {
         res.status(401).json({
           status: 401,
-          message: 'Account not available',
+          error: 'Account not available',
         });
       } else {
         // Assign a transaction ID
@@ -118,7 +136,7 @@ const TransactionController = {
           if (tranx.oldBalance < Number(tranx.amount)) {
             res.status(400).json({
               status: 400,
-              message: 'Insufficient balance in account',
+              error: 'Insufficient balance in account',
             });
           } else {
             tranx.newBalance = tranx.oldBalance - Number(tranx.amount);

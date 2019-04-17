@@ -1,18 +1,23 @@
+/* * {
+    border: 1px solid;
+} */
 body {
     margin: 0;
     padding: 0;
     font-family: 'Raleway', sans-serif;
     line-height: 1.2;
-    background-color: #59b300;
+    background-color: #84f709;
     color: #fff;
+    align-content: center;
     /* width: 100%; */
-    /* height: 100%; */
+    height: 100%;
 }
 
 .container {
     display: flex;
     flex-flow: column;
     text-align: center;
+    justify-content: center;
     width: 90%;
     margin: 0 auto;
 }
@@ -37,6 +42,7 @@ header {
     /* padding: 0; */
     margin: 0;
     border-radius: 10px;
+    /* display: none; */
 }
 
 .dot img {
@@ -51,8 +57,9 @@ header {
     flex-flow: row;
     color: rgba(0, 0, 0, 0.8);
     /* justify-content: left; */
-    text-align: left;
+    /* text-align: left; */
     line-height: 1.2;
+    padding: 0;
 }
 
 
@@ -60,8 +67,9 @@ header {
     display: flex;
     flex-flow: column wrap;
     width: 80%;
-    justify-content: center;
-    text-align: left;
+    /* justify-content: center; */
+    padding: 0;
+    /* text-align: left; */
 }
 
 
@@ -69,8 +77,10 @@ header {
     display: flex;
     flex-flow: row;
     justify-content: center;
-    /* height: 70vh; */
-    margin: auto;
+    padding: 15px;
+    /* align-content: center; */
+    /* align-items: center; */
+    /* width: 100%; */
     border-radius: 10px;
     background-color: #fff;
     color: #000;
@@ -82,13 +92,13 @@ header {
 }
 
 footer {
-    background-color: #151812;
-    position: fixed;
+    background-color: rgba(0, 0, 0, 0.8);
+    /* position: fixed; */
     bottom: 0px;
     margin-top: 20px;
-    padding: 20px;
+    padding: 25px;
     width: 100%;
-    height: 10%;
+    /* height: 10%; */
     text-align: center;
     font-size: 0.9em;
 }
@@ -116,9 +126,8 @@ footer {
 
 .row li a {
     text-decoration: none;
-    text-decoration: none;
-    text-shadow: #000;
     font-weight: bold;
+    color: #fff;
 }
 
 
@@ -131,8 +140,14 @@ footer {
 nav {
     display: flex;
     justify-content: center;
-    margin-bottom: 8px;
-}
+    background-color: rgba(0, 0, 0, 0.8);
+    position: relative;
+    top: 0px;
+    padding: 25px;
+    width: 100%;
+    text-align: center;
+    font-size: 0.9em;}
+
 
 .menu-tab {
     display: none;
@@ -151,11 +166,16 @@ nav {
     padding: 18px;
     box-shadow: #59b300;
     justify-content: center;
+    width: 100%;
 }
 
+.bank-accoubts {
+    width: 100%;
+}
+/*
 .user-div span {
     display: inline;
-}
+} */
 
 
 .user-div button {
@@ -190,6 +210,10 @@ input {
 }
 
 
+.staff.list {
+    display: flex;
+    flex-flow: row wrap;
+}
 .staff-btn {
     border: 1px solid;
     border-radius: 8px;
@@ -199,9 +223,9 @@ input {
 
 /* --------------------------------------------------------- */
 
-.form {
-    border-top: 1px solid;
-}
+/* .form { */
+    /* border-top: 1px solid; */
+/* } */
 
 .get-account {
     background-color: cornflowerblue;
@@ -256,9 +280,9 @@ select {
 /* ---------------------------------------------------------------------- */
 
 
-#credit {
-    display: none;
-}
+/* #credit { */
+    /* display: none; */
+/* } */
 
 
 @media screen and (max-width: 550px) {
@@ -276,20 +300,25 @@ body {
 li {
     padding: 4px 20px;
 }
-
+/*
 .menu-tab {
     display: block;
 }
 
 .menu-list {
     display: none;
-}
+} */
 
 .content {
     flex-flow: column;
+    justify-content: center;
+    align-content: center;
     /* height: 60vh; */
 }
 
+.block1 {
+    display: block;
+}
 .block2 {
     display: flex;
     flex-flow: column;
