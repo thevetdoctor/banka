@@ -29,7 +29,6 @@ describe('Account Creation Endpoint', () => {
       .send({
         owner: 1,
         type: 'current',
-        status: 'active',
       })
       .end((err, res) => {
         res.should.have.status(200);
@@ -39,6 +38,45 @@ describe('Account Creation Endpoint', () => {
         res.body.status.should.equal(200);
         res.body.should.have.property('data');
         res.body.data.should.be.a('object');
+      });
+    done();
+  });
+});
+
+
+describe('Error Handling (Account Creation Endpoint)', () => {
+  it('should return an ERROR if owner ID not supplied', (done) => {
+    chai.request(server)
+      .post('/api/v1/accounts')
+      .send({
+        // owner: 1,
+        type: 'current',
+      })
+      .end((err, res) => {
+        res.should.have.status(400);
+        res.should.be.json;
+        res.body.should.be.a('object');
+        res.body.should.have.property('status');
+        res.body.status.should.equal(400);
+        res.body.should.have.property('error');
+      });
+    done();
+  });
+
+  it('should return an ERROR if account TYPE is not supplied', (done) => {
+    chai.request(server)
+      .post('/api/v1/accounts')
+      .send({
+        owner: 1,
+        // type: 'current',
+      })
+      .end((err, res) => {
+        res.should.have.status(400);
+        res.should.be.json;
+        res.body.should.be.a('object');
+        res.body.should.have.property('status');
+        res.body.status.should.equal(400);
+        res.body.should.have.property('error');
       });
     done();
   });
@@ -64,6 +102,26 @@ describe('Account Activate/Deactivate Endpoint', () => {
         res.body.status.should.equal(200);
         res.body.should.have.property('data');
         res.body.data.should.be.a('object');
+      });
+    done();
+  });
+});
+
+
+describe('Error HAndling (Account Activate/Deactivate Endpoint)', () => {
+  it('return an ERROR if STATUS is not supplied', (done) => {
+    chai.request(server)
+      .patch('/api/v1/accounts/2019031111')
+      .send({
+        // status: 'active',
+      })
+      .end((err, res) => {
+        res.should.have.status(400);
+        res.should.be.json;
+        res.body.should.be.a('object');
+        res.body.should.have.property('status');
+        res.body.status.should.equal(400);
+        res.body.should.have.property('error');
       });
     done();
   });

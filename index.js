@@ -12,7 +12,7 @@ const port = process.env.PORT || 3000;
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use('/auth/', users);
+app.use('/api/v1/auth/', users);
 app.use('/api/v1/accounts', accounts);
 app.use('/api/v1/transactions', transactions);
 
