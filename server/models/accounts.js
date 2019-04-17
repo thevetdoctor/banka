@@ -1,5 +1,5 @@
 class Account {
-  constructor(owner, type, status) {
+  constructor(owner, type, status = 'draft') {
     this.id = Number();
     this.accountNumber = Number();
     this.createdOn = new Date().toDateString();

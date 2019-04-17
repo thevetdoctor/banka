@@ -57,12 +57,12 @@ const displayAccounts = () => {
 
   bankAccounts.forEach((account) => {
     accountList += `<div class="user-div" id="${account.id}"> Account Type: ${account.type}
-                        <span> Customer ID: ${account.userId} </span>
-                        <span> Account Balance: ${account.balance} </span>
-                        <span>Account No: ${account.number}</span>
-                        <span>Last Transaction: ${account.updateType}<br>
-                         - ${account.lastUpdated}</span>
-                        <span>Account Status : ${account.status ? 'ACTIVE' : 'INACTIVE'}</span>
+                        <p> Customer ID: ${account.userId} </p>
+                        <p> Account Balance: ${account.balance} </p>
+                        <p>Account No: ${account.number}</p>
+                        <p>Last Transaction: ${account.updateType}</p>
+                        <p> ${account.lastUpdated}</p>
+                        <p>Account Status : ${account.status ? 'ACTIVE' : 'INACTIVE'}</p>
                         <button id="status-btn">View Account</button>
                     </div>`;
   });

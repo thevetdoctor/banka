@@ -1,13 +1,13 @@
 // eslint-disable-next-line no-console
 console.log('Signup');
 
-const loginBtn = document.querySelector('.login-btn');
+// const loginBtn = document.querySelector('.login-btn');
 const signupBtn = document.querySelector('.signup-btn');
 // Redirect to Login Page
 
-const goToLogin = () => {
-  window.location.href = './login.html';
-};
+// const goToLogin = () => {
+//   window.location.href = './login.html';
+// };
 
 
 const signUp = () => {
@@ -15,6 +15,6 @@ const signUp = () => {
 };
 
 
-loginBtn.addEventListener('click', goToLogin);
+// loginBtn.addEventListener('click', goToLogin);
 
 signupBtn.addEventListener('click', signUp);

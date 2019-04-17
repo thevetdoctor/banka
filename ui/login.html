@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -10,60 +9,36 @@
 </head>
 
 <body>
+    <nav>
+        <div class="row">
+            <ul class="menu-list">
+                <li><a href="./index.html">Home</a></li>
+                <li><a href="./signup.html">Sign Up</a></li>
+            </ul>
+        </div>
+    </nav>
     <div class="container">
         <header>
-            <h1>Welcome to Banka</h1>
-            <h4>...financial services at your convenience!</h4>
-        </header>
-        <nav>
-            <div class="row"><span class="menu-tab">MENU</span>
-                <ul class="menu-list">
-                    <!-- <li><a>Home</a></li> -->
-                    <!-- <li><a>Sign Up</a></li> -->
-                    <!-- <li><a>Log In</a></li> -->
-                </ul>
-            </div>
-        </nav>
-        <div class="content">
-            <div class="block1">
-                Trust us when we say, we put ease into banking. Trust us when we say, we put ease into banking.
-            </div>
-            <div class="block2">
-                <div class="block-list">
-                    <div>
-                        <h2>Login</h2>
-                        <div>
-                            <form>
-                                <label>Email</label><br>
-                                <input type="text" class="email" name="email" placeholder="Enter Email"
-                                    required="true"><br><br>
-                                <label>Password</label><br>
-                                <input type="password" class="password" name="password" placeholder="Enter Password"
-                                    required><br><br>
-                                <input class="login-btn" type="button" value="Login">
-                                <input class="signup-btn" type="button" value="Go to Signup">
-                            </form>
-                        </div>
-                    </div>
-                </div>
-                <div class="block-list">
-                    <div>
-
-                    </div>
-                    <div>
-
-                    </div>
-                </div>
-            </div>
-
+            <h1>Log In</h1>
+        </header>        <div class="content">
+            <form>
+                <label>Email</label><br>
+                <input type="text" class="email" name="email" placeholder="Enter Email"
+                    required="true"><br><br>
+                <label>Password</label><br>
+                <input type="password" class="password" name="password" placeholder="Enter Password"
+                    required><br><br>
+                <input class="login-btn" type="button" value="Login">
+                <input class="cancel-btn" type="reset" value="Cancel">
+                <!-- <input class="signup-btn" type="button" value="Go to Signup"> -->
+            </form>
         </div>
-        <footer>
-            <div>
-                Trust us when we say, we put ease into banking &COPY; Banka 2019
-            </div>
-        </footer>
     </div>
-
+    <footer>
+        <div>
+            Trust us when we say, we put ease into banking &COPY; Banka 2019
+        </div>
+    </footer>
     <script src="./js/login.js"></script>
 </body>
 
