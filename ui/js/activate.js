@@ -106,3 +106,4 @@ const changeStatus = (e) => {
 
 
 userDisplay.addEventListener('click', changeStatus);
+// userDisplay.addEventListener('change', changeStatus);

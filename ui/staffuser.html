@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -10,28 +9,24 @@
 </head>
 
 <body>
+    <nav>
+        <div class="row">
+            <ul class="menu-list">
+                <li><a href="./activate.html">Accounts Activation</a></li>
+                <li><a href="./account.html">Check Account</a></li>
+                <li><a href="./index.html">Log Out</a></li>
+            </ul>
+        </div>
+    </nav>
     <div class="container">
         <header>
-            <h1>Welcome to Banka</h1>
-            <h4>...financial services at your convenience!</h4>
+            <h1>Create Staff Account</h1>
         </header>
-        <nav>
-            <div class="row"><span class="menu-tab">MENU</span>
-                <ul class="menu-list">
-                    <li><a>Home</a></li>
-                    <li><a>Internet Banking</a></li>
-                    <li><a>Log Out</a></li>
-                </ul>
-            </div>
-        </nav>
-        <div class="content">
-            <div class="block1">
-                Trust us when we say, we put ease into banking. Trust us when we say, we put ease into banking.
-            </div>
-            <div class="block2">
-                <div class="block-list">
+            <div class="content">
+            <!-- <div class="block2"> -->
+                <!-- <div class="block-list"> -->
                     <div>
-                        <h2>Account Creation</h2>
+                        <!-- <h2>Account Creation</h2> -->
                         <div>
                             <form>
                                 <label>First Name</label><br>
@@ -41,39 +36,35 @@
                                 <label>Email</label><br>
                                 <input type="text" class="email" name="email" placeholder="Enter Email" required><br><br>
                                 <label>Mobile</label><br>
-                                <input type="text" class="mobile" name="mobile" placeholder="Enter Mobile Number" required><br><br>                                <label>Sex: </label>
+                                <input type="text" class="mobile" name="mobile" placeholder="Enter Mobile Number" required><br><br>
+                                <select>
+                                    <option>Admin</option>
+                                    <option>Cashier</option>
+                                </select><br><br>
+                                <label>Sex: </label>
                                 <input type="radio" name="sex" value="M"> Male
                                 <input type="radio" name="sex" value="F" checked> Female <br><br>
                                 <input class="create-btn" type="button" value="Create Account">
                             </form>
                             <p class="account-status"></p>
                         </div>
-                        <div class="staff-users"><p class="staff-btn">Show Staff Users</p>
+                        <div class="staff-users">
+                            <p class="staff-btn">Show Staff Users</p>
                             <div class="staff-list"></div>
                         </div>
                     </div>
-                    <div>
+                    <!-- <div> -->
 
-                    </div>
-                </div>
-                <div class="block-list">
-                    <div>
-
-                    </div>
-                    <div>
-
-                    </div>
-                </div>
+                    <!-- </div> -->
+                <!-- </div> -->
             </div>
-
         </div>
-        <footer>
-            <div>
-                Trust us when we say, we put ease into banking &COPY; Banka 2019
-            </div>
-        </footer>
     </div>
-
+    <footer>
+        <div>
+            Trust us when we say, we put ease into banking &COPY; Banka 2019
+        </div>
+    </footer>
     <script src="./js/staffuser.js"></script>
 </body>
 

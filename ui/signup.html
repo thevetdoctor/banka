@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -10,74 +9,50 @@
 </head>
 
 <body>
+    <nav>
+        <div class="row">
+            <ul class="menu-list">
+                <li><a href="./index.html">Home</a></li>
+                <li><a href="./login.html">Log In</a></li>
+            </ul>
+        </div>
+    </nav>
     <div class="container">
         <header>
-            <h1>Welcome to Banka</h1>
-            <h4>...financial services at your convenience!</h4>
+            <h1>Sign Up</h1>
         </header>
-        <nav>
-            <div class="row"><span class="menu-tab">MENU</span>
-                <ul class="menu-list">
-                    <!-- <li><a>Home</a></li> -->
-                    <!-- <li><a>Sign Up</a></li> -->
-                    <!-- <li><a>Log In</a></li> -->
-                </ul>
-            </div>
-        </nav>
         <div class="content">
-            <div class="block1">
-                Trust us when we say, we put ease into banking. Trust us when we say, we put ease into banking.
-            </div>
-            <div class="block2">
-                <div class="block-list">
-                    <div>
-                        <h2>Signup</h2>
-                        <div>
-                            <form>
-                                <label>First Name</label><br>
-                                <input type="text" class="firstname" name="firstname" placeholder="Enter First Name"
-                                    required="true"><br><br>
-                                <label>Last Name</label><br>
-                                <input type="text" class="lastname" name="lastname" placeholder="Enter Last Name"
-                                    required><br><br>
-                                <label>Email</label><br>
-                                <input type="text" class="email" name="email" placeholder="Enter Email"
-                                    required><br><br>
-                                <label>Mobile</label><br>
-                                <input type="text" class="mobile" name="mobile" placeholder="Enter Mobile Number"
-                                    required><br><br>
-                                <label>Sex: </label>
-                                <input type="radio" name="sex" value="M"> Male
-                                <input type="radio" name="sex" value="F" checked> Female <br><br>
-                                <label>Password</label><br>
-                                <input type="password" class="password" name="password1" placeholder="Enter Password" required><br><br>
-                                <label>Re-enter Password</label><br>
-                                <input type="password" class="password" name="password2" placeholder="Re-enter Password" required><br><br>
-                                <input class="signup-btn" type="button" value="Signup">
-                                <input class="login-btn" type="button" value="Go to Login">
-                            </form>
-                            <p class="account-status"></p>
-                        </div>
-                    </div>
-                </div>
-                <div class="block-list">
-                    <div>
-
-                    </div>
-                    <div>
-
-                    </div>
-                </div>
-            </div>
-
+            <form>
+                <label>First Name</label><br>
+                <input type="text" class="firstname" name="firstname" placeholder="Enter First Name"
+                    required="true"><br><br>
+                <label>Last Name</label><br>
+                <input type="text" class="lastname" name="lastname" placeholder="Enter Last Name"
+                    required><br><br>
+                <label>Email</label><br>
+                <input type="text" class="email" name="email" placeholder="Enter Email"
+                    required><br><br>
+                <label>Mobile</label><br>
+                <input type="text" class="mobile" name="mobile" placeholder="Enter Mobile Number"
+                    required><br><br>
+                <label>Sex: </label>
+                <input type="radio" name="sex" value="M"> Male
+                <input type="radio" name="sex" value="F" checked> Female <br><br>
+                <label>Password</label><br>
+                <input type="password" class="password" name="password1" placeholder="Enter Password" required><br><br>
+                <label>Re-enter Password</label><br>
+                <input type="password" class="password" name="password2" placeholder="Re-enter Password" required><br><br>
+                <input class="signup-btn" type="button" value="Signup">
+                <input class="cancel-btn" type="reset" value="Cancel">
+            </form>
+            <p class="account-status"></p>
         </div>
-        <footer>
-            <div>
-                Trust us when we say, we put ease into banking &COPY; Banka 2019
-            </div>
-        </footer>
     </div>
-
+    <footer>
+        <div>
+            Trust us when we say, we put ease into banking &COPY; Banka 2019
+        </div>
+    </footer>
     <script src="./js/signup.js"></script>
 </body>
 
