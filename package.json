@@ -4,8 +4,10 @@
   "description": "banka",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "test": " mocha server/test --exit",
+    "test": "mocha dist/server/test --exit",
+    "start": "node --exec babel-node src/index.js",
+    "build": "babel src --out-dir dist",
+    "serve": "node dist/server.js",
     "cover": "nyc --reporter=text mocha server/test --exit",
     "coveralls": "npm run cover --report lcovonly && cat ./coverage/lcov.info | coveralls"
   },
@@ -20,6 +22,10 @@
   },
   "homepage": "https://github.com/thevetdoctor/banka#readme",
   "dependencies": {
+    "babel": "^6.23.0",
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-register": "^6.26.0",
     "body-parser": "^1.18.3",
     "express": "^4.16.4",
     "jsonwebtoken": "^8.5.1"

@@ -1,7 +1,7 @@
 /* eslint-disable no-restricted-globals */
 /* eslint-disable no-console */
-const jwt = require('jsonwebtoken');
-const User = require('../models/users');
+import jwt from 'jsonwebtoken';
+import User from '../models/users';
 
 const userRecord = [{
   id: 1,
@@ -13,26 +13,26 @@ const userRecord = [{
   isAdmin: false,
   sex: 'M',
   mobile: '1234567890',
-  active: false,
+  active: false
 }];
 
-const validUser = (user) => {
+const validUser = user => {
   const validEmail = /(.+)@(.+){2,}\.(.+){2,}/.test(user.email) && user.email.trim() !== '';
   const validPassword = typeof user.password === 'string' && user.password.trim() !== '' && user.password.trim().length >= 6;
   return validEmail && validPassword;
 };
 
-const validateEmail = (email) => {
+const validateEmail = email => {
   const validEmail = /(.+)@(.+){2,}\.(.+){2,}/.test(email) && email.trim() !== '';
   return validEmail;
 };
 
 const mobileRegex = /[^0-9]/;
 
+class UserController {
+  constructor() {}
 
-const UserController = {
-
-  signup: (req, res) => {
+  signup(req, res) {
     // eslint-disable-next-line object-curly-newline
     const { email, firstName, lastName, password, sex, mobile } = req.body;
 
@@ -42,18 +42,18 @@ const UserController = {
     // for (const item in user) {
     // console.log(item);
     // }
-    if (user.firstName === undefined || user.firstName === '') {
+    if (user.firstName === undefined || user.firstName.trim() === '') {
       res.status(400).json({
         status: 400,
-        error: 'Firstname not supplied',
+        error: 'Firstname not supplied'
       });
       return;
     }
 
-    if (user.lastName === undefined || user.lastName === '') {
+    if (user.lastName === undefined || user.lastName.trim() === '') {
       res.status(400).json({
         status: 400,
-        error: 'Lastname not supplied',
+        error: 'Lastname not supplied'
       });
       return;
     }
@@ -61,7 +61,7 @@ const UserController = {
     if (user.email === undefined || user.email === '') {
       res.status(400).json({
         status: 400,
-        error: 'Email not supplied',
+        error: 'Email not supplied'
       });
       return;
     }
@@ -69,7 +69,7 @@ const UserController = {
     if (user.password === undefined || user.password === '') {
       res.status(400).json({
         status: 400,
-        error: 'Password not supplied',
+        error: 'Password not supplied'
       });
       return;
     }
@@ -77,7 +77,7 @@ const UserController = {
     if (user.sex === undefined || user.sex === '') {
       res.status(400).json({
         status: 400,
-        error: 'Sex not supplied',
+        error: 'Sex not supplied'
       });
       return;
     }
@@ -93,7 +93,7 @@ const UserController = {
     if (user.mobile === undefined || user.mobile === '') {
       res.status(400).json({
         status: 400,
-        error: 'Mobile not supplied',
+        error: 'Mobile not supplied'
       });
       return;
     }
@@ -101,7 +101,7 @@ const UserController = {
     if (mobileRegex.test(user.mobile)) {
       res.status(400).json({
         status: 400,
-        error: 'Invalid Mobile Number supplied',
+        error: 'Invalid Mobile Number supplied'
       });
       return;
     }
@@ -111,7 +111,7 @@ const UserController = {
       console.log(user.email);
       res.status(400).json({
         status: 400,
-        error: 'Invalid Email',
+        error: 'Invalid Email'
       });
       return;
     }
@@ -123,7 +123,7 @@ const UserController = {
       if (userEmails.includes(user.email)) {
         res.status(400).json({
           status: 400,
-          error: 'Email already used',
+          error: 'Email already used'
         });
       } else {
         // Assign user ID
@@ -138,28 +138,27 @@ const UserController = {
             id: user.id,
             firstName: user.firstName,
             lastName: user.lastName,
-            email: user.email,
-          },
+            email: user.email
+          }
         });
       }
     } else {
-    // send an error
+      // send an error
       res.status(400).json({
         status: 400,
-        error: 'Password must be minimum of 6 characters',
+        error: 'Password must be minimum of 6 characters'
       });
     }
-  },
+  }
 
-
-  signin: (req, res) => {
+  signin(req, res) {
     const { email, password } = req.body;
     const user = { email, password };
 
     if (user.email === undefined || user.email === '') {
       res.status(400).json({
         status: 400,
-        error: 'Email not supplied',
+        error: 'Email not supplied'
       });
       return;
     }
@@ -167,7 +166,7 @@ const UserController = {
     if (user.password === undefined || user.password === '') {
       res.status(400).json({
         status: 400,
-        error: 'Password not supplied',
+        error: 'Password not supplied'
       });
       return;
     }
@@ -186,25 +185,24 @@ const UserController = {
             id: newUser.id,
             firstName: newUser.firstName,
             lastName: newUser.lastName,
-            email: newUser.email,
+            email: newUser.email
           },
-          newUser,
+          newUser
         });
       } else {
         res.status(400).json({
           status: 400,
-          error: 'Invalid password',
+          error: 'Invalid password'
         });
       }
     } else {
       res.status(400).json({
         status: 400,
-        error: 'Invalid email',
+        error: 'Invalid email'
       });
     }
-  },
+  }
 
-};
+}
 
-
-module.exports = { UserController, userRecord };
+export { UserController, userRecord };

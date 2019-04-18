@@ -1,12 +1,12 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-unused-expressions */
-const chai = require('chai');
-const chaiHttp = require('chai-http');
-const server = require('../../index');
+import chai from 'chai';
+import chaiHttp from 'chai-http';
+import server from '../../index';
+import { TransactionController } from '../controllers/transactions';
 
 // eslint-disable-next-line no-unused-vars
 const should = chai.should();
-const { TransactionController } = require('../controllers/transactions');
 
 chai.use(chaiHttp);
 

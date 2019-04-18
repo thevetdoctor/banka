@@ -1,7 +1,7 @@
-const express = require('express');
+import express from 'express';
+import { AccountController } from '../controllers/accounts';
 
 const router = express.Router();
-const { AccountController } = require('../controllers/accounts');
 
 
 router.post('/', AccountController.create);
@@ -15,4 +15,4 @@ router.get('/', AccountController.list);
 router.get('/:accountNumber', AccountController.listOne);
 
 
-module.exports = router;
+export default router;
