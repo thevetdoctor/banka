@@ -5,13 +5,18 @@ body {
     margin: 0;
     padding: 0;
     font-family: 'Raleway', sans-serif;
-    line-height: 1.2;
+    line-height: 1.5;
     background-color: #84f709;
     color: #fff;
     align-content: center;
     /* width: 100%; */
     height: 100%;
 }
+
+input, button {
+    font-family: 'Raleway', sans-serif;
+}
+
 
 .container {
     display: flex;
@@ -45,8 +50,8 @@ header {
     /* display: none; */
 }
 
-.dot img {
-    width: 100%;
+img {
+    /* width: 100%; */
     /* padding: 0; */
     margin: 0;
     border-radius: 10px;
@@ -75,7 +80,7 @@ header {
 
 .content {
     display: flex;
-    flex-flow: row;
+    flex-flow: row wrap;
     justify-content: center;
     padding: 15px;
     /* align-content: center; */
@@ -84,6 +89,7 @@ header {
     border-radius: 10px;
     background-color: #fff;
     color: #000;
+    /* overflow: scroll; */
 }
 
 .content div {
@@ -94,6 +100,7 @@ header {
 footer {
     background-color: rgba(0, 0, 0, 0.8);
     /* position: fixed; */
+    position: relative;
     bottom: 0px;
     margin-top: 20px;
     padding: 25px;
@@ -101,6 +108,10 @@ footer {
     /* height: 10%; */
     text-align: center;
     font-size: 0.9em;
+}
+
+.footer-class {
+position: fixed;
 }
 
 .row {
@@ -160,7 +171,7 @@ nav {
 } */
 
 .user-div {
-    border: 1px solid;
+    /* border: 1px solid; */
     border-radius: 10px;
     margin-bottom: 5px;
     padding: 18px;
@@ -217,9 +228,11 @@ input {
 .staff-btn {
     border: 1px solid;
     border-radius: 8px;
-    padding: 5px;
+    padding: 10px;
     background-color: cornflowerblue;
-    color: #fff;}
+    color: #fff;
+    box-shadow: 2px #bbb;
+}
 
 /* --------------------------------------------------------- */
 
@@ -279,10 +292,21 @@ select {
 
 /* ---------------------------------------------------------------------- */
 
+.tranx-div {
+    /* background-color: blueviolet; */
+    margin-bottom: 15px;
+    flex-basis: 25%;
+    /* border: 1px solid; */
+    padding: 5px;
+    border-radius: 10px;
+    box-shadow: 3px 3px 5px 6px #ccc;
+}
 
-/* #credit { */
-    /* display: none; */
-/* } */
+.transaction-display {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-evenly;
+}
 
 
 @media screen and (max-width: 550px) {
@@ -334,4 +358,17 @@ li {
     display: block;
 }
 
+.transaction-display {
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: space-evenly;
+}
+
+footer span {
+    display: block;
+}
+
+.footer-class {
+    position: relative;
+}
 }

@@ -108,7 +108,7 @@ describe('Account Activate/Deactivate Endpoint', () => {
 });
 
 
-describe('Error HAndling (Account Activate/Deactivate Endpoint)', () => {
+describe('Error Handling (Account Activate/Deactivate Endpoint)', () => {
   it('return an ERROR if STATUS is not supplied', (done) => {
     chai.request(server)
       .patch('/api/v1/accounts/2019031111')

@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-globals */
 /* eslint-disable no-console */
 const jwt = require('jsonwebtoken');
 const User = require('../models/users');
@@ -25,6 +26,8 @@ const validateEmail = (email) => {
   const validEmail = /(.+)@(.+){2,}\.(.+){2,}/.test(email) && email.trim() !== '';
   return validEmail;
 };
+
+const mobileRegex = /[^0-9]/;
 
 
 const UserController = {
@@ -79,10 +82,26 @@ const UserController = {
       return;
     }
 
+    // if (user.sex !== 'M' || user.sex !== 'F') {
+    //   res.status(400).json({
+    //     status: 400,
+    //     error: 'Invalid Sex supplied',
+    //   });
+    //   return;
+    // }
+
     if (user.mobile === undefined || user.mobile === '') {
       res.status(400).json({
         status: 400,
         error: 'Mobile not supplied',
+      });
+      return;
+    }
+
+    if (mobileRegex.test(user.mobile)) {
+      res.status(400).json({
+        status: 400,
+        error: 'Invalid Mobile Number supplied',
       });
       return;
     }

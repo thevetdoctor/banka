@@ -146,8 +146,8 @@ const AccountController = {
 
     const foundAccount = accountRecord.find(item => item.accountNumber === accountNumber);
     if (foundAccount === undefined) {
-      res.status(400).json({
-        status: 400,
+      res.status(404).json({
+        status: 404,
         error: 'Account not available',
       });
     } else {

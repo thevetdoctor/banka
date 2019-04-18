@@ -17,7 +17,6 @@ app.use('/api/v1/accounts', accounts);
 app.use('/api/v1/transactions', transactions);
 
 app.get('/', (req, res) => {
-//   res.end('<h1>Welcome to Banka</h1><h4>...financial transactions at your convenience!</h4>');
   res.sendFile(path.join(__dirname, '/index.html'));
 });
 

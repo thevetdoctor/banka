@@ -27,7 +27,7 @@ const displayStaff = () => {
     let staffUser = '';
 
     staffAccounts.forEach((staff) => {
-      staffUser += `<div class="user-div" id="${staff.id}"> Name: ${staff.firstname} ${staff.lastname}
+      staffUser += `<div class="user-div tranx-div" id="${staff.id}"> Name: ${staff.firstname} ${staff.lastname}
                         <p> Email: ${staff.email} </p>
                         <p> Sex: ${staff.sex} </p>
                         <p> Mobile: ${staff.mobileNo} </p>
