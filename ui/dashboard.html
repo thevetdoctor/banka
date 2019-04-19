@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
     <link rel="stylesheet" type="text/css" media="screen" href="./css/main.css">
 </head>
 
@@ -23,33 +24,36 @@
             <h1>My Dashboard</h1>
         </header>
         <div class="content">
-            <div style="text-align: left">
-                Account Name : Kayode Fayemi<br>
-                Email : kfayemi@ekiti.gov.ng<br>
-                Mobile : 08041234567<br>
-            </div>
-            <div>
-                <ul class="account-list">
-                    Active Accounts:
-                    <li>
-                        Account No: 2019030012 <br>
+            <!-- <div> -->
+                <img  class="user-image" src="./img/fayemi.jpg" alt="User Image">
+                <div class="user-info" style="text-align: left">
+                    Account Name : Kayode Fayemi<br>
+                    Email : kfayemi@ekiti.gov.ng<br>
+                    Mobile : 08041234567<br>
+                </div>
+            <!-- </div> -->
+            <div class="transaction-display">
+                <!-- <div class="account-list"> -->
+                    <!-- <h3>Your Accounts:</h3> -->
+                    <div class="tranx-div">
+                        <p>Account No: 2019030012 </p>
                         Account Type: Savings  <br>
                         Balance: N2,012,300.00 <br>
                         LastUpdated: 28 Feb 2019
-                    </li>
-                    <li>
+                    </div>
+                    <div class="tranx-div">
                         Account No: 2019030766 <br>
                         Account Type: Domiciliary <br>
                         Balance: $2,100.00 <br>
                         LastUpdated: 02 Feb 2019
-                    </li>
-                </ul>
+                    </div>
+                <!-- </div> -->
             </div>
         </div>
     </div>
-    <footer>
+    <footer class="footer-class">
         <div>
-            Trust us when we say, we put ease into banking &COPY; Banka 2019
+            Trust us when we say, we put ease into banking<span> &COPY; Banka 2019</span>
         </div>
     </footer>
     <script src="./js/dashboard.js"></script>

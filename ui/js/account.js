@@ -66,7 +66,7 @@ const viewAccount = () => {
     return;
   }
 
-  accountHtml = `<div class="user-div" id="${acct.id}"> Type: ${acct.type}
+  accountHtml = `<div class="tranx-div" id="${acct.id}"> Type: ${acct.type}
                         <p> Customer ID: ${acct.userId} </p>
                         <p> Balance: ${acct.balance} </p>
                         <p>Account No: ${acct.number}</p>

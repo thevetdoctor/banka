@@ -4,8 +4,12 @@
   "description": "banka",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "test": " mocha server/test --exit"
+    "test": "mocha dist/server/test --exit",
+    "start": "node --exec babel-node src/server/index.js",
+    "build": "babel src --out-dir dist",
+    "serve": "node dist/server/index.js",
+    "cover": "nyc --reporter=text mocha dist/server/test --exit",
+    "coveralls": "npm run cover --report lcovonly && cat ./coverage/lcov.info | coveralls"
   },
   "repository": {
     "type": "git",
@@ -23,14 +27,22 @@
     "jsonwebtoken": "^8.5.1"
   },
   "devDependencies": {
+    "@babel/cli": "^7.4.3",
+    "@babel/core": "^7.4.3",
+    "@babel/node": "^7.2.2",
+    "@babel/preset-env": "^7.4.3",
+    "@babel/register": "^7.4.0",
     "chai": "^4.2.0",
     "chai-http": "^4.2.1",
+    "coveralls": "^3.0.3",
     "eslint": "^5.16.0",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-plugin-import": "^2.16.0",
     "eslint-plugin-jsx-a11y": "^6.2.1",
     "eslint-plugin-react": "^7.12.4",
     "mocha": "^6.1.1",
-    "nodemon": "^1.18.10"
+    "mocha-lcov-reporter": "^1.3.0",
+    "nodemon": "^1.18.10",
+    "nyc": "^14.0.0"
   }
 }
