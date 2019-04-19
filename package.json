@@ -8,7 +8,7 @@
     "start": "node --exec babel-node src/server/index.js",
     "build": "babel src --out-dir dist",
     "serve": "node dist/server/index.js",
-    "cover": "nyc --reporter=text mocha dist/server/test --exit",
+    "cover": "nyc npm test && nyc report --reporter=text-lcov | coveralls",
     "coveralls": "npm run cover --report lcovonly && cat ./coverage/lcov.info | coveralls"
   },
   "repository": {
