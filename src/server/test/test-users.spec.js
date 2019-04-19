@@ -3,7 +3,7 @@
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 import server from '../../index';
-import { UserController } from '../controllers/users';
+import UserController from '../controllers/users';
 
 // eslint-disable-next-line no-unused-vars
 const should = chai.should();

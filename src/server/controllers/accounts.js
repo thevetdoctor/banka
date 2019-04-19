@@ -1,44 +1,11 @@
 /* eslint-disable no-console */
 import Account from '../models/accounts';
-import { userRecord } from './users';
-
-const accountRecord = [
-  {
-    id: 1,
-    accountNumber: 2019031111,
-    createdOn: new Date().toDateString(),
-    owner: 1,
-    type: 'savings',
-    status: 'active',
-    balance: '12000.25',
-  },
-  {
-    id: 2,
-    accountNumber: 2019031112,
-    createdOn: new Date().toDateString(),
-    owner: 1,
-    type: 'current',
-    status: 'active',
-    balance: '4000.05',
-  },
-  {
-    id: 3,
-    accountNumber: 2019031113,
-    createdOn: new Date().toDateString(),
-    owner: 1,
-    type: 'current',
-    status: 'active',
-    balance: '40100.05',
-  },
-];
+import userRecord from '../db/userRecord';
+import accountRecord from '../db/accountRecord';
 
 
-class AccountController  {
-  // constructor() {
-//
-  // }
-
-  create(req, res) {
+class AccountController {
+  static create(req, res) {
     const { owner, type } = req.body;
 
     const account = new Account(owner, type);
@@ -100,7 +67,7 @@ class AccountController  {
   }
 
 
-  activate(req, res) {
+  static activate(req, res) {
     const accountStatus = req.body.status;
     let { accountNumber } = req.params;
     accountNumber = parseInt(accountNumber, 10);
@@ -144,7 +111,7 @@ class AccountController  {
   }
 
 
-  delete(req, res) {
+  static delete(req, res) {
     let { accountNumber } = req.params;
     accountNumber = parseInt(accountNumber, 10);
 
@@ -165,7 +132,7 @@ class AccountController  {
   }
 
 
-  list(req, res) {
+  static list(req, res) {
     const accountList = [...accountRecord];
     if (accountList.length < 1) {
       res.status(400).json({
@@ -183,7 +150,7 @@ class AccountController  {
   }
 
 
-  listOne(req, res) {
+  static listOne(req, res) {
     const { accountNumber } = req.params;
     const accountList = [...accountRecord];
     const account = accountList.find(item => item.accountNumber === Number(accountNumber));
@@ -205,4 +172,4 @@ class AccountController  {
 }
 
 
-export  { AccountController, accountRecord };
+export default AccountController;

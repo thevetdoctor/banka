@@ -1,31 +1,37 @@
+"use strict";
+
+var _chai = _interopRequireDefault(require("chai"));
+
+var _chaiHttp = _interopRequireDefault(require("chai-http"));
+
+var _index = _interopRequireDefault(require("../../index"));
+
+var _accounts = _interopRequireDefault(require("../controllers/accounts"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
 /* eslint-disable no-unused-expressions */
+
 /* eslint-disable no-undef */
-import chai from 'chai';
-import chaiHttp from 'chai-http';
-import server from '../../index';
-import { AccountController } from '../controllers/accounts';
-
 // eslint-disable-next-line no-unused-vars
-const should = chai.should();
+var should = _chai["default"].should();
 
-chai.use(chaiHttp);
+_chai["default"].use(_chaiHttp["default"]);
 
-describe('Account Controller', () => {
-  it('AccountController should exist', () => {
-    AccountController.should.exist;
+describe('Account Controller', function () {
+  it('AccountController should exist', function () {
+    _accounts["default"].should.exist;
   });
 });
-
-describe('Account Creation Endpoint', () => {
-  it('Account CREATE method should exist', () => {
-    AccountController.create.should.exist;
+describe('Account Creation Endpoint', function () {
+  it('Account CREATE method should exist', function () {
+    _accounts["default"].create.should.exist;
   });
-
-  it('Create(POST) should create a new account', done => {
-    chai.request(server).post('/api/v1/accounts').send({
+  it('Create(POST) should create a new account', function (done) {
+    _chai["default"].request(_index["default"]).post('/api/v1/accounts').send({
       owner: 1,
       type: 'current'
-    }).end((err, res) => {
+    }).end(function (err, res) {
       res.should.have.status(200);
       res.should.be.json;
       res.body.should.be.a('object');
@@ -34,16 +40,16 @@ describe('Account Creation Endpoint', () => {
       res.body.should.have.property('data');
       res.body.data.should.be.a('object');
     });
+
     done();
   });
 });
-
-describe('Error Handling (Account Creation Endpoint)', () => {
-  it('should return an ERROR if owner ID not supplied', done => {
-    chai.request(server).post('/api/v1/accounts').send({
+describe('Error Handling (Account Creation Endpoint)', function () {
+  it('should return an ERROR if owner ID not supplied', function (done) {
+    _chai["default"].request(_index["default"]).post('/api/v1/accounts').send({
       // owner: 1,
       type: 'current'
-    }).end((err, res) => {
+    }).end(function (err, res) {
       res.should.have.status(400);
       res.should.be.json;
       res.body.should.be.a('object');
@@ -51,14 +57,14 @@ describe('Error Handling (Account Creation Endpoint)', () => {
       res.body.status.should.equal(400);
       res.body.should.have.property('error');
     });
+
     done();
   });
+  it('should return an ERROR if account TYPE is not supplied', function (done) {
+    _chai["default"].request(_index["default"]).post('/api/v1/accounts').send({
+      owner: 1 // type: 'current',
 
-  it('should return an ERROR if account TYPE is not supplied', done => {
-    chai.request(server).post('/api/v1/accounts').send({
-      owner: 1
-      // type: 'current',
-    }).end((err, res) => {
+    }).end(function (err, res) {
       res.should.have.status(400);
       res.should.be.json;
       res.body.should.be.a('object');
@@ -66,19 +72,18 @@ describe('Error Handling (Account Creation Endpoint)', () => {
       res.body.status.should.equal(400);
       res.body.should.have.property('error');
     });
+
     done();
   });
 });
-
-describe('Account Activate/Deactivate Endpoint', () => {
-  it('Account ACTIVATE method should exist', () => {
-    AccountController.activate.should.exist;
+describe('Account Activate/Deactivate Endpoint', function () {
+  it('Account ACTIVATE method should exist', function () {
+    _accounts["default"].activate.should.exist;
   });
-
-  it('Activate(PATCH) should change account status', done => {
-    chai.request(server).patch('/api/v1/accounts/2019031111').send({
+  it('Activate(PATCH) should change account status', function (done) {
+    _chai["default"].request(_index["default"]).patch('/api/v1/accounts/2019031111').send({
       status: 'active'
-    }).end((err, res) => {
+    }).end(function (err, res) {
       res.should.have.status(200);
       res.should.be.json;
       res.body.should.be.a('object');
@@ -87,15 +92,14 @@ describe('Account Activate/Deactivate Endpoint', () => {
       res.body.should.have.property('data');
       res.body.data.should.be.a('object');
     });
+
     done();
   });
 });
-
-describe('Error Handling (Account Activate/Deactivate Endpoint)', () => {
-  it('return an ERROR if STATUS is not supplied', done => {
-    chai.request(server).patch('/api/v1/accounts/2019031111').send({
-      // status: 'active',
-    }).end((err, res) => {
+describe('Error Handling (Account Activate/Deactivate Endpoint)', function () {
+  it('return an ERROR if STATUS is not supplied', function (done) {
+    _chai["default"].request(_index["default"]).patch('/api/v1/accounts/2019031111').send({// status: 'active',
+    }).end(function (err, res) {
       res.should.have.status(400);
       res.should.be.json;
       res.body.should.be.a('object');
@@ -103,17 +107,16 @@ describe('Error Handling (Account Activate/Deactivate Endpoint)', () => {
       res.body.status.should.equal(400);
       res.body.should.have.property('error');
     });
+
     done();
   });
 });
-
-describe('Account Delete Endpoint', () => {
-  it('Account DELETE method should exist', () => {
-    AccountController.delete.should.exist;
+describe('Account Delete Endpoint', function () {
+  it('Account DELETE method should exist', function () {
+    _accounts["default"]["delete"].should.exist;
   });
-
-  it('Delete(DELETE) should delete account from records', done => {
-    chai.request(server).delete('/api/v1/accounts/2019031112').end((err, res) => {
+  it('Delete(DELETE) should delete account from records', function (done) {
+    _chai["default"].request(_index["default"])["delete"]('/api/v1/accounts/2019031112').end(function (err, res) {
       res.should.have.status(200);
       res.should.be.json;
       res.body.should.be.a('object');
@@ -121,17 +124,16 @@ describe('Account Delete Endpoint', () => {
       res.body.status.should.equal(200);
       res.body.should.have.property('message');
     });
+
     done();
   });
 });
-
-describe('Accounts List Endpoint', () => {
-  it('Account LIST method should exist', () => {
-    AccountController.list.should.exist;
+describe('Accounts List Endpoint', function () {
+  it('Account LIST method should exist', function () {
+    _accounts["default"].list.should.exist;
   });
-
-  it('List(GET) should list all (available) accounts from records', done => {
-    chai.request(server).get('/api/v1/accounts').end((err, res) => {
+  it('List(GET) should list all (available) accounts from records', function (done) {
+    _chai["default"].request(_index["default"]).get('/api/v1/accounts').end(function (err, res) {
       res.should.have.status(200);
       res.should.be.json;
       res.body.should.be.a('object');
@@ -140,17 +142,16 @@ describe('Accounts List Endpoint', () => {
       res.body.should.have.property('data');
       res.body.data.should.be.a('object');
     });
+
     done();
   });
 });
-
-describe('Single Account List Endpoint', () => {
-  it('Account LISTONE method should exist', () => {
-    AccountController.listOne.should.exist;
+describe('Single Account List Endpoint', function () {
+  it('Account LISTONE method should exist', function () {
+    _accounts["default"].listOne.should.exist;
   });
-
-  it('ListOne(GET) should list a specific account from records', done => {
-    chai.request(server).get('/api/v1/accounts/2019031113').end((err, res) => {
+  it('ListOne(GET) should list a specific account from records', function (done) {
+    _chai["default"].request(_index["default"]).get('/api/v1/accounts/2019031113').end(function (err, res) {
       res.should.have.status(200);
       res.should.be.json;
       res.body.should.be.a('object');
@@ -159,6 +160,7 @@ describe('Single Account List Endpoint', () => {
       res.body.should.have.property('data');
       res.body.data.should.be.a('object');
     });
+
     done();
   });
 });

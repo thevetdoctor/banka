@@ -1,197 +1,224 @@
-/* eslint-disable no-console */
-import Account from '../models/accounts';
-import { userRecord } from './users';
+"use strict";
 
-const accountRecord = [{
-  id: 1,
-  accountNumber: 2019031111,
-  createdOn: new Date().toDateString(),
-  owner: 1,
-  type: 'savings',
-  status: 'active',
-  balance: '12000.25'
-}, {
-  id: 2,
-  accountNumber: 2019031112,
-  createdOn: new Date().toDateString(),
-  owner: 1,
-  type: 'current',
-  status: 'active',
-  balance: '4000.05'
-}, {
-  id: 3,
-  accountNumber: 2019031113,
-  createdOn: new Date().toDateString(),
-  owner: 1,
-  type: 'current',
-  status: 'active',
-  balance: '40100.05'
-}];
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports["default"] = void 0;
 
-class AccountController {
-  // constructor() {
-  //
-  // }
+var _accounts = _interopRequireDefault(require("../models/accounts"));
 
-  create(req, res) {
-    const { owner, type } = req.body;
+var _userRecord = _interopRequireDefault(require("../db/userRecord"));
 
-    const account = new Account(owner, type);
-    console.log(account.owner);
-    console.log(account.type);
+var _accountRecord = _interopRequireDefault(require("../db/accountRecord"));
 
-    if (account.owner === undefined || account.owner === '') {
-      res.status(400).json({
-        status: 400,
-        error: 'Account owner not supplied'
-      });
-      return;
-    }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-    if (account.type === undefined || account.type === '') {
-      res.status(400).json({
-        status: 400,
-        error: 'Account type not supplied'
-      });
-      return;
-    }
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
 
-    // if (account.type !== 'current' || account.type !== 'savings') {
-    //   res.status(400).json({
-    //     status: 400,
-    //     message: 'Account type must be savings or current',
-    //   });
-    //   return;
-    // }
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
 
+function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
 
-    const accountOwner = userRecord.find(item => item.id === parseInt(account.owner, 10));
-    if (!accountOwner || accountOwner === undefined) {
-      res.status(400).json({
-        status: 400,
-        message: 'Account owner does not exist'
-      });
-    }
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
 
-    account.id = accountRecord.length ? accountRecord.length + 1 : 1;
-    const accountArray = accountRecord.map(item => parseInt(item.accountNumber, 10));
-    let newAccountNumber = Math.max(...accountArray);
-    newAccountNumber += 1;
-    account.accountNumber = newAccountNumber;
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-    accountRecord.push(account);
-    res.status(200).json({
-      status: 200,
-      data: {
-        accountNumber: newAccountNumber,
-        firstName: accountOwner.firstName,
-        lastName: accountOwner.lastName,
-        email: accountOwner.email,
-        type: account.type,
-        openingBalance: account.balance
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var AccountController =
+/*#__PURE__*/
+function () {
+  function AccountController() {
+    _classCallCheck(this, AccountController);
+  }
+
+  _createClass(AccountController, null, [{
+    key: "create",
+    value: function create(req, res) {
+      var _req$body = req.body,
+          owner = _req$body.owner,
+          type = _req$body.type;
+      var account = new _accounts["default"](owner, type);
+      console.log(account.owner);
+      console.log(account.type);
+
+      if (account.owner === undefined || account.owner === '') {
+        res.status(400).json({
+          status: 400,
+          error: 'Account owner not supplied'
+        });
+        return;
       }
-    });
-  }
 
-  activate(req, res) {
-    const accountStatus = req.body.status;
-    let { accountNumber } = req.params;
-    accountNumber = parseInt(accountNumber, 10);
+      if (account.type === undefined || account.type === '') {
+        res.status(400).json({
+          status: 400,
+          error: 'Account type not supplied'
+        });
+        return;
+      } // if (account.type !== 'current' || account.type !== 'savings') {
+      //   res.status(400).json({
+      //     status: 400,
+      //     message: 'Account type must be savings or current',
+      //   });
+      //   return;
+      // }
 
-    console.log(accountStatus);
-    if (accountStatus === undefined || accountStatus === '') {
-      res.status(400).json({
-        status: 400,
-        error: 'Status not supplied'
+
+      var accountOwner = _userRecord["default"].find(function (item) {
+        return item.id === parseInt(account.owner, 10);
       });
-      return;
+
+      if (!accountOwner || accountOwner === undefined) {
+        res.status(400).json({
+          status: 400,
+          message: 'Account owner does not exist'
+        });
+      }
+
+      account.id = _accountRecord["default"].length ? _accountRecord["default"].length + 1 : 1;
+
+      var accountArray = _accountRecord["default"].map(function (item) {
+        return parseInt(item.accountNumber, 10);
+      });
+
+      var newAccountNumber = Math.max.apply(Math, _toConsumableArray(accountArray));
+      newAccountNumber += 1;
+      account.accountNumber = newAccountNumber;
+
+      _accountRecord["default"].push(account);
+
+      res.status(200).json({
+        status: 200,
+        data: {
+          accountNumber: newAccountNumber,
+          firstName: accountOwner.firstName,
+          lastName: accountOwner.lastName,
+          email: accountOwner.email,
+          type: account.type,
+          openingBalance: account.balance
+        }
+      });
     }
+  }, {
+    key: "activate",
+    value: function activate(req, res) {
+      var accountStatus = req.body.status;
+      var accountNumber = req.params.accountNumber;
+      accountNumber = parseInt(accountNumber, 10);
+      console.log(accountStatus);
 
-    // if (accountStatus !== 'dormant' || accountStatus !== 'active') {
-    //   res.status(400).json({
-    //     status: 400,
-    //     message: 'Status can only be dormant or active',
-    //   });
-    //   return;
-    // }
-
-    // eslint-disable-next-line max-len
-    const foundAccount = accountRecord.find(item => item.accountNumber === accountNumber);
-
-    if (foundAccount === undefined) {
-      res.status(400).json({
-        status: 400,
-        error: 'Account not available'
-      });
-    } else {
+      if (accountStatus === undefined || accountStatus === '') {
+        res.status(400).json({
+          status: 400,
+          error: 'Status not supplied'
+        });
+        return;
+      } // if (accountStatus !== 'dormant' || accountStatus !== 'active') {
+      //   res.status(400).json({
+      //     status: 400,
+      //     message: 'Status can only be dormant or active',
+      //   });
+      //   return;
+      // }
       // eslint-disable-next-line max-len
-      foundAccount.status = foundAccount.status === accountStatus ? foundAccount.status : accountStatus;
-      res.status(200).json({
-        status: 200,
-        data: {
-          accountNumber,
-          status: foundAccount.status
-        }
+
+
+      var foundAccount = _accountRecord["default"].find(function (item) {
+        return item.accountNumber === accountNumber;
       });
+
+      if (foundAccount === undefined) {
+        res.status(400).json({
+          status: 400,
+          error: 'Account not available'
+        });
+      } else {
+        // eslint-disable-next-line max-len
+        foundAccount.status = foundAccount.status === accountStatus ? foundAccount.status : accountStatus;
+        res.status(200).json({
+          status: 200,
+          data: {
+            accountNumber: accountNumber,
+            status: foundAccount.status
+          }
+        });
+      }
     }
-  }
+  }, {
+    key: "delete",
+    value: function _delete(req, res) {
+      var accountNumber = req.params.accountNumber;
+      accountNumber = parseInt(accountNumber, 10);
 
-  delete(req, res) {
-    let { accountNumber } = req.params;
-    accountNumber = parseInt(accountNumber, 10);
-
-    const foundAccount = accountRecord.find(item => item.accountNumber === accountNumber);
-    if (foundAccount === undefined) {
-      res.status(404).json({
-        status: 404,
-        error: 'Account not available'
+      var foundAccount = _accountRecord["default"].find(function (item) {
+        return item.accountNumber === accountNumber;
       });
-    } else {
-      accountRecord.splice(foundAccount, 1);
 
-      res.status(200).json({
-        status: 200,
-        message: `Account No: ${foundAccount.accountNumber} successfully deleted`
-      });
+      if (foundAccount === undefined) {
+        res.status(404).json({
+          status: 404,
+          error: 'Account not available'
+        });
+      } else {
+        _accountRecord["default"].splice(foundAccount, 1);
+
+        res.status(200).json({
+          status: 200,
+          message: "Account No: ".concat(foundAccount.accountNumber, " successfully deleted")
+        });
+      }
     }
-  }
+  }, {
+    key: "list",
+    value: function list(req, res) {
+      var accountList = _toConsumableArray(_accountRecord["default"]);
 
-  list(req, res) {
-    const accountList = [...accountRecord];
-    if (accountList.length < 1) {
-      res.status(400).json({
-        status: 400,
-        message: 'No account available'
-      });
-    } else {
-      res.status(200).json({
-        status: 200,
-        data: {
-          accounts: accountList
-        }
-      });
+      if (accountList.length < 1) {
+        res.status(400).json({
+          status: 400,
+          message: 'No account available'
+        });
+      } else {
+        res.status(200).json({
+          status: 200,
+          data: {
+            accounts: accountList
+          }
+        });
+      }
     }
-  }
+  }, {
+    key: "listOne",
+    value: function listOne(req, res) {
+      var accountNumber = req.params.accountNumber;
 
-  listOne(req, res) {
-    const { accountNumber } = req.params;
-    const accountList = [...accountRecord];
-    const account = accountList.find(item => item.accountNumber === Number(accountNumber));
+      var accountList = _toConsumableArray(_accountRecord["default"]);
 
-    if (!account) {
-      res.status(400).json({
-        status: 400,
-        message: `Account no: ${accountNumber} not available`
+      var account = accountList.find(function (item) {
+        return item.accountNumber === Number(accountNumber);
       });
-    } else {
-      res.status(200).json({
-        status: 200,
-        data: {
-          accountDetails: account
-        }
-      });
+
+      if (!account) {
+        res.status(400).json({
+          status: 400,
+          message: "Account no: ".concat(accountNumber, " not available")
+        });
+      } else {
+        res.status(200).json({
+          status: 200,
+          data: {
+            accountDetails: account
+          }
+        });
+      }
     }
-  }
-}
+  }]);
 
-export { AccountController, accountRecord };
+  return AccountController;
+}();
+
+var _default = AccountController;
+exports["default"] = _default;

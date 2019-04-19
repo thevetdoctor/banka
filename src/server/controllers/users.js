@@ -2,19 +2,8 @@
 /* eslint-disable no-console */
 import jwt from 'jsonwebtoken';
 import User from '../models/users';
+import userRecord from '../db/userRecord';
 
-const userRecord = [{
-  id: 1,
-  email: 'dami@gmail.com',
-  firstName: 'Dami',
-  lastName: 'Akande',
-  password: '123456',
-  type: 'staff',
-  isAdmin: false,
-  sex: 'M',
-  mobile: '1234567890',
-  active: false,
-}];
 
 const validUser = (user) => {
   const validEmail = /(.+)@(.+){2,}\.(.+){2,}/.test(user.email) && user.email.trim() !== '';
@@ -31,11 +20,7 @@ const mobileRegex = /[^0-9]/;
 
 
 class UserController {
-  constructor() {
-
-  }
-
-  signup(req, res) {
+  static signup(req, res) {
     // eslint-disable-next-line object-curly-newline
     const { email, firstName, lastName, password, sex, mobile } = req.body;
 
@@ -155,7 +140,7 @@ class UserController {
   }
 
 
-  signin(req, res) {
+  static signin(req, res) {
     const { email, password } = req.body;
     const user = { email, password };
 
@@ -206,8 +191,7 @@ class UserController {
       });
     }
   }
-
 }
 
 
-export { UserController, userRecord };
+export default UserController;

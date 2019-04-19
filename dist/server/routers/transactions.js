@@ -1,8 +1,18 @@
-import express from 'express';
-import { TransactionController } from '../controllers/transactions';
+"use strict";
 
-const router = express.Router();
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports["default"] = void 0;
 
-router.post('/:accountNumber/:type', TransactionController.creDebit);
+var _express = _interopRequireDefault(require("express"));
 
-export default router;
+var _transactions = _interopRequireDefault(require("../controllers/transactions"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+var router = _express["default"].Router();
+
+router.post('/:accountNumber/:type', _transactions["default"].creDebit);
+var _default = router;
+exports["default"] = _default;

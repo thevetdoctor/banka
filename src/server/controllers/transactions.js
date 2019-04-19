@@ -2,65 +2,13 @@
 /* eslint-disable no-console */
 /* eslint-disable max-len */
 import Transaction from '../models/transactions';
-import { accountRecord } from '../controllers/accounts';
-
-
-const transactionRecord = [
-  // {
-  //   id: 1,
-  //   createdOn: new Date().toDateString(),
-  //   type: 'credit',
-  //   accountNumber: 2019030001,
-  //   cashier: 2,
-  //   amount: 2000.00,
-  //   oldBalance: 15000.05,
-  //   newBalance: 17000.05,
-  // },
-  // {
-  //   id: 2,
-  //   createdOn: new Date().toDateString(),
-  //   type: 'credit',
-  //   accountNumber: 2019030001,
-  //   cashier: 2,
-  //   amount: 2000.00,
-  //   oldBalance: 17000.05,
-  //   newBalance: 19000.05,
-  // },
-  // {
-  //   id: 3,
-  //   createdOn: new Date().toDateString(),
-  //   type: 'credit',
-  //   accountNumber: 2019030001,
-  //   cashier: 1,
-  //   amount: 2500.00,
-  //   oldBalance: 19000.05,
-  //   newBalance: 21500.05,
-  // },
-];
-
-
-const cashierRecord = [
-  {
-    id: 1,
-    firstName: 'AnalyserNode',
-    lastName: 'TreeWalker',
-  },
-  {
-    id: 2,
-    firstName: 'Analyser',
-    lastName: 'Tree',
-  },
-  {
-    id: 3,
-    firstName: 'Node',
-    lastName: 'Walker',
-  },
-];
+import accountRecord from '../db/accountRecord';
+import transactionRecord from '../db/transactionRecord';
+import cashierRecord from '../db/cashierRecord';
 
 
 class TransactionController {
-
-  creDebit(req, res) {
+  static creDebit(req, res) {
     const { amount } = req.body;
     const { accountNumber } = req.params;
     const { type } = req.params;
@@ -164,4 +112,4 @@ class TransactionController {
 }
 
 
-export { TransactionController, transactionRecord }
+export default TransactionController;

@@ -1,16 +1,22 @@
-import express from 'express';
-import { AccountController } from '../controllers/accounts';
+"use strict";
 
-const router = express.Router();
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports["default"] = void 0;
 
-router.post('/', AccountController.create);
+var _express = _interopRequireDefault(require("express"));
 
-router.patch('/:accountNumber', AccountController.activate);
+var _accounts = _interopRequireDefault(require("../controllers/accounts"));
 
-router.delete('/:accountNumber', AccountController.delete);
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-router.get('/', AccountController.list);
+var router = _express["default"].Router();
 
-router.get('/:accountNumber', AccountController.listOne);
-
-export default router;
+router.post('/', _accounts["default"].create);
+router.patch('/:accountNumber', _accounts["default"].activate);
+router["delete"]('/:accountNumber', _accounts["default"]["delete"]);
+router.get('/', _accounts["default"].list);
+router.get('/:accountNumber', _accounts["default"].listOne);
+var _default = router;
+exports["default"] = _default;
