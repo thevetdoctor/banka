@@ -1,18 +1,42 @@
+/* eslint-disable no-restricted-globals */
+/* eslint-disable max-len */
+/* eslint-disable no-shadow */
 /* eslint-disable no-console */
+import pg from 'pg';
+import config from '../config';
 import Account from '../models/accounts';
-import userRecord from '../db/userRecord';
 import accountRecord from '../db/accountRecord';
 
+const regExp = /[^0-9]/;
+const pool = new pg.Pool(config);
 
 class AccountController {
   static create(req, res) {
     const { owner, type } = req.body;
 
-    const account = new Account(owner, type);
-    console.log(account.owner);
-    console.log(account.type);
+    // console.log(owner);
+    // console.log(type);
 
-    if (account.owner === undefined || account.owner === '') {
+    if (regExp.test(owner)) {
+      res.status(400).json({
+        status: 400,
+        error: 'Invalid account owner supplied',
+      });
+      return;
+    }
+
+    // if (type !== 'current' || type !== 'savings') {
+    //   res.status(400).json({
+    //     status: 400,
+    //     error: 'Curent or Savings only',
+    //   });
+    //   return;
+    // }
+
+    const account = new Account(owner, type);
+
+
+    if (account.owner === undefined || account.owner.trim() === '') {
       res.status(400).json({
         status: 400,
         error: 'Account owner not supplied',
@@ -20,7 +44,8 @@ class AccountController {
       return;
     }
 
-    if (account.type === undefined || account.type === '') {
+
+    if (account.type === undefined || account.type.trim() === '') {
       res.status(400).json({
         status: 400,
         error: 'Account type not supplied',
@@ -28,41 +53,77 @@ class AccountController {
       return;
     }
 
-    // if (account.type !== 'current' || account.type !== 'savings') {
-    //   res.status(400).json({
-    //     status: 400,
-    //     message: 'Account type must be savings or current',
-    //   });
-    //   return;
-    // }
 
+    pool.connect((err, client, done) => {
+      if (err) {
+        console.log(err);
+      }
+      client.query('SELECT * FROM users', (err, result) => {
+        if (err) {
+          console.log(err);
+        }
+        // console.log(result.rows);
+        const accountOwner = result.rows.find(item => item.id === parseInt(account.owner, 10));
+        if (!accountOwner || accountOwner === undefined) {
+          res.status(400).json({
+            status: 400,
+            message: 'Account owner does not exist',
+          });
+          return;
+        }
 
-    const accountOwner = userRecord.find(item => item.id === parseInt(account.owner, 10));
-    if (!accountOwner || accountOwner === undefined) {
-      res.status(400).json({
-        status: 400,
-        message: 'Account owner does not exist',
+        pool.connect((err, client, done) => {
+          if (err) {
+            console.log(err);
+          }
+          client.query('SELECT * FROM accounts', (err, result) => {
+            if (err) {
+              console.log(err);
+            }
+            // console.log(result.rows);
+
+            const newArr = result.rows.map(val => val.id);
+            const accountArray = result.rows.map(item => item.accountnumber);
+            account.id = newArr.length !== 0 ? newArr.length + 1 : 1;
+            if (newArr.length === 0) {
+              account.accountNumber = 2019031111;
+            } else {
+              // console.log(newArr);
+              // console.log(accountArray);
+              let newAccountNumber = Math.max(...accountArray);
+              newAccountNumber += 1;
+              account.accountNumber = newAccountNumber;
+            }
+            pool.connect((err, client, done) => {
+              if (err) {
+                console.log(err);
+              }
+              // console.log(account);
+              client.query('INSERT INTO accounts (id, accountnumber, createdOn, owner, type, status, balance) VALUES($1, $2, $3, $4, $5, $6, $7)', [account.id, account.accountNumber, account.createdOn, account.owner, account.type, account.status, account.balance], (err, result) => {
+                if (err) {
+                  console.log(err);
+                }
+                console.log(result.rows, 'nothing');
+                console.log(accountOwner);
+                res.status(201).json({
+                  status: 201,
+                  data: {
+                    accountNumber: account.accountNumber,
+                    firstName: accountOwner.firstname,
+                    lastName: accountOwner.lastname,
+                    email: accountOwner.email,
+                    type: account.type,
+                    openingBalance: account.balance,
+                  },
+                });
+              });
+              done();
+            });
+            done();
+          });
+        });
+        done();
       });
-    }
-
-    account.id = accountRecord.length ? accountRecord.length + 1 : 1;
-    const accountArray = accountRecord.map(item => parseInt(item.accountNumber, 10));
-    let newAccountNumber = Math.max(...accountArray);
-    newAccountNumber += 1;
-    account.accountNumber = newAccountNumber;
-
-
-    accountRecord.push(account);
-    res.status(200).json({
-      status: 200,
-      data: {
-        accountNumber: newAccountNumber,
-        firstName: accountOwner.firstName,
-        lastName: accountOwner.lastName,
-        email: accountOwner.email,
-        type: account.type,
-        openingBalance: account.balance,
-      },
     });
   }
 

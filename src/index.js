@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import express from 'express';
 import bodyParser from 'body-parser';
 import path from 'path';
@@ -17,11 +18,10 @@ app.use('/api/v1/accounts', accounts);
 app.use('/api/v1/transactions', transactions);
 
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '/index.html'));
+  res.sendFile(path.join(__dirname.replace('dist', '/index.html')));
 });
 
 app.listen(port, () => {
-  // eslint-disable-next-line no-console
   console.log('server started now');
 });
 

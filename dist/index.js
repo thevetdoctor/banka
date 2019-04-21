@@ -19,6 +19,7 @@ var _transactions = _interopRequireDefault(require("./server/routers/transaction
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
+/* eslint-disable no-console */
 var app = (0, _express["default"])();
 var port = process.env.PORT || 3000;
 app.use(_bodyParser["default"].json());
@@ -29,10 +30,9 @@ app.use('/api/v1/auth/', _users["default"]);
 app.use('/api/v1/accounts', _accounts["default"]);
 app.use('/api/v1/transactions', _transactions["default"]);
 app.get('/', function (req, res) {
-  res.sendFile(_path["default"].join(__dirname, '/index.html'));
+  res.sendFile(_path["default"].join(__dirname.replace('dist', '/index.html')));
 });
 app.listen(port, function () {
-  // eslint-disable-next-line no-console
   console.log('server started now');
 });
 var _default = app;

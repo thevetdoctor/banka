@@ -5,9 +5,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = void 0;
 
-var _accounts = _interopRequireDefault(require("../models/accounts"));
+var _pg = _interopRequireDefault(require("pg"));
 
-var _userRecord = _interopRequireDefault(require("../db/userRecord"));
+var _config = _interopRequireDefault(require("../config"));
+
+var _accounts = _interopRequireDefault(require("../models/accounts"));
 
 var _accountRecord = _interopRequireDefault(require("../db/accountRecord"));
 
@@ -27,6 +29,9 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
+var regExp = /[^0-9]/;
+var pool = new _pg["default"].Pool(_config["default"]);
+
 var AccountController =
 /*#__PURE__*/
 function () {
@@ -39,12 +44,27 @@ function () {
     value: function create(req, res) {
       var _req$body = req.body,
           owner = _req$body.owner,
-          type = _req$body.type;
-      var account = new _accounts["default"](owner, type);
-      console.log(account.owner);
-      console.log(account.type);
+          type = _req$body.type; // console.log(owner);
+      // console.log(type);
 
-      if (account.owner === undefined || account.owner === '') {
+      if (regExp.test(owner)) {
+        res.status(400).json({
+          status: 400,
+          error: 'Invalid account owner supplied'
+        });
+        return;
+      } // if (type !== 'current' || type !== 'savings') {
+      //   res.status(400).json({
+      //     status: 400,
+      //     error: 'Curent or Savings only',
+      //   });
+      //   return;
+      // }
+
+
+      var account = new _accounts["default"](owner, type);
+
+      if (account.owner === undefined || account.owner.trim() === '') {
         res.status(400).json({
           status: 400,
           error: 'Account owner not supplied'
@@ -52,54 +72,98 @@ function () {
         return;
       }
 
-      if (account.type === undefined || account.type === '') {
+      if (account.type === undefined || account.type.trim() === '') {
         res.status(400).json({
           status: 400,
           error: 'Account type not supplied'
         });
         return;
-      } // if (account.type !== 'current' || account.type !== 'savings') {
-      //   res.status(400).json({
-      //     status: 400,
-      //     message: 'Account type must be savings or current',
-      //   });
-      //   return;
-      // }
-
-
-      var accountOwner = _userRecord["default"].find(function (item) {
-        return item.id === parseInt(account.owner, 10);
-      });
-
-      if (!accountOwner || accountOwner === undefined) {
-        res.status(400).json({
-          status: 400,
-          message: 'Account owner does not exist'
-        });
       }
 
-      account.id = _accountRecord["default"].length ? _accountRecord["default"].length + 1 : 1;
-
-      var accountArray = _accountRecord["default"].map(function (item) {
-        return parseInt(item.accountNumber, 10);
-      });
-
-      var newAccountNumber = Math.max.apply(Math, _toConsumableArray(accountArray));
-      newAccountNumber += 1;
-      account.accountNumber = newAccountNumber;
-
-      _accountRecord["default"].push(account);
-
-      res.status(200).json({
-        status: 200,
-        data: {
-          accountNumber: newAccountNumber,
-          firstName: accountOwner.firstName,
-          lastName: accountOwner.lastName,
-          email: accountOwner.email,
-          type: account.type,
-          openingBalance: account.balance
+      pool.connect(function (err, client, done) {
+        if (err) {
+          console.log(err);
         }
+
+        client.query('SELECT * FROM users', function (err, result) {
+          if (err) {
+            console.log(err);
+          } // console.log(result.rows);
+
+
+          var accountOwner = result.rows.find(function (item) {
+            return item.id === parseInt(account.owner, 10);
+          });
+
+          if (!accountOwner || accountOwner === undefined) {
+            res.status(400).json({
+              status: 400,
+              message: 'Account owner does not exist'
+            });
+            return;
+          }
+
+          pool.connect(function (err, client, done) {
+            if (err) {
+              console.log(err);
+            }
+
+            client.query('SELECT * FROM accounts', function (err, result) {
+              if (err) {
+                console.log(err);
+              } // console.log(result.rows);
+
+
+              var newArr = result.rows.map(function (val) {
+                return val.id;
+              });
+              var accountArray = result.rows.map(function (item) {
+                return item.accountnumber;
+              });
+              account.id = newArr.length !== 0 ? newArr.length + 1 : 1;
+
+              if (newArr.length === 0) {
+                account.accountNumber = 2019031111;
+              } else {
+                // console.log(newArr);
+                // console.log(accountArray);
+                var newAccountNumber = Math.max.apply(Math, _toConsumableArray(accountArray));
+                newAccountNumber += 1;
+                account.accountNumber = newAccountNumber;
+              }
+
+              pool.connect(function (err, client, done) {
+                if (err) {
+                  console.log(err);
+                } // console.log(account);
+
+
+                client.query('INSERT INTO accounts (id, accountnumber, createdOn, owner, type, status, balance) VALUES($1, $2, $3, $4, $5, $6, $7)', [account.id, account.accountNumber, account.createdOn, account.owner, account.type, account.status, account.balance], function (err, result) {
+                  if (err) {
+                    console.log(err);
+                  }
+
+                  console.log(result.rows, 'nothing');
+                  console.log(accountOwner);
+                  res.status(201).json({
+                    status: 201,
+                    data: {
+                      accountNumber: account.accountNumber,
+                      firstName: accountOwner.firstname,
+                      lastName: accountOwner.lastname,
+                      email: accountOwner.email,
+                      type: account.type,
+                      openingBalance: account.balance
+                    }
+                  });
+                });
+                done();
+              });
+              done();
+            });
+          });
+          done();
+        });
       });
     }
   }, {

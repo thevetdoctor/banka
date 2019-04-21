@@ -5,11 +5,15 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = void 0;
 
+var _pg = _interopRequireDefault(require("pg"));
+
 var _jsonwebtoken = _interopRequireDefault(require("jsonwebtoken"));
 
-var _users = _interopRequireDefault(require("../models/users"));
+var _bcrypt = _interopRequireDefault(require("bcrypt"));
 
-var _userRecord = _interopRequireDefault(require("../db/userRecord"));
+var _config = _interopRequireDefault(require("../config"));
+
+var _users = _interopRequireDefault(require("../models/users"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
@@ -18,6 +22,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var pool = new _pg["default"].Pool(_config["default"]);
 
 var validUser = function validUser(user) {
   var validEmail = /(.+)@(.+){2,}\.(.+){2,}/.test(user.email) && user.email.trim() !== '';
@@ -50,11 +56,8 @@ function () {
           password = _req$body.password,
           sex = _req$body.sex,
           mobile = _req$body.mobile;
-      var user = new _users["default"](email, firstName, lastName, password, sex, mobile); // console.log(user.email);
-      // const checkUser = Object.keys(user);
-      // for (const item in user) {
-      // console.log(item);
-      // }
+      var user = new _users["default"](email, firstName, lastName, password, sex, mobile);
+      console.log(user);
 
       if (user.firstName === undefined || user.firstName.trim() === '') {
         res.status(400).json({
@@ -72,7 +75,7 @@ function () {
         return;
       }
 
-      if (user.email === undefined || user.email === '') {
+      if (user.email === undefined || user.email.trim() === '') {
         res.status(400).json({
           status: 400,
           error: 'Email not supplied'
@@ -80,7 +83,7 @@ function () {
         return;
       }
 
-      if (user.password === undefined || user.password === '') {
+      if (user.password === undefined || user.password.trim() === '') {
         res.status(400).json({
           status: 400,
           error: 'Password not supplied'
@@ -88,7 +91,7 @@ function () {
         return;
       }
 
-      if (user.sex === undefined || user.sex === '') {
+      if (user.sex === undefined || user.sex.trim() === '') {
         res.status(400).json({
           status: 400,
           error: 'Sex not supplied'
@@ -103,7 +106,7 @@ function () {
       // }
 
 
-      if (user.mobile === undefined || user.mobile === '') {
+      if (user.mobile === undefined || user.mobile.trim() === '') {
         res.status(400).json({
           status: 400,
           error: 'Mobile not supplied'
@@ -131,39 +134,72 @@ function () {
 
 
       if (validUser(user)) {
-        var userEmails = _userRecord["default"].map(function (value) {
-          return value.email;
-        }); //   Validate if email is already registered
+        pool.connect(function (err, client, done) {
+          if (err) {
+            console.log(err);
+          }
 
-
-        if (userEmails.includes(user.email)) {
-          res.status(400).json({
-            status: 400,
-            error: 'Email already used'
-          });
-        } else {
-          // Assign user ID
-          user.id = _userRecord["default"].length ? _userRecord["default"].length + 1 : 1; // save user in User Record
-
-          var token = _jsonwebtoken["default"].sign({
-            user: user
-          }, 'secretKey', {
-            expiresIn: '1min'
-          });
-
-          _userRecord["default"].push(user);
-
-          res.status(201).json({
-            status: 201,
-            data: {
-              token: token,
-              id: user.id,
-              firstName: user.firstName,
-              lastName: user.lastName,
-              email: user.email
+          client.query('SELECT email FROM users', function (err, result) {
+            if (err) {
+              console.log(err);
             }
+
+            console.log(result.rows);
+            var newArr = result.rows.map(function (val) {
+              return val.email.trim();
+            });
+            console.log(newArr);
+
+            if (newArr.includes(user.email)) {
+              res.status(400).json({
+                status: 400,
+                error: 'Email already used'
+              });
+            } else {
+              // Assign user ID
+              user.id = newArr.length !== 0 ? newArr.length + 1 : 1; // save user in User Record
+
+              var token = _jsonwebtoken["default"].sign({
+                user: user
+              }, 'secretKey', {
+                expiresIn: '1min'
+              });
+
+              console.log('New email being registered'); // encrypt the valid password with BCRYPT
+
+              _bcrypt["default"].hash(user.password, 10).then(function (hash) {
+                // connect to the db and save credentials
+                pool.connect(function (err, client, done) {
+                  if (err) {
+                    return console.error('error fetching ....', err);
+                  }
+
+                  client.query('INSERT INTO users (id, email, firstName, lastName, password, hash, type, isAdmin, sex, mobile, active, createdDate) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)', [user.id, user.email, user.firstName, user.lastName, user.password, hash, user.type, user.isAdmin, user.sex, user.mobile, user.active, user.createdDate], function (err, result) {
+                    if (err) {
+                      return console.error('error running query');
+                    }
+
+                    console.log(result.rows);
+                    console.log('New User created');
+                    res.status(201).json({
+                      status: 201,
+                      data: {
+                        token: token,
+                        id: user.id,
+                        firstName: user.firstName,
+                        lastName: user.lastName,
+                        email: user.email
+                      }
+                    });
+                  });
+                  done();
+                });
+              });
+            }
+
+            done();
           });
-        }
+        }); // }
       } else {
         // send an error
         res.status(400).json({
@@ -182,6 +218,7 @@ function () {
         email: email,
         password: password
       };
+      var position = 0;
 
       if (user.email === undefined || user.email === '') {
         res.status(400).json({
@@ -200,43 +237,72 @@ function () {
       } // Query User Record for credentials
 
 
-      var newUser = _userRecord["default"].find(function (item) {
-        return item.email === user.email;
-      }); // console.log(newUser);
-
-
-      if (newUser) {
-        if (newUser.password === user.password) {
-          // delete newUser.password;
-          var token = _jsonwebtoken["default"].sign({
-            newUser: newUser
-          }, 'secretKey', {
-            expiresIn: '1min'
-          });
-
-          res.status(200).json({
-            status: 200,
-            data: {
-              token: token,
-              id: newUser.id,
-              firstName: newUser.firstName,
-              lastName: newUser.lastName,
-              email: newUser.email
-            },
-            newUser: newUser
-          });
-        } else {
-          res.status(400).json({
-            status: 400,
-            error: 'Invalid password'
-          });
+      pool.connect(function (err, client, done) {
+        if (err) {
+          console.log(err);
         }
-      } else {
-        res.status(400).json({
-          status: 400,
-          error: 'Invalid email'
+
+        client.query('SELECT id, email, firstName, lastName, password, hash FROM users', function (err, result) {
+          if (err) {
+            console.log(err);
+          }
+
+          console.log(result.rows);
+          var contain = result.rows.map(function (val) {
+            return val.email;
+          }).map(function (val) {
+            return val.trim();
+          });
+
+          if (contain.includes(user.email)) {
+            position = contain.indexOf(user.email);
+          }
+
+          console.log(position);
+          console.log(result.rows[position].email);
+          var newUser = result.rows[position];
+          console.log(newUser);
+
+          if (user.email === newUser.email.trim()) {
+            if (user.password === newUser.password.trim()) {
+              // bcrypt.compare(user.password, newUser.hash)
+              // .then((result) => {
+              // if (result) {
+              delete newUser.password;
+
+              var token = _jsonwebtoken["default"].sign({
+                newUser: newUser
+              }, 'secretKey', {
+                expiresIn: '5min'
+              });
+
+              res.status(200).json({
+                status: 200,
+                data: {
+                  token: token,
+                  id: newUser.id,
+                  firstName: newUser.firstname,
+                  lastName: newUser.lastname,
+                  email: newUser.email
+                }
+              }); // }
+              // });
+            } else {
+              res.status(400).json({
+                status: 400,
+                error: 'Invalid password'
+              });
+            }
+          } else {
+            res.status(400).json({
+              status: 400,
+              error: 'Invalid email'
+            });
+          }
+
+          done();
         });
-      }
+      });
     }
   }]);
 
