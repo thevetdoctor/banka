@@ -13,6 +13,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "d
 
 var router = _express["default"].Router();
 
-router.post('/:accountNumber/:type', _transactions["default"].creDebit);
+router.post('/:accountNumber/:type', _transactions["default"].creDebit); // router.get('')
+
 var _default = router;
 exports["default"] = _default;

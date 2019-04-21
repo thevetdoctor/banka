@@ -18,5 +18,6 @@ router.patch('/:accountNumber', _accounts["default"].activate);
 router["delete"]('/:accountNumber', _accounts["default"]["delete"]);
 router.get('/', _accounts["default"].list);
 router.get('/:accountNumber', _accounts["default"].listOne);
+router.get('/:accountNumber/:transactions', _accounts["default"].getTransactions);
 var _default = router;
 exports["default"] = _default;
