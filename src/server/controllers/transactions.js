@@ -7,7 +7,7 @@ import config from '../config';
 import Transaction from '../models/transactions';
 import cashierRecord from '../db/cashierRecord';
 
-
+const regExp = /[^0-9]/;
 const pool = new pg.Pool(config);
 
 class TransactionController {
@@ -213,6 +213,42 @@ class TransactionController {
         res.status(200).json({
           status: 200,
           data: [],
+        });
+      });
+      done();
+    });
+  }
+
+  static getTransaction(req, res) {
+    const { transactionId } = req.params;
+
+    if (regExp.test(transactionId)) {
+      res.status(400).json({
+        status: 400,
+        error: 'Invalid transaction ID',
+      });
+      return;
+    }
+
+    pool.connect((err, client, done) => {
+      if (err) {
+        console.log(err);
+      }
+      client.query('SELECT * FROM transactions WHERE id = $1', [transactionId], (err, result) => {
+        if (err) {
+          console.log(err);
+        }
+        console.log(result.rows);
+        if (result.rows.length < 1) {
+          res.status(400).json({
+            status: 400,
+            error: 'Transaction not available',
+          });
+          return;
+        }
+        res.status(200).json({
+          status: 200,
+          data: result.rows[0],
         });
       });
       done();

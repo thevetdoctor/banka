@@ -21,6 +21,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
+var regExp = /[^0-9]/;
 var pool = new _pg["default"].Pool(_config["default"]);
 
 var TransactionController =
@@ -243,6 +244,47 @@ function () {
           res.status(200).json({
             status: 200,
             data: []
+          });
+        });
+        done();
+      });
+    }
+  }, {
+    key: "getTransaction",
+    value: function getTransaction(req, res) {
+      var transactionId = req.params.transactionId;
+
+      if (regExp.test(transactionId)) {
+        res.status(400).json({
+          status: 400,
+          error: 'Invalid transaction ID'
+        });
+        return;
+      }
+
+      pool.connect(function (err, client, done) {
+        if (err) {
+          console.log(err);
+        }
+
+        client.query('SELECT * FROM transactions WHERE id = $1', [transactionId], function (err, result) {
+          if (err) {
+            console.log(err);
+          }
+
+          console.log(result.rows);
+
+          if (result.rows.length < 1) {
+            res.status(400).json({
+              status: 400,
+              error: 'Transaction not available'
+            });
+            return;
+          }
+
+          res.status(200).json({
+            status: 200,
+            data: result.rows[0]
           });
         });
         done();
