@@ -20,5 +20,6 @@ router.get('/', _accounts["default"].listAllAccounts);
 router.get('/:accountNumber', _accounts["default"].listOneAccount);
 router.get('/:accountNumber/:transactions', _accounts["default"].getTransactions);
 router.get('/user/:userEmailAddress/:accounts', _accounts["default"].getUserBankAccounts);
+router.get('/:accounts?status=active', _accounts["default"].getActiveAccounts);
 var _default = router;
 exports["default"] = _default;

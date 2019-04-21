@@ -281,45 +281,85 @@ function () {
     value: function listOneAccount(req, res) {
       var accountNumber = req.params.accountNumber;
 
-      if (regExp.test(accountNumber)) {
-        res.status(400).json({
-          status: 400,
-          error: 'Invalid account number'
-        });
-        return;
-      }
+      if (req.query.status === undefined) {
+        console.log('no status');
 
-      pool.connect(function (err, client, done) {
-        if (err) {
-          console.log(err);
+        if (regExp.test(accountNumber)) {
+          res.status(400).json({
+            status: 400,
+            error: 'Invalid account number'
+          });
+          return;
         }
 
-        client.query('SELECT * FROM accounts', function (err, result) {
+        pool.connect(function (err, client, done) {
           if (err) {
             console.log(err);
           }
 
-          console.log(result.rows);
-          var account = result.rows.find(function (item) {
-            return item.accountnumber === Number(accountNumber);
-          });
+          client.query('SELECT * FROM accounts', function (err, result) {
+            if (err) {
+              console.log(err);
+            }
 
-          if (!account) {
-            res.status(400).json({
-              status: 400,
-              error: "Account no: ".concat(accountNumber, " not available")
+            console.log(result.rows);
+            var account = result.rows.find(function (item) {
+              return item.accountnumber === Number(accountNumber);
             });
-          } else {
-            res.status(200).json({
-              status: 200,
-              data: {
-                accountDetails: account
+
+            if (!account) {
+              res.status(400).json({
+                status: 400,
+                error: "Account no: ".concat(accountNumber, " not available")
+              });
+            } else {
+              res.status(200).json({
+                status: 200,
+                data: {
+                  accountDetails: account
+                }
+              });
+            }
+          });
+          done();
+        });
+      } else {
+        console.log('status available');
+
+        if (req.query.status === 'active') {
+          pool.connect(function (err, client, done) {
+            if (err) {
+              console.log(err);
+            }
+
+            client.query('SELECT * FROM accounts WHERE status = $1', [req.query.status], function (err, result) {
+              if (err) {
+                console.log(err);
+              }
+
+              console.log(result.rows);
+
+              if (result.rows.length < 1) {
+                res.status(400).json({
+                  status: 400,
+                  error: 'No ACTIVE BANK ACCOUNTS available'
+                });
+              } else {
+                res.status(200).json({
+                  status: 200,
+                  data: result.rows
+                });
               }
             });
-          }
-        });
-        done();
-      });
+            done();
+          });
+        } else {
+          res.status(400).json({
+            status: 400,
+            error: 'Query should be spelt \'active\''
+          });
+        }
+      }
     }
   }, {
     key: "getTransactions",
@@ -428,6 +468,30 @@ function () {
           res.status(200).json({
             status: 200,
             accounts: userAccounts
+          });
+        });
+        done();
+      });
+    }
+  }, {
+    key: "getActiveAccounts",
+    value: function getActiveAccounts(req, res) {
+      var status = req.query.status;
+      console.log(req.query);
+      pool.connect(function (err, client, done) {
+        if (err) {
+          console.log(err);
+        }
+
+        client.query('SELECT * FROM accounts WHERE status = $1', [status], function (err, result) {
+          if (err) {
+            console.log(err);
+          }
+
+          console.log(result.rows);
+          res.status(200).json({
+            status: 200,
+            data: result.rows
           });
         });
         done();
