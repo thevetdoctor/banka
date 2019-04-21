@@ -12,7 +12,7 @@ router.delete('/:accountNumber', AccountController.delete);
 
 router.get('/', AccountController.listAllAccounts);
 
-router.get('/:accountNumber', AccountController.listOneAccount);
+router.get('/:accountNumber', AccountController.listAccount);
 
 router.get('/:accountNumber/:transactions', AccountController.getTransactions);
 
