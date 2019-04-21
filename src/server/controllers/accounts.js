@@ -196,20 +196,40 @@ class AccountController {
 
 
   static listAllAccounts(req, res) {
-    const accountList = [...accountRecord];
-    if (accountList.length < 1) {
-      res.status(400).json({
-        status: 400,
-        message: 'No account available',
+    // const accountList = [...accountRecord];
+    pool.connect((err, client, done) => {
+      if (err) {
+        console.log(err);
+      }
+      client.query('SELECT * FROM accounts INNER JOIN users ON accounts.owner = users.id', (err, result) => {
+        if (err) {
+          console.log(err);
+        }
+        console.log(result.rows);
+        const newAccountArrray = result.rows.map(item => (
+          {
+            createdOn: item.createdon,
+            accountNumber: item.accountnumber,
+            ownerEmail: item.email,
+            type: item.type,
+            status: item.status,
+            balance: item.balance,
+          }
+        ));
+        if (result.rows.length < 1) {
+          res.status(400).json({
+            status: 400,
+            error: 'No account available',
+          });
+        } else {
+          res.status(200).json({
+            status: 200,
+            data: newAccountArrray,
+          });
+        }
       });
-    } else {
-      res.status(200).json({
-        status: 200,
-        data: {
-          accounts: accountList,
-        },
-      });
-    }
+      done();
+    });
   }
 
 

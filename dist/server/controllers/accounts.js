@@ -237,21 +237,43 @@ function () {
   }, {
     key: "listAllAccounts",
     value: function listAllAccounts(req, res) {
-      var accountList = _toConsumableArray(accountRecord);
+      // const accountList = [...accountRecord];
+      pool.connect(function (err, client, done) {
+        if (err) {
+          console.log(err);
+        }
 
-      if (accountList.length < 1) {
-        res.status(400).json({
-          status: 400,
-          message: 'No account available'
-        });
-      } else {
-        res.status(200).json({
-          status: 200,
-          data: {
-            accounts: accountList
+        client.query('SELECT * FROM accounts INNER JOIN users ON accounts.owner = users.id', function (err, result) {
+          if (err) {
+            console.log(err);
+          }
+
+          console.log(result.rows);
+          var newAccountArrray = result.rows.map(function (item) {
+            return {
+              createdOn: item.createdon,
+              accountNumber: item.accountnumber,
+              ownerEmail: item.email,
+              type: item.type,
+              status: item.status,
+              balance: item.balance
+            };
+          });
+
+          if (result.rows.length < 1) {
+            res.status(400).json({
+              status: 400,
+              error: 'No account available'
+            });
+          } else {
+            res.status(200).json({
+              status: 200,
+              data: newAccountArrray
+            });
           }
         });
-      }
+        done();
+      });
     }
   }, {
     key: "listOneAccount",
