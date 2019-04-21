@@ -5,7 +5,6 @@
 import pg from 'pg';
 import config from '../config';
 import Account from '../models/accounts';
-import accountRecord from '../db/accountRecord';
 
 const regExp = /[^0-9]/;
 const pool = new pg.Pool(config);
@@ -196,7 +195,7 @@ class AccountController {
   }
 
 
-  static list(req, res) {
+  static listAllAccounts(req, res) {
     const accountList = [...accountRecord];
     if (accountList.length < 1) {
       res.status(400).json({
@@ -214,25 +213,46 @@ class AccountController {
   }
 
 
-  static listOne(req, res) {
+  static listOneAccount(req, res) {
     const { accountNumber } = req.params;
-    const accountList = [...accountRecord];
-    const account = accountList.find(item => item.accountNumber === Number(accountNumber));
 
-    if (!account) {
+    if (regExp.test(accountNumber)) {
       res.status(400).json({
         status: 400,
-        message: `Account no: ${accountNumber} not available`,
+        error: 'Invalid account number',
       });
-    } else {
-      res.status(200).json({
-        status: 200,
-        data: {
-          accountDetails: account,
-        },
-      });
+      return;
     }
+
+    pool.connect((err, client, done) => {
+      if (err) {
+        console.log(err);
+      }
+      client.query('SELECT * FROM accounts', (err, result) => {
+        if (err) {
+          console.log(err);
+        }
+        console.log(result.rows);
+        const account = result.rows.find(item => item.accountnumber === Number(accountNumber));
+
+        if (!account) {
+          res.status(400).json({
+            status: 400,
+            error: `Account no: ${accountNumber} not available`,
+          });
+        } else {
+          res.status(200).json({
+            status: 200,
+            data: {
+              accountDetails: account,
+            },
+          });
+        }
+      });
+      done();
+    });
   }
+
 
   static getTransactions(req, res) {
     const { accountNumber } = req.params;

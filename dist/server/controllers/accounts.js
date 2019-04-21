@@ -11,8 +11,6 @@ var _config = _interopRequireDefault(require("../config"));
 
 var _accounts = _interopRequireDefault(require("../models/accounts"));
 
-var _accountRecord = _interopRequireDefault(require("../db/accountRecord"));
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
@@ -193,7 +191,7 @@ function () {
       // eslint-disable-next-line max-len
 
 
-      var foundAccount = _accountRecord["default"].find(function (item) {
+      var foundAccount = accountRecord.find(function (item) {
         return item.accountNumber === accountNumber;
       });
 
@@ -219,8 +217,7 @@ function () {
     value: function _delete(req, res) {
       var accountNumber = req.params.accountNumber;
       accountNumber = parseInt(accountNumber, 10);
-
-      var foundAccount = _accountRecord["default"].find(function (item) {
+      var foundAccount = accountRecord.find(function (item) {
         return item.accountNumber === accountNumber;
       });
 
@@ -230,8 +227,7 @@ function () {
           error: 'Account not available'
         });
       } else {
-        _accountRecord["default"].splice(foundAccount, 1);
-
+        accountRecord.splice(foundAccount, 1);
         res.status(200).json({
           status: 200,
           message: "Account No: ".concat(foundAccount.accountNumber, " successfully deleted")
@@ -239,9 +235,9 @@ function () {
       }
     }
   }, {
-    key: "list",
-    value: function list(req, res) {
-      var accountList = _toConsumableArray(_accountRecord["default"]);
+    key: "listAllAccounts",
+    value: function listAllAccounts(req, res) {
+      var accountList = _toConsumableArray(accountRecord);
 
       if (accountList.length < 1) {
         res.status(400).json({
@@ -258,29 +254,49 @@ function () {
       }
     }
   }, {
-    key: "listOne",
-    value: function listOne(req, res) {
+    key: "listOneAccount",
+    value: function listOneAccount(req, res) {
       var accountNumber = req.params.accountNumber;
 
-      var accountList = _toConsumableArray(_accountRecord["default"]);
-
-      var account = accountList.find(function (item) {
-        return item.accountNumber === Number(accountNumber);
-      });
-
-      if (!account) {
+      if (regExp.test(accountNumber)) {
         res.status(400).json({
           status: 400,
-          message: "Account no: ".concat(accountNumber, " not available")
+          error: 'Invalid account number'
         });
-      } else {
-        res.status(200).json({
-          status: 200,
-          data: {
-            accountDetails: account
+        return;
+      }
+
+      pool.connect(function (err, client, done) {
+        if (err) {
+          console.log(err);
+        }
+
+        client.query('SELECT * FROM accounts', function (err, result) {
+          if (err) {
+            console.log(err);
+          }
+
+          console.log(result.rows);
+          var account = result.rows.find(function (item) {
+            return item.accountnumber === Number(accountNumber);
+          });
+
+          if (!account) {
+            res.status(400).json({
+              status: 400,
+              error: "Account no: ".concat(accountNumber, " not available")
+            });
+          } else {
+            res.status(200).json({
+              status: 200,
+              data: {
+                accountDetails: account
+              }
+            });
           }
         });
-      }
+        done();
+      });
     }
   }, {
     key: "getTransactions",
