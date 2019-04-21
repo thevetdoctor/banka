@@ -234,7 +234,7 @@ class AccountController {
   }
 
 
-  static listOneAccount(req, res) {
+  static listAccount(req, res) {
     const { accountNumber } = req.params;
 
     if (req.query.status === undefined) {
@@ -288,23 +288,47 @@ class AccountController {
             }
             console.log(result.rows);
             if (result.rows.length < 1) {
-              res.status(400).json({
-                status: 400,
+              res.status(204).json({
+                status: 204,
                 error: 'No ACTIVE BANK ACCOUNTS available',
               });
-            } else {
-              res.status(200).json({
-                status: 200,
-                data: result.rows,
-              });
+              return;
             }
+            res.status(200).json({
+              status: 200,
+              data: result.rows,
+            });
+          });
+          done();
+        });
+      } else if (req.query.status === 'dormant') {
+        pool.connect((err, client, done) => {
+          if (err) {
+            console.log(err);
+          }
+          client.query('SELECT * FROM accounts WHERE status = $1', [req.query.status], (err, result) => {
+            if (err) {
+              console.log(err);
+            }
+            console.log(result.rows);
+            if (result.rows.length < 1) {
+              res.status(204).json({
+                status: 204,
+                error: 'No DORMANT BANK ACCOUNTS available',
+              });
+              return;
+            }
+            res.status(200).json({
+              status: 200,
+              data: result.rows,
+            });
           });
           done();
         });
       } else {
         res.status(400).json({
           status: 400,
-          error: 'Query should be spelt \'active\'',
+          error: 'Query should be spelt \'active\' OR \'dormant\'',
         });
       }
     }

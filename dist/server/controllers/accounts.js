@@ -277,8 +277,8 @@ function () {
       });
     }
   }, {
-    key: "listOneAccount",
-    value: function listOneAccount(req, res) {
+    key: "listAccount",
+    value: function listAccount(req, res) {
       var accountNumber = req.params.accountNumber;
 
       if (req.query.status === undefined) {
@@ -340,23 +340,52 @@ function () {
               console.log(result.rows);
 
               if (result.rows.length < 1) {
-                res.status(400).json({
-                  status: 400,
+                res.status(204).json({
+                  status: 204,
                   error: 'No ACTIVE BANK ACCOUNTS available'
                 });
-              } else {
-                res.status(200).json({
-                  status: 200,
-                  data: result.rows
-                });
+                return;
               }
+
+              res.status(200).json({
+                status: 200,
+                data: result.rows
+              });
+            });
+            done();
+          });
+        } else if (req.query.status === 'dormant') {
+          pool.connect(function (err, client, done) {
+            if (err) {
+              console.log(err);
+            }
+
+            client.query('SELECT * FROM accounts WHERE status = $1', [req.query.status], function (err, result) {
+              if (err) {
+                console.log(err);
+              }
+
+              console.log(result.rows);
+
+              if (result.rows.length < 1) {
+                res.status(204).json({
+                  status: 204,
+                  error: 'No DORMANT BANK ACCOUNTS available'
+                });
+                return;
+              }
+
+              res.status(200).json({
+                status: 200,
+                data: result.rows
+              });
             });
             done();
           });
         } else {
           res.status(400).json({
             status: 400,
-            error: 'Query should be spelt \'active\''
+            error: 'Query should be spelt \'active\' OR \'dormant\''
           });
         }
       }
@@ -472,31 +501,27 @@ function () {
         });
         done();
       });
-    }
-  }, {
-    key: "getActiveAccounts",
-    value: function getActiveAccounts(req, res) {
-      var status = req.query.status;
-      console.log(req.query);
-      pool.connect(function (err, client, done) {
-        if (err) {
-          console.log(err);
-        }
+    } // static getActiveAccounts(req, res) {
+    //   const { status } = req.query;
+    //   console.log(req.query);
+    //   pool.connect((err, client, done) => {
+    //     if (err) {
+    //       console.log(err);
+    //     }
+    //     client.query('SELECT * FROM accounts WHERE status = $1', [status], (err, result) => {
+    //       if (err) {
+    //         console.log(err);
+    //       }
+    //       console.log(result.rows);
+    //       res.status(200).json({
+    //         status: 200,
+    //         data: result.rows,
+    //       });
+    //     });
+    //     done();
+    //   });
+    // }
 
-        client.query('SELECT * FROM accounts WHERE status = $1', [status], function (err, result) {
-          if (err) {
-            console.log(err);
-          }
-
-          console.log(result.rows);
-          res.status(200).json({
-            status: 200,
-            data: result.rows
-          });
-        });
-        done();
-      });
-    }
   }]);
 
   return AccountController;
