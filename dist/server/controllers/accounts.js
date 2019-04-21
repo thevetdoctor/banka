@@ -28,6 +28,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
 var regExp = /[^0-9]/;
+var validEmail = /(.+)@(.+){2,}\.(.+){2,}/;
 var pool = new _pg["default"].Pool(_config["default"]);
 
 var AccountController =
@@ -375,6 +376,61 @@ function () {
           });
           done();
         });
+      });
+    }
+  }, {
+    key: "getUserBankAccounts",
+    value: function getUserBankAccounts(req, res) {
+      var userEmailAddress = req.params.userEmailAddress;
+      var accounts = req.params.accounts;
+      console.log(req.params);
+      console.log(userEmailAddress, accounts);
+
+      if (accounts !== 'accounts') {
+        res.status(400).json({
+          status: 400,
+          error: 'Params must be user-email-address/accounts'
+        });
+        return;
+      }
+
+      if (!validEmail.test(userEmailAddress)) {
+        res.status(400).json({
+          status: 400,
+          error: 'Invalid Email'
+        });
+        return;
+      }
+
+      pool.connect(function (err, client, done) {
+        if (err) {
+          console.log(err);
+        }
+
+        client.query('SELECT * FROM users INNER JOIN accounts ON users.id = accounts.owner', function (err, result) {
+          if (err) {
+            console.log(err);
+          }
+
+          console.log(result.rows);
+          var userAccounts = result.rows.filter(function (item) {
+            return item.email === userEmailAddress;
+          });
+
+          if (userAccounts.length < 1) {
+            res.status(400).json({
+              status: 400,
+              error: "User with email: '".concat(userEmailAddress, "' not found")
+            });
+            return;
+          }
+
+          res.status(200).json({
+            status: 200,
+            accounts: userAccounts
+          });
+        });
+        done();
       });
     }
   }]);

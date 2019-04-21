@@ -7,6 +7,7 @@ import config from '../config';
 import Account from '../models/accounts';
 
 const regExp = /[^0-9]/;
+const validEmail = /(.+)@(.+){2,}\.(.+){2,}/;
 const pool = new pg.Pool(config);
 
 class AccountController {
@@ -320,6 +321,54 @@ class AccountController {
         });
         done();
       });
+    });
+  }
+
+  static getUserBankAccounts(req, res) {
+    const { userEmailAddress } = req.params;
+    const { accounts } = req.params;
+
+    console.log(req.params);
+    console.log(userEmailAddress, accounts);
+    if (accounts !== 'accounts') {
+      res.status(400).json({
+        status: 400,
+        error: 'Params must be user-email-address/accounts',
+      });
+      return;
+    }
+
+    if (!validEmail.test(userEmailAddress)) {
+      res.status(400).json({
+        status: 400,
+        error: 'Invalid Email',
+      });
+      return;
+    }
+
+    pool.connect((err, client, done) => {
+      if (err) {
+        console.log(err);
+      }
+      client.query('SELECT * FROM users INNER JOIN accounts ON users.id = accounts.owner', (err, result) => {
+        if (err) {
+          console.log(err);
+        }
+        console.log(result.rows);
+        const userAccounts = result.rows.filter(item => item.email === userEmailAddress);
+        if (userAccounts.length < 1) {
+          res.status(400).json({
+            status: 400,
+            error: `User with email: '${userEmailAddress}' not found`,
+          });
+          return;
+        }
+        res.status(200).json({
+          status: 200,
+          accounts: userAccounts,
+        });
+      });
+      done();
     });
   }
 }
