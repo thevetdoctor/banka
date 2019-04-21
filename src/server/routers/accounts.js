@@ -14,5 +14,7 @@ router.get('/', AccountController.list);
 
 router.get('/:accountNumber', AccountController.listOne);
 
+router.get('/:accountNumber/:transactions', AccountController.getTransactions);
+
 
 export default router;

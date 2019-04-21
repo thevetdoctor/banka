@@ -6,5 +6,7 @@ const router = express.Router();
 
 router.post('/:accountNumber/:type', TransactionController.creDebit);
 
+// router.get('')
+
 
 export default router;

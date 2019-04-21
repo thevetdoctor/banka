@@ -1,11 +1,14 @@
-/* eslint-disable no-lonely-if */
-/* eslint-disable no-console */
+/* eslint-disable no-unused-vars */
 /* eslint-disable max-len */
+/* eslint-disable no-console */
+/* eslint-disable no-shadow */
+import pg from 'pg';
+import config from '../config';
 import Transaction from '../models/transactions';
-import accountRecord from '../db/accountRecord';
-import transactionRecord from '../db/transactionRecord';
 import cashierRecord from '../db/cashierRecord';
 
+
+const pool = new pg.Pool(config);
 
 class TransactionController {
   static creDebit(req, res) {
@@ -42,72 +45,178 @@ class TransactionController {
     } else {
     // Run this block for 'valid' transaction type
       // Search Account Records for specific bank account
-      const foundAccount = accountRecord.find(item => item.accountNumber === parseInt(tranx.accountNumber, 10));
-      // console.log(foundAccount);
-      // console.log(tranx.type);
-      if (!foundAccount && foundAccount === undefined) {
-        res.status(401).json({
-          status: 401,
-          error: 'Account not available',
-        });
-      } else {
-        // Assign a transaction ID
-        tranx.id = transactionRecord.length ? transactionRecord.length + 1 : 1;
-
-        // Then, acquire a unique cashier identity
-        tranx.cashier = Math.ceil(Math.random() * 3);
-        const foundCashier = cashierRecord.find(item => item.id === tranx.cashier);
-
-        // Run this block for credit transaction
-        if (tranx.type === 'credit') {
-          tranx.oldBalance = Number(foundAccount.balance);
-          tranx.newBalance = tranx.oldBalance + Number(tranx.amount);
-          tranx.newBalance = tranx.newBalance.toFixed(2);
-
-          foundAccount.balance = tranx.newBalance;
-          transactionRecord.push(tranx);
-
-          res.status(200).json({
-            status: 200,
-            data: {
-              transactionId: tranx.id,
-              accountNumber: tranx.accountNumber,
-              amount: tranx.amount,
-              cashier: foundCashier.id,
-              transactionType: tranx.type,
-              accountBalance: tranx.newBalance,
-            },
-          });
-        } else {
-          // And this block for debit transaction
-          tranx.oldBalance = Number(foundAccount.balance);
-          if (tranx.oldBalance < Number(tranx.amount)) {
+      pool.connect((err, client, done) => {
+        if (err) {
+          console.log(err);
+        }
+        client.query('SELECT * FROM accounts WHERE accountnumber = $1', [accountNumber], (err, result) => {
+          if (err) {
+            console.log(err);
+          }
+          // console.log(result.rows);
+          if (result.rows.length < 1) {
             res.status(400).json({
               status: 400,
-              error: 'Insufficient balance in account',
+              error: 'Account does not exist',
+            });
+            return;
+          }
+          const foundAccount = result.rows.find(item => item.accountnumber === parseInt(tranx.accountNumber, 10));
+          // console.log(foundAccount);
+          if (!foundAccount && foundAccount === undefined) {
+            res.status(401).json({
+              status: 401,
+              error: 'Account not available',
             });
           } else {
-            tranx.newBalance = tranx.oldBalance - Number(tranx.amount);
-            tranx.newBalance = tranx.newBalance.toFixed(2);
+            // Assign a transaction ID
+            pool.connect((err, client, done) => {
+              if (err) {
+                console.log(err);
+              }
+              client.query('SELECT * FROM transactions', (err, result) => {
+                if (err) {
+                  console.log(err);
+                }
+                // console.log(result.rows);
+                tranx.id = (result.rows.length !== 0) ? result.rows.length + 1 : 1;
 
-            foundAccount.balance = tranx.newBalance;
-            transactionRecord.push(tranx);
+                // Then, acquire a unique cashier identity
+                tranx.cashier = Math.ceil(Math.random() * 3);
+                const foundCashier = cashierRecord.find(item => item.id === tranx.cashier);
 
-            res.status(200).json({
-              status: 200,
-              data: {
-                transactionId: tranx.id,
-                accountNumber: tranx.accountNumber,
-                amount: tranx.amount,
-                cashier: foundCashier.id,
-                transactionType: tranx.type,
-                accountBalance: tranx.newBalance,
-              },
+                // Run this block for credit transaction
+                if (tranx.type === 'credit') {
+                  tranx.oldBalance = Number(foundAccount.balance);
+                  tranx.newBalance = tranx.oldBalance + Number(tranx.amount);
+                  tranx.newBalance = tranx.newBalance.toFixed(2);
+
+                  // console.log(foundAccount.balance);
+                  // console.log(tranx.oldBalance);
+                  // console.log(tranx.amount);
+                  // console.log(tranx.newBalance);
+
+                  pool.connect((err, client, done) => {
+                    if (err) {
+                      console.log(err);
+                    }
+                    client.query('INSERT INTO transactions (id, createddate, type, accountnumber, cashier, amount, oldbalance, newbalance) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)', [tranx.id, tranx.createdOn, tranx.type, tranx.accountNumber, foundCashier.id, tranx.amount, tranx.oldBalance, tranx.newBalance], (err, result) => {
+                      if (err) {
+                        console.log(err);
+                      }
+                      // console.log(result.rows);
+
+                      pool.connect((err, client, done) => {
+                        if (err) {
+                          console.log(err);
+                        }
+                        client.query('UPDATE accounts SET balance = $1 WHERE accountnumber = $2', [tranx.newBalance, tranx.accountNumber], (err, result) => {
+                          if (err) {
+                            console.log(err);
+                          }
+                          // console.log(result.rows);
+                        });
+                        done();
+                      });
+
+                      res.status(200).json({
+                        status: 200,
+                        data: {
+                          transactionId: tranx.id,
+                          accountNumber: tranx.accountNumber,
+                          amount: tranx.amount,
+                          cashier: foundCashier.id,
+                          transactionType: tranx.type,
+                          accountBalance: tranx.newBalance,
+                        },
+                      });
+                    });
+                    done();
+                  });
+                } else {
+                  // And this block for debit transaction
+                  tranx.oldBalance = Number(foundAccount.balance);
+                  if (tranx.oldBalance < Number(tranx.amount)) {
+                    res.status(400).json({
+                      status: 400,
+                      error: 'Insufficient balance in account',
+                    });
+                  } else {
+                    // console.log(tranx.oldBalance);
+                    tranx.newBalance = tranx.oldBalance - Number(tranx.amount);
+                    tranx.newBalance = tranx.newBalance.toFixed(2);
+
+                    // console.log(foundAccount);
+                    foundAccount.balance = tranx.newBalance;
+                    pool.connect((err, client, done) => {
+                      if (err) {
+                        console.log(err);
+                      }
+                      client.query('INSERT INTO transactions (id, createddate, type, accountnumber, cashier, amount, oldbalance, newbalance) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)', [tranx.id, tranx.createdOn, tranx.type, tranx.accountNumber, foundCashier.id, tranx.amount, tranx.oldBalance, tranx.newBalance], (err, result) => {
+                        if (err) {
+                          console.log(err);
+                        }
+                        // console.log(result.rows);
+
+                        pool.connect((err, client, done) => {
+                          if (err) {
+                            console.log(err);
+                          }
+                          client.query('UPDATE accounts SET balance = $1 WHERE accountnumber = $2', [tranx.newBalance, tranx.accountNumber], (err, result) => {
+                            if (err) {
+                              console.log(err);
+                            }
+                            // console.log(result.rows);
+                          });
+                          done();
+                        });
+
+                        res.status(200).json({
+                          status: 200,
+                          data: {
+                            transactionId: tranx.id,
+                            accountNumber: tranx.accountNumber,
+                            amount: tranx.amount,
+                            cashier: foundCashier.id,
+                            transactionType: tranx.type,
+                            accountBalance: tranx.newBalance,
+                          },
+                        });
+                      });
+                      done();
+                    });
+                  }
+                } // End of debit transaction block
+              });
+              done();
             });
           }
-        } // End of debit transaction block
-      }
+        });
+        done();
+      });
     }
+  }
+
+
+  static getAccountHistory(req, res) {
+    const { accountNumber } = req.body;
+
+    pool.connect((err, client, done) => {
+      if (err) {
+        console.log(err);
+      }
+      client.query('SELECT * FROM transactions WHERE accountnumber = $1', [accountNumber], (err, result) => {
+        if (err) {
+          console.log(err);
+        }
+        console.log(result.rows);
+        res.status(200).json({
+          status: 200,
+          data: [],
+        });
+      });
+      done();
+    });
   }
 }
 

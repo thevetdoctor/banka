@@ -137,11 +137,11 @@ class UserController {
                 // connect to the db and save credentials
                 pool.connect((err, client, done) => {
                   if (err) {
-                    return console.error('error fetching ....', err);
+                    console.log(err);
                   }
                   client.query('INSERT INTO users (id, email, firstName, lastName, password, hash, type, isAdmin, sex, mobile, active, createdDate) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)', [user.id, user.email, user.firstName, user.lastName, user.password, hash, user.type, user.isAdmin, user.sex, user.mobile, user.active, user.createdDate], (err, result) => {
                     if (err) {
-                      return console.error('error running query');
+                      console.log(err);
                     }
                     console.log(result.rows);
                     console.log('New User created');

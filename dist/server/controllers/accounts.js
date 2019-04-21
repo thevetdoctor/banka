@@ -64,7 +64,7 @@ function () {
 
       var account = new _accounts["default"](owner, type);
 
-      if (account.owner === undefined || account.owner.trim() === '') {
+      if (account.owner === undefined || account.owner === '') {
         res.status(400).json({
           status: 400,
           error: 'Account owner not supplied'
@@ -158,6 +158,9 @@ function () {
                   });
                 });
                 done();
+              });
+              res.status(200).json({
+                status: 200
               });
               done();
             });
@@ -278,6 +281,63 @@ function () {
           }
         });
       }
+    }
+  }, {
+    key: "getTransactions",
+    value: function getTransactions(req, res) {
+      var accountNumber = req.params.accountNumber;
+      var transactions = req.params.transactions;
+      console.log(req.params);
+
+      if (transactions !== 'transactions') {
+        res.status(400).json({
+          status: 400,
+          error: 'Params can only be transactions'
+        });
+      }
+
+      pool.connect(function (err, client, done) {
+        if (err) {
+          console.log(err);
+        }
+
+        client.query('SELECT * FROM accounts WHERE accountnumber = $1', [accountNumber], function (err, result) {
+          if (err) {
+            console.log(err);
+          }
+
+          console.log(result.rows);
+          console.log(accountNumber);
+
+          if (result.rows.length < 1) {
+            res.status(400).json({
+              status: 400,
+              error: 'Account Number does not exist'
+            });
+            return;
+          }
+
+          pool.connect(function (err, client, done) {
+            if (err) {
+              console.log(err);
+            }
+
+            client.query('SELECT * FROM transactions WHERE accountnumber = $1', [accountNumber], function (err, result) {
+              if (err) {
+                console.log(err);
+              }
+
+              console.log(result.rows);
+              res.status(200).json({
+                status: 200,
+                data: result.rows
+              });
+            });
+            done();
+          });
+          done();
+        });
+      });
     }
   }]);
 
