@@ -18,5 +18,7 @@ router.get('/:accountNumber/:transactions', AccountController.getTransactions);
 
 router.get('/user/:userEmailAddress/:accounts', AccountController.getUserBankAccounts);
 
+// router.get('/:accounts?status=active', AccountController.getActiveAccounts);
+
 
 export default router;
