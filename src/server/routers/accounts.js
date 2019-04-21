@@ -16,5 +16,7 @@ router.get('/:accountNumber', AccountController.listOneAccount);
 
 router.get('/:accountNumber/:transactions', AccountController.getTransactions);
 
+router.get('/user/:userEmailAddress/:accounts', AccountController.getUserBankAccounts);
+
 
 export default router;
