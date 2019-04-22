@@ -43,8 +43,7 @@ function () {
     value: function create(req, res) {
       var _req$body = req.body,
           owner = _req$body.owner,
-          type = _req$body.type; // console.log(owner);
-      // console.log(type);
+          type = _req$body.type;
 
       if (regExp.test(owner)) {
         res.status(400).json({
@@ -176,40 +175,71 @@ function () {
       accountNumber = parseInt(accountNumber, 10);
       console.log(accountStatus);
 
-      if (accountStatus === undefined || accountStatus === '') {
+      if (typeof accountStatus !== 'string') {
+        res.status(400).json({
+          status: 400,
+          error: 'Invalid status supplied'
+        });
+        return;
+      }
+
+      if (accountStatus === undefined || accountStatus.trim() === '') {
         res.status(400).json({
           status: 400,
           error: 'Status not supplied'
         });
         return;
-      } // if (accountStatus !== 'dormant' || accountStatus !== 'active') {
-      //   res.status(400).json({
-      //     status: 400,
-      //     message: 'Status can only be dormant or active',
-      //   });
-      //   return;
-      // }
-      // eslint-disable-next-line max-len
+      } // eslint-disable-next-line no-constant-condition
 
 
-      var foundAccount = accountRecord.find(function (item) {
-        return item.accountNumber === accountNumber;
-      });
+      if (accountStatus === 'dormant') {
+        pool.connect(function (err, client, done) {
+          if (err) {
+            console.log(err);
+          }
 
-      if (foundAccount === undefined) {
-        res.status(400).json({
-          status: 400,
-          error: 'Account not available'
+          client.query('UPDATE accounts SET status = $1 WHERE accountnumber = $2', [accountStatus, accountNumber], function (err, result) {
+            if (err) {
+              console.log(err);
+            }
+
+            console.log(result.rows);
+            res.status(200).json({
+              status: 200,
+              data: {
+                accountNumber: accountNumber,
+                status: accountStatus
+              }
+            });
+          });
+          done();
+        });
+      } else if (accountStatus === 'active') {
+        pool.connect(function (err, client, done) {
+          if (err) {
+            console.log(err);
+          }
+
+          client.query('UPDATE accounts SET status = $1 WHERE accountnumber = $2', [accountStatus, accountNumber], function (err, result) {
+            if (err) {
+              console.log(err);
+            }
+
+            console.log(result.rows);
+            res.status(200).json({
+              status: 200,
+              data: {
+                accountNumber: accountNumber,
+                status: accountStatus
+              }
+            });
+          });
+          done();
         });
       } else {
-        // eslint-disable-next-line max-len
-        foundAccount.status = foundAccount.status === accountStatus ? foundAccount.status : accountStatus;
-        res.status(200).json({
-          status: 200,
-          data: {
-            accountNumber: accountNumber,
-            status: foundAccount.status
-          }
+        res.status(400).json({
+          status: 400,
+          error: 'Status can only be dormant OR active'
         });
       }
     }
@@ -218,27 +248,51 @@ function () {
     value: function _delete(req, res) {
       var accountNumber = req.params.accountNumber;
       accountNumber = parseInt(accountNumber, 10);
-      var foundAccount = accountRecord.find(function (item) {
-        return item.accountNumber === accountNumber;
-      });
+      pool.connect(function (err, client, done) {
+        if (err) {
+          console.log(err);
+        }
 
-      if (foundAccount === undefined) {
-        res.status(404).json({
-          status: 404,
-          error: 'Account not available'
+        client.query('SELECT * FROM accounts WHERE accountnumber = $1', [accountNumber], function (err, result) {
+          if (err) {
+            console.log(err);
+          }
+
+          console.log(result.rows);
+
+          if (result.rows.length < 1) {
+            res.status(404).json({
+              status: 404,
+              error: 'Account not available'
+            });
+            return;
+          }
+
+          pool.connect(function (err, client, done) {
+            if (err) {
+              console.log(err);
+            }
+
+            client.query('DELETE FROM accounts WHERE accountnumber = $1', [accountNumber], function (err, result) {
+              if (err) {
+                console.log(err);
+              }
+
+              console.log(result.rows);
+              res.status(200).json({
+                status: 200,
+                message: "Account No: ".concat(accountNumber, " successfully deleted")
+              });
+            });
+            done();
+          });
         });
-      } else {
-        accountRecord.splice(foundAccount, 1);
-        res.status(200).json({
-          status: 200,
-          message: "Account No: ".concat(foundAccount.accountNumber, " successfully deleted")
-        });
-      }
+        done();
+      });
     }
   }, {
     key: "listAllAccounts",
     value: function listAllAccounts(req, res) {
-      // const accountList = [...accountRecord];
       pool.connect(function (err, client, done) {
         if (err) {
           console.log(err);
@@ -501,27 +555,7 @@ function () {
         });
         done();
       });
-    } // static getActiveAccounts(req, res) {
-    //   const { status } = req.query;
-    //   console.log(req.query);
-    //   pool.connect((err, client, done) => {
-    //     if (err) {
-    //       console.log(err);
-    //     }
-    //     client.query('SELECT * FROM accounts WHERE status = $1', [status], (err, result) => {
-    //       if (err) {
-    //         console.log(err);
-    //       }
-    //       console.log(result.rows);
-    //       res.status(200).json({
-    //         status: 200,
-    //         data: result.rows,
-    //       });
-    //     });
-    //     done();
-    //   });
-    // }
-
+    }
   }]);
 
   return AccountController;
