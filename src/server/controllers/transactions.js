@@ -82,6 +82,7 @@ class TransactionController {
                 tranx.id = (result.rows.length !== 0) ? result.rows.length + 1 : 1;
 
                 // Then, acquire a unique cashier identity
+
                 tranx.cashier = Math.ceil(Math.random() * 3);
                 const foundCashier = cashierRecord.find(item => item.id === tranx.cashier);
 
@@ -198,26 +199,27 @@ class TransactionController {
   }
 
 
-  static getAccountHistory(req, res) {
-    const { accountNumber } = req.body;
+  // static getAccountHistory(req, res) {
+  //   const { accountNumber } = req.body;
 
-    pool.connect((err, client, done) => {
-      if (err) {
-        console.log(err);
-      }
-      client.query('SELECT * FROM transactions WHERE accountnumber = $1', [accountNumber], (err, result) => {
-        if (err) {
-          console.log(err);
-        }
-        console.log(result.rows);
-        res.status(200).json({
-          status: 200,
-          data: [],
-        });
-      });
-      done();
-    });
-  }
+  //   pool.connect((err, client, done) => {
+  //     if (err) {
+  //       console.log(err);
+  //     }
+  //     client.query('SELECT * FROM transactions WHERE accountnumber = $1', [accountNumber], (err, result) => {
+  //       if (err) {
+  //         console.log(err);
+  //       }
+  //       console.log(result.rows);
+  //       res.status(200).json({
+  //         status: 200,
+  //         data: [],
+  //       });
+  //     });
+  //     done();
+  //   });
+  // }
+
 
   static getTransaction(req, res) {
     const { transactionId } = req.params;

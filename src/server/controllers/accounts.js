@@ -14,9 +14,6 @@ class AccountController {
   static create(req, res) {
     const { owner, type } = req.body;
 
-    // console.log(owner);
-    // console.log(type);
-
     if (regExp.test(owner)) {
       res.status(400).json({
         status: 400,
@@ -137,7 +134,14 @@ class AccountController {
     accountNumber = parseInt(accountNumber, 10);
 
     console.log(accountStatus);
-    if (accountStatus === undefined || accountStatus === '') {
+    if (typeof accountStatus !== 'string') {
+      res.status(400).json({
+        status: 400,
+        error: 'Invalid status supplied',
+      });
+      return;
+    }
+    if (accountStatus === undefined || accountStatus.trim() === '') {
       res.status(400).json({
         status: 400,
         error: 'Status not supplied',
@@ -145,31 +149,51 @@ class AccountController {
       return;
     }
 
-    // if (accountStatus !== 'dormant' || accountStatus !== 'active') {
-    //   res.status(400).json({
-    //     status: 400,
-    //     message: 'Status can only be dormant or active',
-    //   });
-    //   return;
-    // }
-
-    // eslint-disable-next-line max-len
-    const foundAccount = accountRecord.find(item => item.accountNumber === accountNumber);
-
-    if (foundAccount === undefined) {
-      res.status(400).json({
-        status: 400,
-        error: 'Account not available',
+    // eslint-disable-next-line no-constant-condition
+    if (accountStatus === 'dormant') {
+      pool.connect((err, client, done) => {
+        if (err) {
+          console.log(err);
+        }
+        client.query('UPDATE accounts SET status = $1 WHERE accountnumber = $2', [accountStatus, accountNumber], (err, result) => {
+          if (err) {
+            console.log(err);
+          }
+          console.log(result.rows);
+          res.status(200).json({
+            status: 200,
+            data: {
+              accountNumber,
+              status: accountStatus,
+            },
+          });
+        });
+        done();
+      });
+    } else if (accountStatus === 'active') {
+      pool.connect((err, client, done) => {
+        if (err) {
+          console.log(err);
+        }
+        client.query('UPDATE accounts SET status = $1 WHERE accountnumber = $2', [accountStatus, accountNumber], (err, result) => {
+          if (err) {
+            console.log(err);
+          }
+          console.log(result.rows);
+          res.status(200).json({
+            status: 200,
+            data: {
+              accountNumber,
+              status: accountStatus,
+            },
+          });
+        });
+        done();
       });
     } else {
-      // eslint-disable-next-line max-len
-      foundAccount.status = foundAccount.status === accountStatus ? foundAccount.status : accountStatus;
-      res.status(200).json({
-        status: 200,
-        data: {
-          accountNumber,
-          status: foundAccount.status,
-        },
+      res.status(400).json({
+        status: 400,
+        error: 'Status can only be dormant OR active',
       });
     }
   }
@@ -179,25 +203,46 @@ class AccountController {
     let { accountNumber } = req.params;
     accountNumber = parseInt(accountNumber, 10);
 
-    const foundAccount = accountRecord.find(item => item.accountNumber === accountNumber);
-    if (foundAccount === undefined) {
-      res.status(404).json({
-        status: 404,
-        error: 'Account not available',
-      });
-    } else {
-      accountRecord.splice(foundAccount, 1);
+    pool.connect((err, client, done) => {
+      if (err) {
+        console.log(err);
+      }
+      client.query('SELECT * FROM accounts WHERE accountnumber = $1', [accountNumber], (err, result) => {
+        if (err) {
+          console.log(err);
+        }
+        console.log(result.rows);
+        if (result.rows.length < 1) {
+          res.status(404).json({
+            status: 404,
+            error: 'Account not available',
+          });
+          return;
+        }
 
-      res.status(200).json({
-        status: 200,
-        message: `Account No: ${foundAccount.accountNumber} successfully deleted`,
+        pool.connect((err, client, done) => {
+          if (err) {
+            console.log(err);
+          }
+          client.query('DELETE FROM accounts WHERE accountnumber = $1', [accountNumber], (err, result) => {
+            if (err) {
+              console.log(err);
+            }
+            console.log(result.rows);
+            res.status(200).json({
+              status: 200,
+              message: `Account No: ${accountNumber} successfully deleted`,
+            });
+          });
+          done();
+        });
       });
-    }
+      done();
+    });
   }
 
 
   static listAllAccounts(req, res) {
-    // const accountList = [...accountRecord];
     pool.connect((err, client, done) => {
       if (err) {
         console.log(err);
@@ -431,30 +476,6 @@ class AccountController {
       done();
     });
   }
-
-  // static getActiveAccounts(req, res) {
-  //   const { status } = req.query;
-
-  //   console.log(req.query);
-
-  //   pool.connect((err, client, done) => {
-  //     if (err) {
-  //       console.log(err);
-  //     }
-  //     client.query('SELECT * FROM accounts WHERE status = $1', [status], (err, result) => {
-  //       if (err) {
-  //         console.log(err);
-  //       }
-  //       console.log(result.rows);
-
-  //       res.status(200).json({
-  //         status: 200,
-  //         data: result.rows,
-  //       });
-  //     });
-  //     done();
-  //   });
-  // }
 }
 
 

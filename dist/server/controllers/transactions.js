@@ -225,30 +225,26 @@ function () {
           done();
         });
       }
-    }
-  }, {
-    key: "getAccountHistory",
-    value: function getAccountHistory(req, res) {
-      var accountNumber = req.body.accountNumber;
-      pool.connect(function (err, client, done) {
-        if (err) {
-          console.log(err);
-        }
+    } // static getAccountHistory(req, res) {
+    //   const { accountNumber } = req.body;
+    //   pool.connect((err, client, done) => {
+    //     if (err) {
+    //       console.log(err);
+    //     }
+    //     client.query('SELECT * FROM transactions WHERE accountnumber = $1', [accountNumber], (err, result) => {
+    //       if (err) {
+    //         console.log(err);
+    //       }
+    //       console.log(result.rows);
+    //       res.status(200).json({
+    //         status: 200,
+    //         data: [],
+    //       });
+    //     });
+    //     done();
+    //   });
+    // }
 
-        client.query('SELECT * FROM transactions WHERE accountnumber = $1', [accountNumber], function (err, result) {
-          if (err) {
-            console.log(err);
-          }
-
-          console.log(result.rows);
-          res.status(200).json({
-            status: 200,
-            data: []
-          });
-        });
-        done();
-      });
-    }
   }, {
     key: "getTransaction",
     value: function getTransaction(req, res) {
