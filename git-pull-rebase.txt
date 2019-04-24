@@ -1,0 +1,75 @@
+oba@LAPTOP-ODERANTI MINGW64 ~/Desktop/meals/banka (develop)
+$ git pull --rebase
+First, rewinding head to replay your work on top of it...
+Applying: immersive
+Using index info to reconstruct a base tree...
+M       README.md
+M       ui/account.html
+M       ui/accounthistory.html
+M       ui/accounts.html
+M       ui/activate.html
+M       ui/createaccount.html
+M       ui/credit.html
+M       ui/css/main.css
+M       ui/dashboard.html
+M       ui/debit.html
+A       ui/images.jpg
+M       ui/index.html
+M       ui/js/account.js
+M       ui/js/accounts.js
+M       ui/js/activate.js
+M       ui/js/createaccount.js
+M       ui/js/login.js
+M       ui/js/signup.js
+M       ui/js/staffuser.js
+M       ui/login.html
+M       ui/signup.html
+M       ui/staffuser.html
+.git/rebase-apply/patch:7: trailing whitespace.
+{
+.git/rebase-apply/patch:8: trailing whitespace.
+    "presets": [
+.git/rebase-apply/patch:9: trailing whitespace.
+        "@babel/preset-env"
+.git/rebase-apply/patch:10: trailing whitespace.
+    ],
+.git/rebase-apply/patch:54: trailing whitespace.
+node_modules
+warning: squelched 478 whitespace errors
+warning: 483 lines add whitespace errors.
+Falling back to patching base and 3-way merge...
+Auto-merging src/server/test/test-users.spec.js
+CONFLICT (add/add): Merge conflict in src/server/test/test-users.spec.js
+Auto-merging src/server/test/test-transactions.spec.js
+CONFLICT (add/add): Merge conflict in src/server/test/test-transactions.spec.js
+Auto-merging src/server/test/test-accounts.spec.js
+CONFLICT (add/add): Merge conflict in src/server/test/test-accounts.spec.js
+Auto-merging src/server/controllers/transactions.js
+CONFLICT (add/add): Merge conflict in src/server/controllers/transactions.js
+Auto-merging src/server/controllers/accounts.js
+CONFLICT (add/add): Merge conflict in src/server/controllers/accounts.js
+Auto-merging package.json
+CONFLICT (add/add): Merge conflict in package.json
+Auto-merging dist/server/test/test-users.spec.js
+CONFLICT (add/add): Merge conflict in dist/server/test/test-users.spec.js
+Auto-merging dist/server/test/test-transactions.spec.js
+CONFLICT (add/add): Merge conflict in dist/server/test/test-transactions.spec.js
+Auto-merging dist/server/test/test-accounts.spec.js
+CONFLICT (add/add): Merge conflict in dist/server/test/test-accounts.spec.js
+Auto-merging dist/server/controllers/transactions.js
+CONFLICT (add/add): Merge conflict in dist/server/controllers/transactions.js
+Auto-merging dist/server/controllers/accounts.js
+CONFLICT (add/add): Merge conflict in dist/server/controllers/accounts.js
+Auto-merging .gitignore
+CONFLICT (add/add): Merge conflict in .gitignore
+error: Failed to merge in the changes.
+Patch failed at 0001 immersive
+The copy of the patch that failed is found in: .git/rebase-apply/patch
+
+When you have resolved this problem, run "git rebase --continue".
+If you prefer to skip this patch, run "git rebase --skip" instead.
+To check out the original branch and stop rebasing, run "git rebase --abort".
+
+
+oba@LAPTOP-ODERANTI MINGW64 ~/Desktop/meals/banka (develop|REBASE 1/4)
+$

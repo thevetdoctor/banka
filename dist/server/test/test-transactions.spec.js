@@ -28,8 +28,13 @@ describe('Credit/Debit Transaction Endpoint', function () {
     _transactions["default"].creDebit.should.exist;
   });
   it('Credit/Debit(POST) should credit/debit an account with the specified amount', function (done) {
+<<<<<<< 70bdad15d0a750804b500167feaff32d7e5ee3aa
     _chai["default"].request(_index["default"]).post('/api/v1/transactions/2019031113/debit').send({
       amount: '30000.21'
+=======
+    _chai["default"].request(_index["default"]).post('/api/v1/transactions/2019031114/debit').send({
+      amount: '00.21'
+>>>>>>> immersive
     }).end(function (err, res) {
       res.should.have.status(200);
       res.should.be.json;
@@ -98,4 +103,63 @@ describe('Error Handling (Credit/Debit Transaction Endpoint)', function () {
 
     done();
   });
+<<<<<<< 70bdad15d0a750804b500167feaff32d7e5ee3aa
+=======
+  it('should return an ERROR if "type" of transaction is neither CREDIT not DEBIT', function (done) {
+    _chai["default"].request(_index["default"]).post('/api/v1/transactions/2019031113/debitcredit').send({
+      amount: '30000.21'
+    }).end(function (err, res) {
+      res.should.have.status(400);
+      res.should.be.json;
+      res.body.should.be.a('object');
+      res.body.should.have.property('status');
+      res.body.status.should.equal(400);
+      res.body.should.have.property('error');
+    });
+
+    done();
+  });
+  it('should return an ERROR if account supplied does not exist', function (done) {
+    _chai["default"].request(_index["default"]).post('/api/v1/transactions/201903111111/credit').send({
+      amount: '30000.21'
+    }).end(function (err, res) {
+      res.should.have.status(400);
+      res.should.be.json;
+      res.body.should.be.a('object');
+      res.body.should.have.property('status');
+      res.body.status.should.equal(400);
+      res.body.should.have.property('error');
+    });
+
+    done();
+  });
+  it('should return an ERROR if account supplied does not exist', function (done) {
+    _chai["default"].request(_index["default"]).post('/api/v1/transactions/201903111111/debit').send({
+      amount: '30000.21'
+    }).end(function (err, res) {
+      res.should.have.status(400);
+      res.should.be.json;
+      res.body.should.be.a('object');
+      res.body.should.have.property('status');
+      res.body.status.should.equal(400);
+      res.body.should.have.property('error');
+    });
+
+    done();
+  });
+  it('should return an ERROR if there"s insufficient balance for debit transaction', function (done) {
+    _chai["default"].request(_index["default"]).post('/api/v1/transactions/2019031111/debit').send({
+      amount: '30000000000.21'
+    }).end(function (err, res) {
+      res.should.have.status(400);
+      res.should.be.json;
+      res.body.should.be.a('object');
+      res.body.should.have.property('status');
+      res.body.status.should.equal(400);
+      res.body.should.have.property('error');
+    });
+
+    done();
+  });
+>>>>>>> immersive
 });

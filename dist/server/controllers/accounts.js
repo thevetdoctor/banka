@@ -96,7 +96,11 @@ function () {
           if (!accountOwner || accountOwner === undefined) {
             res.status(400).json({
               status: 400,
+<<<<<<< 70bdad15d0a750804b500167feaff32d7e5ee3aa
               message: 'Account owner does not exist'
+=======
+              error: 'Account owner does not exist'
+>>>>>>> immersive
             });
             return;
           }
@@ -139,10 +143,17 @@ function () {
                 client.query('INSERT INTO accounts (id, accountnumber, createdOn, owner, type, status, balance) VALUES($1, $2, $3, $4, $5, $6, $7)', [account.id, account.accountNumber, account.createdOn, account.owner, account.type, account.status, account.balance], function (err, result) {
                   if (err) {
                     console.log(err);
+<<<<<<< 70bdad15d0a750804b500167feaff32d7e5ee3aa
                   }
 
                   console.log(result.rows, 'nothing');
                   console.log(accountOwner);
+=======
+                  } // console.log(result.rows, 'nothing');
+                  // console.log(accountOwner);
+
+
+>>>>>>> immersive
                   res.status(201).json({
                     status: 201,
                     data: {
@@ -156,10 +167,17 @@ function () {
                   });
                 });
                 done();
+<<<<<<< 70bdad15d0a750804b500167feaff32d7e5ee3aa
               });
               res.status(200).json({
                 status: 200
               });
+=======
+              }); // res.status(200).json({
+              // status: 200,
+              // });
+
+>>>>>>> immersive
               done();
             });
           });
@@ -172,8 +190,12 @@ function () {
     value: function activate(req, res) {
       var accountStatus = req.body.status;
       var accountNumber = req.params.accountNumber;
+<<<<<<< 70bdad15d0a750804b500167feaff32d7e5ee3aa
       accountNumber = parseInt(accountNumber, 10);
       console.log(accountStatus);
+=======
+      accountNumber = parseInt(accountNumber, 10); // console.log(accountStatus);
+>>>>>>> immersive
 
       if (typeof accountStatus !== 'string') {
         res.status(400).json({
@@ -201,9 +223,15 @@ function () {
           client.query('UPDATE accounts SET status = $1 WHERE accountnumber = $2', [accountStatus, accountNumber], function (err, result) {
             if (err) {
               console.log(err);
+<<<<<<< 70bdad15d0a750804b500167feaff32d7e5ee3aa
             }
 
             console.log(result.rows);
+=======
+            } // console.log(result.rows);
+
+
+>>>>>>> immersive
             res.status(200).json({
               status: 200,
               data: {
@@ -223,9 +251,15 @@ function () {
           client.query('UPDATE accounts SET status = $1 WHERE accountnumber = $2', [accountStatus, accountNumber], function (err, result) {
             if (err) {
               console.log(err);
+<<<<<<< 70bdad15d0a750804b500167feaff32d7e5ee3aa
             }
 
             console.log(result.rows);
+=======
+            } // console.log(result.rows);
+
+
+>>>>>>> immersive
             res.status(200).json({
               status: 200,
               data: {
@@ -248,6 +282,17 @@ function () {
     value: function _delete(req, res) {
       var accountNumber = req.params.accountNumber;
       accountNumber = parseInt(accountNumber, 10);
+<<<<<<< 70bdad15d0a750804b500167feaff32d7e5ee3aa
+=======
+
+      if (regExp.test(accountNumber)) {
+        regExp.status(400).json({
+          status: 400,
+          error: 'Invalid account number supplied'
+        });
+      }
+
+>>>>>>> immersive
       pool.connect(function (err, client, done) {
         if (err) {
           console.log(err);
@@ -256,9 +301,14 @@ function () {
         client.query('SELECT * FROM accounts WHERE accountnumber = $1', [accountNumber], function (err, result) {
           if (err) {
             console.log(err);
+<<<<<<< 70bdad15d0a750804b500167feaff32d7e5ee3aa
           }
 
           console.log(result.rows);
+=======
+          } // console.log(result.rows);
+
+>>>>>>> immersive
 
           if (result.rows.length < 1) {
             res.status(404).json({
@@ -276,9 +326,15 @@ function () {
             client.query('DELETE FROM accounts WHERE accountnumber = $1', [accountNumber], function (err, result) {
               if (err) {
                 console.log(err);
+<<<<<<< 70bdad15d0a750804b500167feaff32d7e5ee3aa
               }
 
               console.log(result.rows);
+=======
+              } // console.log(result.rows);
+
+
+>>>>>>> immersive
               res.status(200).json({
                 status: 200,
                 message: "Account No: ".concat(accountNumber, " successfully deleted")
@@ -301,9 +357,15 @@ function () {
         client.query('SELECT * FROM accounts INNER JOIN users ON accounts.owner = users.id', function (err, result) {
           if (err) {
             console.log(err);
+<<<<<<< 70bdad15d0a750804b500167feaff32d7e5ee3aa
           }
 
           console.log(result.rows);
+=======
+          } // console.log(result.rows);
+
+
+>>>>>>> immersive
           var newAccountArrray = result.rows.map(function (item) {
             return {
               createdOn: item.createdon,
@@ -314,6 +376,7 @@ function () {
               balance: item.balance
             };
           });
+<<<<<<< 70bdad15d0a750804b500167feaff32d7e5ee3aa
 
           if (result.rows.length < 1) {
             res.status(400).json({
@@ -326,6 +389,12 @@ function () {
               data: newAccountArrray
             });
           }
+=======
+          res.status(200).json({
+            status: 200,
+            data: newAccountArrray
+          });
+>>>>>>> immersive
         });
         done();
       });
@@ -336,7 +405,11 @@ function () {
       var accountNumber = req.params.accountNumber;
 
       if (req.query.status === undefined) {
+<<<<<<< 70bdad15d0a750804b500167feaff32d7e5ee3aa
         console.log('no status');
+=======
+        console.log('no status'); // if no 'status' indicated as a req.query, proceed with get single account
+>>>>>>> immersive
 
         if (regExp.test(accountNumber)) {
           res.status(400).json({
@@ -354,9 +427,15 @@ function () {
           client.query('SELECT * FROM accounts', function (err, result) {
             if (err) {
               console.log(err);
+<<<<<<< 70bdad15d0a750804b500167feaff32d7e5ee3aa
             }
 
             console.log(result.rows);
+=======
+            } // console.log(result.rows);
+
+
+>>>>>>> immersive
             var account = result.rows.find(function (item) {
               return item.accountnumber === Number(accountNumber);
             });
@@ -389,6 +468,7 @@ function () {
             client.query('SELECT * FROM accounts WHERE status = $1', [req.query.status], function (err, result) {
               if (err) {
                 console.log(err);
+<<<<<<< 70bdad15d0a750804b500167feaff32d7e5ee3aa
               }
 
               console.log(result.rows);
@@ -400,6 +480,10 @@ function () {
                 });
                 return;
               }
+=======
+              } // console.log(result.rows);
+
+>>>>>>> immersive
 
               res.status(200).json({
                 status: 200,
@@ -417,6 +501,7 @@ function () {
             client.query('SELECT * FROM accounts WHERE status = $1', [req.query.status], function (err, result) {
               if (err) {
                 console.log(err);
+<<<<<<< 70bdad15d0a750804b500167feaff32d7e5ee3aa
               }
 
               console.log(result.rows);
@@ -428,6 +513,10 @@ function () {
                 });
                 return;
               }
+=======
+              } // console.log(result.rows);
+
+>>>>>>> immersive
 
               res.status(200).json({
                 status: 200,
@@ -456,6 +545,10 @@ function () {
           status: 400,
           error: 'Params can only be transactions'
         });
+<<<<<<< 70bdad15d0a750804b500167feaff32d7e5ee3aa
+=======
+        return;
+>>>>>>> immersive
       }
 
       pool.connect(function (err, client, done) {
@@ -466,10 +559,16 @@ function () {
         client.query('SELECT * FROM accounts WHERE accountnumber = $1', [accountNumber], function (err, result) {
           if (err) {
             console.log(err);
+<<<<<<< 70bdad15d0a750804b500167feaff32d7e5ee3aa
           }
 
           console.log(result.rows);
           console.log(accountNumber);
+=======
+          } // console.log(result.rows);
+          // console.log(accountNumber);
+
+>>>>>>> immersive
 
           if (result.rows.length < 1) {
             res.status(400).json({
@@ -487,9 +586,15 @@ function () {
             client.query('SELECT * FROM transactions WHERE accountnumber = $1', [accountNumber], function (err, result) {
               if (err) {
                 console.log(err);
+<<<<<<< 70bdad15d0a750804b500167feaff32d7e5ee3aa
               }
 
               console.log(result.rows);
+=======
+              } // console.log(result.rows);
+
+
+>>>>>>> immersive
               res.status(200).json({
                 status: 200,
                 data: result.rows
@@ -533,9 +638,15 @@ function () {
         client.query('SELECT * FROM users INNER JOIN accounts ON users.id = accounts.owner', function (err, result) {
           if (err) {
             console.log(err);
+<<<<<<< 70bdad15d0a750804b500167feaff32d7e5ee3aa
           }
 
           console.log(result.rows);
+=======
+          } // console.log(result.rows);
+
+
+>>>>>>> immersive
           var userAccounts = result.rows.filter(function (item) {
             return item.email === userEmailAddress;
           });

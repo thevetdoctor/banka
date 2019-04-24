@@ -1,3 +1,7 @@
+<<<<<<< 70bdad15d0a750804b500167feaff32d7e5ee3aa
+=======
+/* eslint-disable no-unused-vars */
+>>>>>>> immersive
 /* eslint-disable no-restricted-globals */
 /* eslint-disable max-len */
 /* eslint-disable no-shadow */
@@ -64,7 +68,11 @@ class AccountController {
         if (!accountOwner || accountOwner === undefined) {
           res.status(400).json({
             status: 400,
+<<<<<<< 70bdad15d0a750804b500167feaff32d7e5ee3aa
             message: 'Account owner does not exist',
+=======
+            error: 'Account owner does not exist',
+>>>>>>> immersive
           });
           return;
         }
@@ -100,8 +108,13 @@ class AccountController {
                 if (err) {
                   console.log(err);
                 }
+<<<<<<< 70bdad15d0a750804b500167feaff32d7e5ee3aa
                 console.log(result.rows, 'nothing');
                 console.log(accountOwner);
+=======
+                // console.log(result.rows, 'nothing');
+                // console.log(accountOwner);
+>>>>>>> immersive
                 res.status(201).json({
                   status: 201,
                   data: {
@@ -116,9 +129,15 @@ class AccountController {
               });
               done();
             });
+<<<<<<< 70bdad15d0a750804b500167feaff32d7e5ee3aa
             res.status(200).json({
               status: 200,
             });
+=======
+            // res.status(200).json({
+            // status: 200,
+            // });
+>>>>>>> immersive
             done();
           });
         });
@@ -133,7 +152,11 @@ class AccountController {
     let { accountNumber } = req.params;
     accountNumber = parseInt(accountNumber, 10);
 
+<<<<<<< 70bdad15d0a750804b500167feaff32d7e5ee3aa
     console.log(accountStatus);
+=======
+    // console.log(accountStatus);
+>>>>>>> immersive
     if (typeof accountStatus !== 'string') {
       res.status(400).json({
         status: 400,
@@ -159,7 +182,11 @@ class AccountController {
           if (err) {
             console.log(err);
           }
+<<<<<<< 70bdad15d0a750804b500167feaff32d7e5ee3aa
           console.log(result.rows);
+=======
+          // console.log(result.rows);
+>>>>>>> immersive
           res.status(200).json({
             status: 200,
             data: {
@@ -179,7 +206,11 @@ class AccountController {
           if (err) {
             console.log(err);
           }
+<<<<<<< 70bdad15d0a750804b500167feaff32d7e5ee3aa
           console.log(result.rows);
+=======
+          // console.log(result.rows);
+>>>>>>> immersive
           res.status(200).json({
             status: 200,
             data: {
@@ -203,6 +234,16 @@ class AccountController {
     let { accountNumber } = req.params;
     accountNumber = parseInt(accountNumber, 10);
 
+<<<<<<< 70bdad15d0a750804b500167feaff32d7e5ee3aa
+=======
+    if (regExp.test(accountNumber)) {
+      regExp.status(400).json({
+        status: 400,
+        error: 'Invalid account number supplied',
+      });
+    }
+
+>>>>>>> immersive
     pool.connect((err, client, done) => {
       if (err) {
         console.log(err);
@@ -211,7 +252,11 @@ class AccountController {
         if (err) {
           console.log(err);
         }
+<<<<<<< 70bdad15d0a750804b500167feaff32d7e5ee3aa
         console.log(result.rows);
+=======
+        // console.log(result.rows);
+>>>>>>> immersive
         if (result.rows.length < 1) {
           res.status(404).json({
             status: 404,
@@ -228,7 +273,11 @@ class AccountController {
             if (err) {
               console.log(err);
             }
+<<<<<<< 70bdad15d0a750804b500167feaff32d7e5ee3aa
             console.log(result.rows);
+=======
+            // console.log(result.rows);
+>>>>>>> immersive
             res.status(200).json({
               status: 200,
               message: `Account No: ${accountNumber} successfully deleted`,
@@ -251,7 +300,11 @@ class AccountController {
         if (err) {
           console.log(err);
         }
+<<<<<<< 70bdad15d0a750804b500167feaff32d7e5ee3aa
         console.log(result.rows);
+=======
+        // console.log(result.rows);
+>>>>>>> immersive
         const newAccountArrray = result.rows.map(item => (
           {
             createdOn: item.createdon,
@@ -262,6 +315,7 @@ class AccountController {
             balance: item.balance,
           }
         ));
+<<<<<<< 70bdad15d0a750804b500167feaff32d7e5ee3aa
         if (result.rows.length < 1) {
           res.status(400).json({
             status: 400,
@@ -273,6 +327,12 @@ class AccountController {
             data: newAccountArrray,
           });
         }
+=======
+        res.status(200).json({
+          status: 200,
+          data: newAccountArrray,
+        });
+>>>>>>> immersive
       });
       done();
     });
@@ -285,6 +345,10 @@ class AccountController {
     if (req.query.status === undefined) {
       console.log('no status');
 
+<<<<<<< 70bdad15d0a750804b500167feaff32d7e5ee3aa
+=======
+      // if no 'status' indicated as a req.query, proceed with get single account
+>>>>>>> immersive
       if (regExp.test(accountNumber)) {
         res.status(400).json({
           status: 400,
@@ -301,7 +365,11 @@ class AccountController {
           if (err) {
             console.log(err);
           }
+<<<<<<< 70bdad15d0a750804b500167feaff32d7e5ee3aa
           console.log(result.rows);
+=======
+          // console.log(result.rows);
+>>>>>>> immersive
           const account = result.rows.find(item => item.accountnumber === Number(accountNumber));
 
           if (!account) {
@@ -331,6 +399,7 @@ class AccountController {
             if (err) {
               console.log(err);
             }
+<<<<<<< 70bdad15d0a750804b500167feaff32d7e5ee3aa
             console.log(result.rows);
             if (result.rows.length < 1) {
               res.status(204).json({
@@ -339,6 +408,9 @@ class AccountController {
               });
               return;
             }
+=======
+            // console.log(result.rows);
+>>>>>>> immersive
             res.status(200).json({
               status: 200,
               data: result.rows,
@@ -355,6 +427,7 @@ class AccountController {
             if (err) {
               console.log(err);
             }
+<<<<<<< 70bdad15d0a750804b500167feaff32d7e5ee3aa
             console.log(result.rows);
             if (result.rows.length < 1) {
               res.status(204).json({
@@ -363,6 +436,9 @@ class AccountController {
               });
               return;
             }
+=======
+            // console.log(result.rows);
+>>>>>>> immersive
             res.status(200).json({
               status: 200,
               data: result.rows,
@@ -389,6 +465,10 @@ class AccountController {
         status: 400,
         error: 'Params can only be transactions',
       });
+<<<<<<< 70bdad15d0a750804b500167feaff32d7e5ee3aa
+=======
+      return;
+>>>>>>> immersive
     }
 
     pool.connect((err, client, done) => {
@@ -399,8 +479,13 @@ class AccountController {
         if (err) {
           console.log(err);
         }
+<<<<<<< 70bdad15d0a750804b500167feaff32d7e5ee3aa
         console.log(result.rows);
         console.log(accountNumber);
+=======
+        // console.log(result.rows);
+        // console.log(accountNumber);
+>>>>>>> immersive
         if (result.rows.length < 1) {
           res.status(400).json({
             status: 400,
@@ -416,7 +501,11 @@ class AccountController {
             if (err) {
               console.log(err);
             }
+<<<<<<< 70bdad15d0a750804b500167feaff32d7e5ee3aa
             console.log(result.rows);
+=======
+            // console.log(result.rows);
+>>>>>>> immersive
             res.status(200).json({
               status: 200,
               data: result.rows,
@@ -429,6 +518,10 @@ class AccountController {
     });
   }
 
+<<<<<<< 70bdad15d0a750804b500167feaff32d7e5ee3aa
+=======
+
+>>>>>>> immersive
   static getUserBankAccounts(req, res) {
     const { userEmailAddress } = req.params;
     const { accounts } = req.params;
@@ -459,7 +552,11 @@ class AccountController {
         if (err) {
           console.log(err);
         }
+<<<<<<< 70bdad15d0a750804b500167feaff32d7e5ee3aa
         console.log(result.rows);
+=======
+        // console.log(result.rows);
+>>>>>>> immersive
         const userAccounts = result.rows.filter(item => item.email === userEmailAddress);
         if (userAccounts.length < 1) {
           res.status(400).json({

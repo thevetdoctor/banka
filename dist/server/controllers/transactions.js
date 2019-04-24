@@ -74,6 +74,7 @@ function () {
             if (err) {
               console.log(err);
             } // console.log(result.rows);
+<<<<<<< 70bdad15d0a750804b500167feaff32d7e5ee3aa
 
 
             if (result.rows.length < 1) {
@@ -84,13 +85,29 @@ function () {
               return;
             }
 
+=======
+            // if (result.rows.length < 1) {
+            //   res.status(400).json({
+            //     status: 400,
+            //     error: 'Account does not exist',
+            //   });
+            //   return;
+            // }
+
+
+>>>>>>> immersive
             var foundAccount = result.rows.find(function (item) {
               return item.accountnumber === parseInt(tranx.accountNumber, 10);
             }); // console.log(foundAccount);
 
             if (!foundAccount && foundAccount === undefined) {
+<<<<<<< 70bdad15d0a750804b500167feaff32d7e5ee3aa
               res.status(401).json({
                 status: 401,
+=======
+              res.status(400).json({
+                status: 400,
+>>>>>>> immersive
                 error: 'Account not available'
               });
             } else {

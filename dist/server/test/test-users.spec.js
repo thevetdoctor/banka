@@ -145,7 +145,11 @@ describe('Signup Endpoint Error Handling', function () {
 
     done();
   });
+<<<<<<< 70bdad15d0a750804b500167feaff32d7e5ee3aa
   it('return an ERROR if wrong SEX not supplied', function (done) {
+=======
+  it('return an ERROR if wrong SEX is supplied', function (done) {
+>>>>>>> immersive
     _chai["default"].request(_index["default"]).post('/api/v1/auth/signup').send({
       firstName: 'Dami',
       lastName: 'Lola',
