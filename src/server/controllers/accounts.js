@@ -1,3 +1,4 @@
+<<<<<<< 90b9be4179a5a95e628216ad9e542791a94821f7
 <<<<<<< 70bdad15d0a750804b500167feaff32d7e5ee3aa
 =======
 /* eslint-disable no-unused-vars */
@@ -5,78 +6,53 @@
 /* eslint-disable no-restricted-globals */
 /* eslint-disable max-len */
 /* eslint-disable no-shadow */
+=======
+>>>>>>> feature(refactoring):refactor the controllers
 /* eslint-disable no-console */
-import pg from 'pg';
-import config from '../config';
+/* eslint-disable max-len */
+import db from '../db/connect';
 import Account from '../models/accounts';
+import generateAccountNumber from '../helper/generateAccountNo';
 
-const regExp = /[^0-9]/;
-const validEmail = /(.+)@(.+){2,}\.(.+){2,}/;
-const pool = new pg.Pool(config);
 
 class AccountController {
   static create(req, res) {
     const { owner, type } = req.body;
 
-    if (regExp.test(owner)) {
-      res.status(400).json({
-        status: 400,
-        error: 'Invalid account owner supplied',
-      });
-      return;
-    }
-
-    // if (type !== 'current' || type !== 'savings') {
-    //   res.status(400).json({
-    //     status: 400,
-    //     error: 'Curent or Savings only',
-    //   });
-    //   return;
-    // }
-
     const account = new Account(owner, type);
 
 
-    if (account.owner === undefined || account.owner === '') {
-      res.status(400).json({
-        status: 400,
-        error: 'Account owner not supplied',
-      });
-      return;
-    }
+    const newAccount = generateAccountNumber();
+    console.log(account.accountNumber);
 
 
-    if (account.type === undefined || account.type.trim() === '') {
-      res.status(400).json({
-        status: 400,
-        error: 'Account type not supplied',
-      });
-      return;
-    }
+    const text = 'INSERT INTO accounts (accountnumber, createdOn, owner, type, status, balance) VALUES($1, $2, $3, $4, $5, $6) RETURNING *';
+    const values = [newAccount, account.createdOn, owner, type, account.status, account.balance];
 
+    db.query(text, values)
+      .then((result) => {
+        console.log(result.rows[0]);
 
-    pool.connect((err, client, done) => {
-      if (err) {
-        console.log(err);
-      }
-      client.query('SELECT * FROM users', (err, result) => {
-        if (err) {
-          console.log(err);
-        }
-        // console.log(result.rows);
-        const accountOwner = result.rows.find(item => item.id === parseInt(account.owner, 10));
-        if (!accountOwner || accountOwner === undefined) {
-          res.status(400).json({
+        const {
+          accountnumber, firstname, lastname, email, type2, openingBalance,
+        } = result.rows[0];
+
+        if (!result.rows[0]) {
+          return res.status(400).json({
             status: 400,
+<<<<<<< 90b9be4179a5a95e628216ad9e542791a94821f7
 <<<<<<< 70bdad15d0a750804b500167feaff32d7e5ee3aa
             message: 'Account owner does not exist',
 =======
             error: 'Account owner does not exist',
 >>>>>>> immersive
+=======
+            error: 'Account not created',
+>>>>>>> feature(refactoring):refactor the controllers
           });
-          return;
         }
 
+<<<<<<< 90b9be4179a5a95e628216ad9e542791a94821f7
         pool.connect((err, client, done) => {
           if (err) {
             console.log(err);
@@ -140,10 +116,26 @@ class AccountController {
 >>>>>>> immersive
             done();
           });
+=======
+        return res.status(201).json({
+          status: 201,
+          data: {
+            accountnumber,
+            firstname,
+            lastname,
+            email,
+            type: type2,
+            openingBalance,
+          },
         });
-        done();
+      })
+      .catch((error) => {
+        res.status(400).json({
+          status: 400,
+          error: error.message,
+>>>>>>> feature(refactoring):refactor the controllers
+        });
       });
-    });
   }
 
 
@@ -152,6 +144,7 @@ class AccountController {
     let { accountNumber } = req.params;
     accountNumber = parseInt(accountNumber, 10);
 
+<<<<<<< 90b9be4179a5a95e628216ad9e542791a94821f7
 <<<<<<< 70bdad15d0a750804b500167feaff32d7e5ee3aa
     console.log(accountStatus);
 =======
@@ -187,6 +180,16 @@ class AccountController {
 =======
           // console.log(result.rows);
 >>>>>>> immersive
+=======
+    const text = 'UPDATE accounts SET status = $1 WHERE accountnumber = $2';
+    const values = [accountStatus, accountNumber];
+
+    // eslint-disable-next-line no-constant-condition
+    if (accountStatus === 'dormant' || accountStatus === 'active') {
+      db.query(text, values)
+        .then((result) => {
+          console.log(result.rows);
+>>>>>>> feature(refactoring):refactor the controllers
           res.status(200).json({
             status: 200,
             data: {
@@ -194,6 +197,7 @@ class AccountController {
               status: accountStatus,
             },
           });
+<<<<<<< 90b9be4179a5a95e628216ad9e542791a94821f7
         });
         done();
       });
@@ -217,10 +221,15 @@ class AccountController {
               accountNumber,
               status: accountStatus,
             },
+=======
+        })
+        .catch((err) => {
+          res.status(400).json({
+            status: 400,
+            error: err,
+>>>>>>> feature(refactoring):refactor the controllers
           });
         });
-        done();
-      });
     } else {
       res.status(400).json({
         status: 400,
@@ -234,6 +243,7 @@ class AccountController {
     let { accountNumber } = req.params;
     accountNumber = parseInt(accountNumber, 10);
 
+<<<<<<< 90b9be4179a5a95e628216ad9e542791a94821f7
 <<<<<<< 70bdad15d0a750804b500167feaff32d7e5ee3aa
 =======
     if (regExp.test(accountNumber)) {
@@ -284,14 +294,30 @@ class AccountController {
             });
           });
           done();
+=======
+    const text = 'DELETE * FROM accounts WHERE accountnumber = $1';
+    const values = [accountNumber];
+
+    db.query(text, values)
+      .then((result) => {
+        console.log(result.rows);
+        res.status(200).json({
+          status: 200,
+          message: `Account No: ${accountNumber} successfully deleted`,
+        });
+      })
+      .catch((err) => {
+        res.status(404).json({
+          status: 404,
+          error: `${err} or Account not available`,
+>>>>>>> feature(refactoring):refactor the controllers
         });
       });
-      done();
-    });
   }
 
 
   static listAllAccounts(req, res) {
+<<<<<<< 90b9be4179a5a95e628216ad9e542791a94821f7
     pool.connect((err, client, done) => {
       if (err) {
         console.log(err);
@@ -303,6 +329,11 @@ class AccountController {
 <<<<<<< 70bdad15d0a750804b500167feaff32d7e5ee3aa
         console.log(result.rows);
 =======
+=======
+    const text = 'SELECT * FROM accounts INNER JOIN users ON accounts.owner = users.id';
+    db.query(text)
+      .then((result) => {
+>>>>>>> feature(refactoring):refactor the controllers
         // console.log(result.rows);
 >>>>>>> immersive
         const newAccountArrray = result.rows.map(item => (
@@ -332,19 +363,29 @@ class AccountController {
           status: 200,
           data: newAccountArrray,
         });
+<<<<<<< 90b9be4179a5a95e628216ad9e542791a94821f7
 >>>>>>> immersive
+=======
+      }).catch((err) => {
+        res.status(400).json({
+          status: 400,
+          error: err,
+        });
+>>>>>>> feature(refactoring):refactor the controllers
       });
-      done();
-    });
   }
 
 
   static listAccount(req, res) {
     const { accountNumber } = req.params;
+    const { status } = req.query;
 
-    if (req.query.status === undefined) {
-      console.log('no status');
+    const text1 = 'SELECT * FROM accounts WHERE accountnumber = $1';
+    const values1 = [accountNumber];
+    const text2 = 'SELECT * FROM accounts WHERE status = $1';
+    const values2 = [status];
 
+<<<<<<< 90b9be4179a5a95e628216ad9e542791a94821f7
 <<<<<<< 70bdad15d0a750804b500167feaff32d7e5ee3aa
 =======
       // if no 'status' indicated as a req.query, proceed with get single account
@@ -373,6 +414,15 @@ class AccountController {
           const account = result.rows.find(item => item.accountnumber === Number(accountNumber));
 
           if (!account) {
+=======
+    if (status === undefined) {
+      console.log('no status');
+
+      db.query(text1, values1)
+        .then((result) => {
+          // console.log(result.rows);
+          if (result.rows.length < 1) {
+>>>>>>> feature(refactoring):refactor the controllers
             res.status(400).json({
               status: 400,
               error: `Account no: ${accountNumber} not available`,
@@ -381,15 +431,20 @@ class AccountController {
             res.status(200).json({
               status: 200,
               data: {
-                accountDetails: account,
+                accountDetails: result.rows[0],
               },
             });
           }
+        })
+        .catch((err) => {
+          res.status(400).json({
+            status: 400,
+            error: err,
+          });
         });
-        done();
-      });
     } else {
       console.log('status available');
+<<<<<<< 90b9be4179a5a95e628216ad9e542791a94821f7
       if (req.query.status === 'active') {
         pool.connect((err, client, done) => {
           if (err) {
@@ -409,12 +464,18 @@ class AccountController {
               return;
             }
 =======
+=======
+      if (status === 'active' || status === 'dormant') {
+        db.query(text2, values2)
+          .then((result) => {
+>>>>>>> feature(refactoring):refactor the controllers
             // console.log(result.rows);
 >>>>>>> immersive
             res.status(200).json({
               status: 200,
               data: result.rows,
             });
+<<<<<<< 90b9be4179a5a95e628216ad9e542791a94821f7
           });
           done();
         });
@@ -442,10 +503,15 @@ class AccountController {
             res.status(200).json({
               status: 200,
               data: result.rows,
+=======
+          })
+          .catch((err) => {
+            res.status(400).json({
+              status: 400,
+              error: err,
+>>>>>>> feature(refactoring):refactor the controllers
             });
           });
-          done();
-        });
       } else {
         res.status(400).json({
           status: 400,
@@ -458,8 +524,8 @@ class AccountController {
 
   static getTransactions(req, res) {
     const { accountNumber } = req.params;
-    const { transactions } = req.params;
     console.log(req.params);
+<<<<<<< 90b9be4179a5a95e628216ad9e542791a94821f7
     if (transactions !== 'transactions') {
       res.status(400).json({
         status: 400,
@@ -486,6 +552,14 @@ class AccountController {
         // console.log(result.rows);
         // console.log(accountNumber);
 >>>>>>> immersive
+=======
+
+    const text = 'SELECT * FROM transactions WHERE accountnumber = $1';
+    const values = [accountNumber];
+
+    db.query(text, values)
+      .then((result) => {
+>>>>>>> feature(refactoring):refactor the controllers
         if (result.rows.length < 1) {
           res.status(400).json({
             status: 400,
@@ -493,6 +567,7 @@ class AccountController {
           });
           return;
         }
+<<<<<<< 90b9be4179a5a95e628216ad9e542791a94821f7
         pool.connect((err, client, done) => {
           if (err) {
             console.log(err);
@@ -512,10 +587,19 @@ class AccountController {
             });
           });
           done();
+=======
+        res.status(200).json({
+          status: 200,
+          data: result.rows,
         });
-        done();
+      })
+      .catch((err) => {
+        res.status(400).json({
+          status: 400,
+          error: err,
+>>>>>>> feature(refactoring):refactor the controllers
+        });
       });
-    });
   }
 
 <<<<<<< 70bdad15d0a750804b500167feaff32d7e5ee3aa
@@ -528,22 +612,11 @@ class AccountController {
 
     console.log(req.params);
     console.log(userEmailAddress, accounts);
-    if (accounts !== 'accounts') {
-      res.status(400).json({
-        status: 400,
-        error: 'Params must be user-email-address/accounts',
-      });
-      return;
-    }
 
-    if (!validEmail.test(userEmailAddress)) {
-      res.status(400).json({
-        status: 400,
-        error: 'Invalid Email',
-      });
-      return;
-    }
+    const text = 'SELECT * FROM users INNER JOIN accounts ON users.id = accounts.owner WHERE EMAIL = $1';
+    const values = [userEmailAddress];
 
+<<<<<<< 90b9be4179a5a95e628216ad9e542791a94821f7
     pool.connect((err, client, done) => {
       if (err) {
         console.log(err);
@@ -559,6 +632,12 @@ class AccountController {
 >>>>>>> immersive
         const userAccounts = result.rows.filter(item => item.email === userEmailAddress);
         if (userAccounts.length < 1) {
+=======
+    db.query(text, values)
+      .then((result) => {
+        // console.log(result.rows);
+        if (result.rows.length < 1) {
+>>>>>>> feature(refactoring):refactor the controllers
           res.status(400).json({
             status: 400,
             error: `User with email: '${userEmailAddress}' not found`,
@@ -567,11 +646,15 @@ class AccountController {
         }
         res.status(200).json({
           status: 200,
-          accounts: userAccounts,
+          accounts: result.rows,
+        });
+      })
+      .catch((err) => {
+        res.status(400).json({
+          status: 400,
+          error: err,
         });
       });
-      done();
-    });
   }
 }
 

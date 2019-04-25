@@ -1,6 +1,6 @@
 class Transaction {
   constructor(type, accountNumber, amount) {
-    this.id = 1;
+    this.id = Number();
     this.createdOn = new Date().toDateString();
     this.type = type;
     this.accountNumber = accountNumber;

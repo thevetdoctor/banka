@@ -2,9 +2,10 @@
   "name": "banka",
   "version": "1.0.0",
   "description": "banka",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
     "test": "mocha dist/server/test --exit",
+<<<<<<< 90b9be4179a5a95e628216ad9e542791a94821f7
 <<<<<<< 70bdad15d0a750804b500167feaff32d7e5ee3aa
     "start": "npm run build && node dist/index.js",
     "build": "babel src --out-dir dist",
@@ -12,6 +13,9 @@
     "cover": "nyc npm test && nyc report --reporter=text-lcov | coveralls",
 =======
     "start": "babel-node src/index.js",
+=======
+    "start": "nodemon --exec babel-node src/index.js",
+>>>>>>> feature(refactoring):refactor the controllers
     "dev": "npm run build && node dist/index.js",
     "build": "babel src --out-dir dist",
     "serve": "node dist/index.js",
@@ -32,8 +36,10 @@
   "dependencies": {
     "bcrypt": "^3.0.6",
     "body-parser": "^1.18.3",
+    "dotenv": "^7.0.0",
     "express": "^4.16.4",
     "jsonwebtoken": "^8.5.1",
+    "jwt-decode": "^2.2.0",
     "pg": "^7.10.0"
   },
   "devDependencies": {

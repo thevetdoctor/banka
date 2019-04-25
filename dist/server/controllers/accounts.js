@@ -5,31 +5,19 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = void 0;
 
-var _pg = _interopRequireDefault(require("pg"));
-
-var _config = _interopRequireDefault(require("../config"));
+var _connect = _interopRequireDefault(require("../db/connect"));
 
 var _accounts = _interopRequireDefault(require("../models/accounts"));
 
+var _generateAccountNo = _interopRequireDefault(require("../helper/generateAccountNo"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
-function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
-
-function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
-
-function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
-
-function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-var regExp = /[^0-9]/;
-var validEmail = /(.+)@(.+){2,}\.(.+){2,}/;
-var pool = new _pg["default"].Pool(_config["default"]);
 
 var AccountController =
 /*#__PURE__*/
@@ -44,35 +32,44 @@ function () {
       var _req$body = req.body,
           owner = _req$body.owner,
           type = _req$body.type;
-
-      if (regExp.test(owner)) {
-        res.status(400).json({
-          status: 400,
-          error: 'Invalid account owner supplied'
-        });
-        return;
-      } // if (type !== 'current' || type !== 'savings') {
-      //   res.status(400).json({
-      //     status: 400,
-      //     error: 'Curent or Savings only',
-      //   });
-      //   return;
-      // }
-
-
       var account = new _accounts["default"](owner, type);
+      var newAccount = (0, _generateAccountNo["default"])();
+      console.log(account.accountNumber);
+      var text = 'INSERT INTO accounts (accountnumber, createdOn, owner, type, status, balance) VALUES($1, $2, $3, $4, $5, $6) RETURNING *';
+      var values = [newAccount, account.createdOn, owner, type, account.status, account.balance];
 
-      if (account.owner === undefined || account.owner === '') {
-        res.status(400).json({
-          status: 400,
-          error: 'Account owner not supplied'
+      _connect["default"].query(text, values).then(function (result) {
+        console.log(result.rows[0]);
+        var _result$rows$ = result.rows[0],
+            accountnumber = _result$rows$.accountnumber,
+            firstname = _result$rows$.firstname,
+            lastname = _result$rows$.lastname,
+            email = _result$rows$.email,
+            type2 = _result$rows$.type2,
+            openingBalance = _result$rows$.openingBalance;
+
+        if (!result.rows[0]) {
+          return res.status(400).json({
+            status: 400,
+            error: 'Account not created'
+          });
+        }
+
+        return res.status(201).json({
+          status: 201,
+          data: {
+            accountnumber: accountnumber,
+            firstname: firstname,
+            lastname: lastname,
+            email: email,
+            type: type2,
+            openingBalance: openingBalance
+          }
         });
-        return;
-      }
-
-      if (account.type === undefined || account.type.trim() === '') {
+      })["catch"](function (error) {
         res.status(400).json({
           status: 400,
+<<<<<<< 90b9be4179a5a95e628216ad9e542791a94821f7
           error: 'Account type not supplied'
         });
         return;
@@ -182,6 +179,9 @@ function () {
             });
           });
           done();
+=======
+          error: error.message
+>>>>>>> feature(refactoring):refactor the controllers
         });
       });
     }
@@ -190,6 +190,7 @@ function () {
     value: function activate(req, res) {
       var accountStatus = req.body.status;
       var accountNumber = req.params.accountNumber;
+<<<<<<< 90b9be4179a5a95e628216ad9e542791a94821f7
 <<<<<<< 70bdad15d0a750804b500167feaff32d7e5ee3aa
       accountNumber = parseInt(accountNumber, 10);
       console.log(accountStatus);
@@ -267,8 +268,27 @@ function () {
                 status: accountStatus
               }
             });
+=======
+      accountNumber = parseInt(accountNumber, 10);
+      var text = 'UPDATE accounts SET status = $1 WHERE accountnumber = $2';
+      var values = [accountStatus, accountNumber]; // eslint-disable-next-line no-constant-condition
+
+      if (accountStatus === 'dormant' || accountStatus === 'active') {
+        _connect["default"].query(text, values).then(function (result) {
+          console.log(result.rows);
+          res.status(200).json({
+            status: 200,
+            data: {
+              accountNumber: accountNumber,
+              status: accountStatus
+            }
           });
-          done();
+        })["catch"](function (err) {
+          res.status(400).json({
+            status: 400,
+            error: err
+>>>>>>> feature(refactoring):refactor the controllers
+          });
         });
       } else {
         res.status(400).json({
@@ -282,6 +302,7 @@ function () {
     value: function _delete(req, res) {
       var accountNumber = req.params.accountNumber;
       accountNumber = parseInt(accountNumber, 10);
+<<<<<<< 90b9be4179a5a95e628216ad9e542791a94821f7
 <<<<<<< 70bdad15d0a750804b500167feaff32d7e5ee3aa
 =======
 
@@ -342,13 +363,28 @@ function () {
             });
             done();
           });
+=======
+      var text = 'DELETE * FROM accounts WHERE accountnumber = $1';
+      var values = [accountNumber];
+
+      _connect["default"].query(text, values).then(function (result) {
+        console.log(result.rows);
+        res.status(200).json({
+          status: 200,
+          message: "Account No: ".concat(accountNumber, " successfully deleted")
         });
-        done();
+      })["catch"](function (err) {
+        res.status(404).json({
+          status: 404,
+          error: "".concat(err, " or Account not available")
+>>>>>>> feature(refactoring):refactor the controllers
+        });
       });
     }
   }, {
     key: "listAllAccounts",
     value: function listAllAccounts(req, res) {
+<<<<<<< 90b9be4179a5a95e628216ad9e542791a94821f7
       pool.connect(function (err, client, done) {
         if (err) {
           console.log(err);
@@ -395,25 +431,74 @@ function () {
             data: newAccountArrray
           });
 >>>>>>> immersive
+=======
+      var text = 'SELECT * FROM accounts INNER JOIN users ON accounts.owner = users.id';
+
+      _connect["default"].query(text).then(function (result) {
+        // console.log(result.rows);
+        var newAccountArrray = result.rows.map(function (item) {
+          return {
+            createdOn: item.createdon,
+            accountNumber: item.accountnumber,
+            ownerEmail: item.email,
+            type: item.type,
+            status: item.status,
+            balance: item.balance
+          };
         });
-        done();
+        res.status(200).json({
+          status: 200,
+          data: newAccountArrray
+        });
+      })["catch"](function (err) {
+        res.status(400).json({
+          status: 400,
+          error: err
+>>>>>>> feature(refactoring):refactor the controllers
+        });
       });
     }
   }, {
     key: "listAccount",
     value: function listAccount(req, res) {
       var accountNumber = req.params.accountNumber;
+      var status = req.query.status;
+      var text1 = 'SELECT * FROM accounts WHERE accountnumber = $1';
+      var values1 = [accountNumber];
+      var text2 = 'SELECT * FROM accounts WHERE status = $1';
+      var values2 = [status];
 
+<<<<<<< 90b9be4179a5a95e628216ad9e542791a94821f7
       if (req.query.status === undefined) {
 <<<<<<< 70bdad15d0a750804b500167feaff32d7e5ee3aa
         console.log('no status');
 =======
         console.log('no status'); // if no 'status' indicated as a req.query, proceed with get single account
 >>>>>>> immersive
+=======
+      if (status === undefined) {
+        console.log('no status');
+>>>>>>> feature(refactoring):refactor the controllers
 
-        if (regExp.test(accountNumber)) {
+        _connect["default"].query(text1, values1).then(function (result) {
+          // console.log(result.rows);
+          if (result.rows.length < 1) {
+            res.status(400).json({
+              status: 400,
+              error: "Account no: ".concat(accountNumber, " not available")
+            });
+          } else {
+            res.status(200).json({
+              status: 200,
+              data: {
+                accountDetails: result.rows[0]
+              }
+            });
+          }
+        })["catch"](function (err) {
           res.status(400).json({
             status: 400,
+<<<<<<< 90b9be4179a5a95e628216ad9e542791a94821f7
             error: 'Invalid account number'
           });
           return;
@@ -453,12 +538,15 @@ function () {
                 }
               });
             }
+=======
+            error: err
+>>>>>>> feature(refactoring):refactor the controllers
           });
-          done();
         });
       } else {
         console.log('status available');
 
+<<<<<<< 90b9be4179a5a95e628216ad9e542791a94821f7
         if (req.query.status === 'active') {
           pool.connect(function (err, client, done) {
             if (err) {
@@ -522,8 +610,20 @@ function () {
                 status: 200,
                 data: result.rows
               });
+=======
+        if (status === 'active' || status === 'dormant') {
+          _connect["default"].query(text2, values2).then(function (result) {
+            // console.log(result.rows);
+            res.status(200).json({
+              status: 200,
+              data: result.rows
             });
-            done();
+          })["catch"](function (err) {
+            res.status(400).json({
+              status: 400,
+              error: err
+>>>>>>> feature(refactoring):refactor the controllers
+            });
           });
         } else {
           res.status(400).json({
@@ -537,9 +637,11 @@ function () {
     key: "getTransactions",
     value: function getTransactions(req, res) {
       var accountNumber = req.params.accountNumber;
-      var transactions = req.params.transactions;
       console.log(req.params);
+      var text = 'SELECT * FROM transactions WHERE accountnumber = $1';
+      var values = [accountNumber];
 
+<<<<<<< 90b9be4179a5a95e628216ad9e542791a94821f7
       if (transactions !== 'transactions') {
         res.status(400).json({
           status: 400,
@@ -603,6 +705,25 @@ function () {
             done();
           });
           done();
+=======
+      _connect["default"].query(text, values).then(function (result) {
+        if (result.rows.length < 1) {
+          res.status(400).json({
+            status: 400,
+            error: 'Account Number does not exist'
+          });
+          return;
+        }
+
+        res.status(200).json({
+          status: 200,
+          data: result.rows
+        });
+      })["catch"](function (err) {
+        res.status(400).json({
+          status: 400,
+          error: err
+>>>>>>> feature(refactoring):refactor the controllers
         });
       });
     }
@@ -613,18 +734,27 @@ function () {
       var accounts = req.params.accounts;
       console.log(req.params);
       console.log(userEmailAddress, accounts);
+      var text = 'SELECT * FROM users INNER JOIN accounts ON users.id = accounts.owner WHERE EMAIL = $1';
+      var values = [userEmailAddress];
 
-      if (accounts !== 'accounts') {
-        res.status(400).json({
-          status: 400,
-          error: 'Params must be user-email-address/accounts'
+      _connect["default"].query(text, values).then(function (result) {
+        // console.log(result.rows);
+        if (result.rows.length < 1) {
+          res.status(400).json({
+            status: 400,
+            error: "User with email: '".concat(userEmailAddress, "' not found")
+          });
+          return;
+        }
+
+        res.status(200).json({
+          status: 200,
+          accounts: result.rows
         });
-        return;
-      }
-
-      if (!validEmail.test(userEmailAddress)) {
+      })["catch"](function (err) {
         res.status(400).json({
           status: 400,
+<<<<<<< 90b9be4179a5a95e628216ad9e542791a94821f7
           error: 'Invalid Email'
         });
         return;
@@ -663,8 +793,10 @@ function () {
             status: 200,
             accounts: userAccounts
           });
+=======
+          error: err
+>>>>>>> feature(refactoring):refactor the controllers
         });
-        done();
       });
     }
   }]);

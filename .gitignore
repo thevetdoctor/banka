@@ -2,5 +2,10 @@
 node_modules
 =======
 node_modules
+<<<<<<< 90b9be4179a5a95e628216ad9e542791a94821f7
 .nyc_output/
 >>>>>>> immersive
+=======
+.nyc_output/
+.env
+>>>>>>> feature(refactoring):refactor the controllers

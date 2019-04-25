@@ -10,7 +10,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var Transaction = function Transaction(type, accountNumber, amount) {
   _classCallCheck(this, Transaction);
 
-  this.id = 1;
+  this.id = Number();
   this.createdOn = new Date().toDateString();
   this.type = type;
   this.accountNumber = accountNumber;
