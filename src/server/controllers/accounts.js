@@ -1,131 +1,57 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-restricted-globals */
-/* eslint-disable max-len */
-/* eslint-disable no-shadow */
 /* eslint-disable no-console */
-import pg from 'pg';
-import config from '../config';
+/* eslint-disable max-len */
+import db from '../db/connect';
 import Account from '../models/accounts';
+import generateAccountNumber from '../helper/generateAccountNo';
 
-const regExp = /[^0-9]/;
-const validEmail = /(.+)@(.+){2,}\.(.+){2,}/;
-const pool = new pg.Pool(config);
 
 class AccountController {
   static create(req, res) {
     const { owner, type } = req.body;
 
-    if (regExp.test(owner)) {
-      res.status(400).json({
-        status: 400,
-        error: 'Invalid account owner supplied',
-      });
-      return;
-    }
-
-    // if (type !== 'current' || type !== 'savings') {
-    //   res.status(400).json({
-    //     status: 400,
-    //     error: 'Curent or Savings only',
-    //   });
-    //   return;
-    // }
-
     const account = new Account(owner, type);
 
 
-    if (account.owner === undefined || account.owner === '') {
-      res.status(400).json({
-        status: 400,
-        error: 'Account owner not supplied',
-      });
-      return;
-    }
+    const newAccount = generateAccountNumber();
+    console.log(account.accountNumber);
 
 
-    if (account.type === undefined || account.type.trim() === '') {
-      res.status(400).json({
-        status: 400,
-        error: 'Account type not supplied',
-      });
-      return;
-    }
+    const text = 'INSERT INTO accounts (accountnumber, createdOn, owner, type, status, balance) VALUES($1, $2, $3, $4, $5, $6) RETURNING *';
+    const values = [newAccount, account.createdOn, owner, type, account.status, account.balance];
 
+    db.query(text, values)
+      .then((result) => {
+        console.log(result.rows[0]);
 
-    pool.connect((err, client, done) => {
-      if (err) {
-        console.log(err);
-      }
-      client.query('SELECT * FROM users', (err, result) => {
-        if (err) {
-          console.log(err);
-        }
-        // console.log(result.rows);
-        const accountOwner = result.rows.find(item => item.id === parseInt(account.owner, 10));
-        if (!accountOwner || accountOwner === undefined) {
-          res.status(400).json({
+        const {
+          accountnumber, firstname, lastname, email, type2, openingBalance,
+        } = result.rows[0];
+
+        if (!result.rows[0]) {
+          return res.status(400).json({
             status: 400,
-            error: 'Account owner does not exist',
+            error: 'Account not created',
           });
-          return;
         }
 
-        pool.connect((err, client, done) => {
-          if (err) {
-            console.log(err);
-          }
-          client.query('SELECT * FROM accounts', (err, result) => {
-            if (err) {
-              console.log(err);
-            }
-            // console.log(result.rows);
-
-            const newArr = result.rows.map(val => val.id);
-            const accountArray = result.rows.map(item => item.accountnumber);
-            account.id = newArr.length !== 0 ? newArr.length + 1 : 1;
-            if (newArr.length === 0) {
-              account.accountNumber = 2019031111;
-            } else {
-              // console.log(newArr);
-              // console.log(accountArray);
-              let newAccountNumber = Math.max(...accountArray);
-              newAccountNumber += 1;
-              account.accountNumber = newAccountNumber;
-            }
-            pool.connect((err, client, done) => {
-              if (err) {
-                console.log(err);
-              }
-              // console.log(account);
-              client.query('INSERT INTO accounts (id, accountnumber, createdOn, owner, type, status, balance) VALUES($1, $2, $3, $4, $5, $6, $7)', [account.id, account.accountNumber, account.createdOn, account.owner, account.type, account.status, account.balance], (err, result) => {
-                if (err) {
-                  console.log(err);
-                }
-                // console.log(result.rows, 'nothing');
-                // console.log(accountOwner);
-                res.status(201).json({
-                  status: 201,
-                  data: {
-                    accountNumber: account.accountNumber,
-                    firstName: accountOwner.firstname,
-                    lastName: accountOwner.lastname,
-                    email: accountOwner.email,
-                    type: account.type,
-                    openingBalance: account.balance,
-                  },
-                });
-              });
-              done();
-            });
-            // res.status(200).json({
-            // status: 200,
-            // });
-            done();
-          });
+        return res.status(201).json({
+          status: 201,
+          data: {
+            accountnumber,
+            firstname,
+            lastname,
+            email,
+            type: type2,
+            openingBalance,
+          },
         });
-        done();
+      })
+      .catch((error) => {
+        res.status(400).json({
+          status: 400,
+          error: error.message,
+        });
       });
-    });
   }
 
 
@@ -134,33 +60,14 @@ class AccountController {
     let { accountNumber } = req.params;
     accountNumber = parseInt(accountNumber, 10);
 
-    // console.log(accountStatus);
-    if (typeof accountStatus !== 'string') {
-      res.status(400).json({
-        status: 400,
-        error: 'Invalid status supplied',
-      });
-      return;
-    }
-    if (accountStatus === undefined || accountStatus.trim() === '') {
-      res.status(400).json({
-        status: 400,
-        error: 'Status not supplied',
-      });
-      return;
-    }
+    const text = 'UPDATE accounts SET status = $1 WHERE accountnumber = $2';
+    const values = [accountStatus, accountNumber];
 
     // eslint-disable-next-line no-constant-condition
-    if (accountStatus === 'dormant') {
-      pool.connect((err, client, done) => {
-        if (err) {
-          console.log(err);
-        }
-        client.query('UPDATE accounts SET status = $1 WHERE accountnumber = $2', [accountStatus, accountNumber], (err, result) => {
-          if (err) {
-            console.log(err);
-          }
-          // console.log(result.rows);
+    if (accountStatus === 'dormant' || accountStatus === 'active') {
+      db.query(text, values)
+        .then((result) => {
+          console.log(result.rows);
           res.status(200).json({
             status: 200,
             data: {
@@ -168,29 +75,13 @@ class AccountController {
               status: accountStatus,
             },
           });
-        });
-        done();
-      });
-    } else if (accountStatus === 'active') {
-      pool.connect((err, client, done) => {
-        if (err) {
-          console.log(err);
-        }
-        client.query('UPDATE accounts SET status = $1 WHERE accountnumber = $2', [accountStatus, accountNumber], (err, result) => {
-          if (err) {
-            console.log(err);
-          }
-          // console.log(result.rows);
-          res.status(200).json({
-            status: 200,
-            data: {
-              accountNumber,
-              status: accountStatus,
-            },
+        })
+        .catch((err) => {
+          res.status(400).json({
+            status: 400,
+            error: err,
           });
         });
-        done();
-      });
     } else {
       res.status(400).json({
         status: 400,
@@ -204,61 +95,30 @@ class AccountController {
     let { accountNumber } = req.params;
     accountNumber = parseInt(accountNumber, 10);
 
-    if (regExp.test(accountNumber)) {
-      regExp.status(400).json({
-        status: 400,
-        error: 'Invalid account number supplied',
-      });
-    }
+    const text = 'DELETE * FROM accounts WHERE accountnumber = $1';
+    const values = [accountNumber];
 
-    pool.connect((err, client, done) => {
-      if (err) {
-        console.log(err);
-      }
-      client.query('SELECT * FROM accounts WHERE accountnumber = $1', [accountNumber], (err, result) => {
-        if (err) {
-          console.log(err);
-        }
-        // console.log(result.rows);
-        if (result.rows.length < 1) {
-          res.status(404).json({
-            status: 404,
-            error: 'Account not available',
-          });
-          return;
-        }
-
-        pool.connect((err, client, done) => {
-          if (err) {
-            console.log(err);
-          }
-          client.query('DELETE FROM accounts WHERE accountnumber = $1', [accountNumber], (err, result) => {
-            if (err) {
-              console.log(err);
-            }
-            // console.log(result.rows);
-            res.status(200).json({
-              status: 200,
-              message: `Account No: ${accountNumber} successfully deleted`,
-            });
-          });
-          done();
+    db.query(text, values)
+      .then((result) => {
+        console.log(result.rows);
+        res.status(200).json({
+          status: 200,
+          message: `Account No: ${accountNumber} successfully deleted`,
+        });
+      })
+      .catch((err) => {
+        res.status(404).json({
+          status: 404,
+          error: `${err} or Account not available`,
         });
       });
-      done();
-    });
   }
 
 
   static listAllAccounts(req, res) {
-    pool.connect((err, client, done) => {
-      if (err) {
-        console.log(err);
-      }
-      client.query('SELECT * FROM accounts INNER JOIN users ON accounts.owner = users.id', (err, result) => {
-        if (err) {
-          console.log(err);
-        }
+    const text = 'SELECT * FROM accounts INNER JOIN users ON accounts.owner = users.id';
+    db.query(text)
+      .then((result) => {
         // console.log(result.rows);
         const newAccountArrray = result.rows.map(item => (
           {
@@ -274,39 +134,31 @@ class AccountController {
           status: 200,
           data: newAccountArrray,
         });
+      }).catch((err) => {
+        res.status(400).json({
+          status: 400,
+          error: err,
+        });
       });
-      done();
-    });
   }
 
 
   static listAccount(req, res) {
     const { accountNumber } = req.params;
+    const { status } = req.query;
 
-    if (req.query.status === undefined) {
+    const text1 = 'SELECT * FROM accounts WHERE accountnumber = $1';
+    const values1 = [accountNumber];
+    const text2 = 'SELECT * FROM accounts WHERE status = $1';
+    const values2 = [status];
+
+    if (status === undefined) {
       console.log('no status');
 
-      // if no 'status' indicated as a req.query, proceed with get single account
-      if (regExp.test(accountNumber)) {
-        res.status(400).json({
-          status: 400,
-          error: 'Invalid account number',
-        });
-        return;
-      }
-
-      pool.connect((err, client, done) => {
-        if (err) {
-          console.log(err);
-        }
-        client.query('SELECT * FROM accounts', (err, result) => {
-          if (err) {
-            console.log(err);
-          }
+      db.query(text1, values1)
+        .then((result) => {
           // console.log(result.rows);
-          const account = result.rows.find(item => item.accountnumber === Number(accountNumber));
-
-          if (!account) {
+          if (result.rows.length < 1) {
             res.status(400).json({
               status: 400,
               error: `Account no: ${accountNumber} not available`,
@@ -315,49 +167,34 @@ class AccountController {
             res.status(200).json({
               status: 200,
               data: {
-                accountDetails: account,
+                accountDetails: result.rows[0],
               },
             });
           }
+        })
+        .catch((err) => {
+          res.status(400).json({
+            status: 400,
+            error: err,
+          });
         });
-        done();
-      });
     } else {
       console.log('status available');
-      if (req.query.status === 'active') {
-        pool.connect((err, client, done) => {
-          if (err) {
-            console.log(err);
-          }
-          client.query('SELECT * FROM accounts WHERE status = $1', [req.query.status], (err, result) => {
-            if (err) {
-              console.log(err);
-            }
+      if (status === 'active' || status === 'dormant') {
+        db.query(text2, values2)
+          .then((result) => {
             // console.log(result.rows);
             res.status(200).json({
               status: 200,
               data: result.rows,
             });
-          });
-          done();
-        });
-      } else if (req.query.status === 'dormant') {
-        pool.connect((err, client, done) => {
-          if (err) {
-            console.log(err);
-          }
-          client.query('SELECT * FROM accounts WHERE status = $1', [req.query.status], (err, result) => {
-            if (err) {
-              console.log(err);
-            }
-            // console.log(result.rows);
-            res.status(200).json({
-              status: 200,
-              data: result.rows,
+          })
+          .catch((err) => {
+            res.status(400).json({
+              status: 400,
+              error: err,
             });
           });
-          done();
-        });
       } else {
         res.status(400).json({
           status: 400,
@@ -370,26 +207,13 @@ class AccountController {
 
   static getTransactions(req, res) {
     const { accountNumber } = req.params;
-    const { transactions } = req.params;
     console.log(req.params);
-    if (transactions !== 'transactions') {
-      res.status(400).json({
-        status: 400,
-        error: 'Params can only be transactions',
-      });
-      return;
-    }
 
-    pool.connect((err, client, done) => {
-      if (err) {
-        console.log(err);
-      }
-      client.query('SELECT * FROM accounts WHERE accountnumber = $1', [accountNumber], (err, result) => {
-        if (err) {
-          console.log(err);
-        }
-        // console.log(result.rows);
-        // console.log(accountNumber);
+    const text = 'SELECT * FROM transactions WHERE accountnumber = $1';
+    const values = [accountNumber];
+
+    db.query(text, values)
+      .then((result) => {
         if (result.rows.length < 1) {
           res.status(400).json({
             status: 400,
@@ -397,25 +221,17 @@ class AccountController {
           });
           return;
         }
-        pool.connect((err, client, done) => {
-          if (err) {
-            console.log(err);
-          }
-          client.query('SELECT * FROM transactions WHERE accountnumber = $1', [accountNumber], (err, result) => {
-            if (err) {
-              console.log(err);
-            }
-            // console.log(result.rows);
-            res.status(200).json({
-              status: 200,
-              data: result.rows,
-            });
-          });
-          done();
+        res.status(200).json({
+          status: 200,
+          data: result.rows,
         });
-        done();
+      })
+      .catch((err) => {
+        res.status(400).json({
+          status: 400,
+          error: err,
+        });
       });
-    });
   }
 
 
@@ -425,33 +241,14 @@ class AccountController {
 
     console.log(req.params);
     console.log(userEmailAddress, accounts);
-    if (accounts !== 'accounts') {
-      res.status(400).json({
-        status: 400,
-        error: 'Params must be user-email-address/accounts',
-      });
-      return;
-    }
 
-    if (!validEmail.test(userEmailAddress)) {
-      res.status(400).json({
-        status: 400,
-        error: 'Invalid Email',
-      });
-      return;
-    }
+    const text = 'SELECT * FROM users INNER JOIN accounts ON users.id = accounts.owner WHERE EMAIL = $1';
+    const values = [userEmailAddress];
 
-    pool.connect((err, client, done) => {
-      if (err) {
-        console.log(err);
-      }
-      client.query('SELECT * FROM users INNER JOIN accounts ON users.id = accounts.owner', (err, result) => {
-        if (err) {
-          console.log(err);
-        }
+    db.query(text, values)
+      .then((result) => {
         // console.log(result.rows);
-        const userAccounts = result.rows.filter(item => item.email === userEmailAddress);
-        if (userAccounts.length < 1) {
+        if (result.rows.length < 1) {
           res.status(400).json({
             status: 400,
             error: `User with email: '${userEmailAddress}' not found`,
@@ -460,11 +257,15 @@ class AccountController {
         }
         res.status(200).json({
           status: 200,
-          accounts: userAccounts,
+          accounts: result.rows,
+        });
+      })
+      .catch((err) => {
+        res.status(400).json({
+          status: 400,
+          error: err,
         });
       });
-      done();
-    });
   }
 }
 

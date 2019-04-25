@@ -5,15 +5,13 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = void 0;
 
-var _pg = _interopRequireDefault(require("pg"));
-
 var _jsonwebtoken = _interopRequireDefault(require("jsonwebtoken"));
 
 var _bcrypt = _interopRequireDefault(require("bcrypt"));
 
-var _config = _interopRequireDefault(require("../config"));
-
 var _users = _interopRequireDefault(require("../models/users"));
+
+var _connect = _interopRequireDefault(require("../db/connect"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
@@ -22,21 +20,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-var pool = new _pg["default"].Pool(_config["default"]);
-
-var validUser = function validUser(user) {
-  var validEmail = /(.+)@(.+){2,}\.(.+){2,}/.test(user.email) && user.email.trim() !== '';
-  var validPassword = typeof user.password === 'string' && user.password.trim() !== '' && user.password.trim().length >= 6;
-  return validEmail && validPassword;
-};
-
-var validateEmail = function validateEmail(email) {
-  var validEmail = /(.+)@(.+){2,}\.(.+){2,}/.test(email) && email.trim() !== '';
-  return validEmail;
-};
-
-var mobileRegex = /[^0-9]/;
 
 var UserController =
 /*#__PURE__*/
@@ -48,7 +31,6 @@ function () {
   _createClass(UserController, null, [{
     key: "signup",
     value: function signup(req, res) {
-      // eslint-disable-next-line object-curly-newline
       var _req$body = req.body,
           email = _req$body.email,
           firstName = _req$body.firstName,
@@ -57,156 +39,55 @@ function () {
           sex = _req$body.sex,
           mobile = _req$body.mobile;
       var user = new _users["default"](email, firstName, lastName, password, sex, mobile);
-      console.log(user);
 
-      if (user.firstName === undefined || user.firstName.trim() === '') {
-        res.status(400).json({
-          status: 400,
-          error: 'Firstname not supplied'
-        });
-        return;
-      }
+      var token = _jsonwebtoken["default"].sign({
+        user: user
+      }, 'secretKey', {
+        expiresIn: '1min'
+      });
 
-      if (user.lastName === undefined || user.lastName.trim() === '') {
-        res.status(400).json({
-          status: 400,
-          error: 'Lastname not supplied'
-        });
-        return;
-      }
+      var hashed = _bcrypt["default"].hashSync(password, 10);
 
-      if (user.email === undefined || user.email.trim() === '') {
-        res.status(400).json({
-          status: 400,
-          error: 'Email not supplied'
-        });
-        return;
-      }
+      var text = 'INSERT INTO users (email, firstName, lastName, password, hash, type, isAdmin, sex, mobile, active, createdDate) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING *';
+      var values = [email, firstName, lastName, password, hashed, user.type, user.isAdmin, sex, mobile, user.active, user.createdDate];
 
-      if (user.password === undefined || user.password.trim() === '') {
-        res.status(400).json({
-          status: 400,
-          error: 'Password not supplied'
-        });
-        return;
-      }
+      _connect["default"].query(text, values).then(function (result) {
+        console.log(result.rows[0]);
+        console.log('New User created');
 
-      if (user.sex === undefined || user.sex.trim() === '') {
-        res.status(400).json({
-          status: 400,
-          error: 'Sex not supplied'
-        });
-        return;
-      } // if (user.sex !== 'M' || user.sex !== 'F') {
-      //   res.status(400).json({
-      //     status: 400,
-      //     error: 'Invalid Sex supplied',
-      //   });
-      //   return;
-      // }
-
-
-      if (user.mobile === undefined || user.mobile.trim() === '') {
-        res.status(400).json({
-          status: 400,
-          error: 'Mobile not supplied'
-        });
-        return;
-      }
-
-      if (mobileRegex.test(user.mobile)) {
-        res.status(400).json({
-          status: 400,
-          error: 'Invalid Mobile Number supplied'
-        });
-        return;
-      } // Validate Email
-
-
-      if (!validateEmail(user.email)) {
-        console.log(user.email);
-        res.status(400).json({
-          status: 400,
-          error: 'Invalid Email'
-        });
-        return;
-      } // check validity of user name & password
-
-
-      if (validUser(user)) {
-        pool.connect(function (err, client, done) {
-          if (err) {
-            console.log(err);
-          }
-
-          client.query('SELECT email FROM users', function (err, result) {
-            if (err) {
-              console.log(err);
-            }
-
-            console.log(result.rows);
-            var newArr = result.rows.map(function (val) {
-              return val.email.trim();
-            });
-            console.log(newArr);
-
-            if (newArr.includes(user.email)) {
-              res.status(400).json({
-                status: 400,
-                error: 'Email already used'
-              });
-            } else {
-              // Assign user ID
-              user.id = newArr.length !== 0 ? newArr.length + 1 : 1; // save user in User Record
-
-              var token = _jsonwebtoken["default"].sign({
-                user: user
-              }, 'secretKey', {
-                expiresIn: '1min'
-              });
-
-              console.log('New email being registered'); // encrypt the valid password with BCRYPT
-
-              _bcrypt["default"].hash(user.password, 10).then(function (hash) {
-                // connect to the db and save credentials
-                pool.connect(function (err, client, done) {
-                  if (err) {
-                    console.log(err);
-                  }
-
-                  client.query('INSERT INTO users (id, email, firstName, lastName, password, hash, type, isAdmin, sex, mobile, active, createdDate) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)', [user.id, user.email, user.firstName, user.lastName, user.password, hash, user.type, user.isAdmin, user.sex, user.mobile, user.active, user.createdDate], function (err, result) {
-                    if (err) {
-                      console.log(err);
-                    }
-
-                    console.log(result.rows);
-                    console.log('New User created');
-                    res.status(201).json({
-                      status: 201,
-                      data: {
-                        token: token,
-                        id: user.id,
-                        firstName: user.firstName,
-                        lastName: user.lastName,
-                        email: user.email
-                      }
-                    });
-                  });
-                  done();
-                });
-              });
-            }
-
-            done();
+        if (!result.rows[0]) {
+          res.status(400).json({
+            status: 400,
+            error: 'Email already used'
           });
-        }); // }
-      } else {
-        // send an error
-        res.status(400).json({
-          status: 400,
-          error: 'Password must be minimum of 6 characters'
+        }
+
+        var _result$rows$ = result.rows[0],
+            id = _result$rows$.id,
+            firstname = _result$rows$.firstname,
+            lastname = _result$rows$.lastname,
+            email = _result$rows$.email;
+        return res.status(201).json({
+          status: 201,
+          data: {
+            token: token,
+            id: id,
+            firstname: firstname,
+            lastname: lastname,
+            email: email
+          }
         });
-      }
+      })["catch"](function (err) {
+        console.log(err);
+
+        if (err.routine === '_bt_check_unique') {
+          var error = 'Email already used';
+          res.status(400).json({
+            status: 400,
+            error: error
+          });
+        }
+      });
     }
   }, {
     key: "signin",
@@ -217,90 +98,54 @@ function () {
       var user = {
         email: email,
         password: password
-      };
-      var position = 0;
+      }; // let position = 0;
 
-      if (user.email === undefined || user.email === '') {
-        res.status(400).json({
-          status: 400,
-          error: 'Email not supplied'
-        });
-        return;
-      }
+      var text = 'SELECT email, firstname, lastname, password, hash FROM users WHERE email = $1';
+      var values = [email]; // Query User Record for credentials
 
-      if (user.password === undefined || user.password === '') {
-        res.status(400).json({
-          status: 400,
-          error: 'Password not supplied'
-        });
-        return;
-      } // Query User Record for credentials
+      _connect["default"].query(text, values).then(function (result) {
+        console.log(result.rows[0]);
 
-
-      pool.connect(function (err, client, done) {
-        if (err) {
-          console.log(err);
+        if (!result.rows[0]) {
+          res.status(400).json({
+            status: 400,
+            error: 'Invalid Email'
+          });
         }
 
-        client.query('SELECT id, email, firstName, lastName, password, hash FROM users', function (err, result) {
-          if (err) {
-            console.log(err);
-          }
+        var newUser = result.rows[0];
+        console.log(newUser);
 
-          console.log(result.rows);
-          var contain = result.rows.map(function (val) {
-            return val.email;
-          }).map(function (val) {
-            return val.trim();
+        var compared = _bcrypt["default"].compareSync(user.password, newUser.hash);
+
+        if (!compared) {
+          res.status(400).json({
+            status: 400,
+            error: 'Invalid password'
           });
+        }
 
-          if (contain.includes(user.email)) {
-            position = contain.indexOf(user.email);
+        delete newUser.password;
+
+        var token = _jsonwebtoken["default"].sign({
+          newUser: newUser
+        }, 'secretKey', {
+          expiresIn: '5min'
+        });
+
+        res.status(200).json({
+          status: 200,
+          data: {
+            token: token,
+            id: newUser.id,
+            firstName: newUser.firstname,
+            lastName: newUser.lastname,
+            email: newUser.email
           }
-
-          console.log(position);
-          console.log(result.rows[position].email);
-          var newUser = result.rows[position];
-          console.log(newUser);
-
-          if (user.email === newUser.email.trim()) {
-            if (user.password === newUser.password.trim()) {
-              // bcrypt.compare(user.password, newUser.hash)
-              // .then((result) => {
-              // if (result) {
-              delete newUser.password;
-
-              var token = _jsonwebtoken["default"].sign({
-                newUser: newUser
-              }, 'secretKey', {
-                expiresIn: '5min'
-              });
-
-              res.status(200).json({
-                status: 200,
-                data: {
-                  token: token,
-                  id: newUser.id,
-                  firstName: newUser.firstname,
-                  lastName: newUser.lastname,
-                  email: newUser.email
-                }
-              }); // }
-              // });
-            } else {
-              res.status(400).json({
-                status: 400,
-                error: 'Invalid password'
-              });
-            }
-          } else {
-            res.status(400).json({
-              status: 400,
-              error: 'Invalid email'
-            });
-          }
-
-          done();
+        });
+      })["catch"](function (err) {
+        res.status(400).json({
+          error: err
         });
       });
     }

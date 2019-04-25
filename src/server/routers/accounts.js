@@ -1,24 +1,25 @@
 import express from 'express';
 import AccountController from '../controllers/accounts';
+import validateAccount from '../helper/validateAccount';
+import auth from '../checkAuth';
+// import staffAuth from '../checkAuth/staffAuth';
 
 const router = express.Router();
 
 
-router.post('/', AccountController.create);
+router.post('/', auth, validateAccount.creation, AccountController.create);
 
-router.patch('/:accountNumber', AccountController.activate);
+router.patch('/:accountNumber', auth, validateAccount.activation, AccountController.activate);
 
-router.delete('/:accountNumber', AccountController.delete);
+router.delete('/:accountNumber', auth, validateAccount.deletion, AccountController.delete);
 
-router.get('/', AccountController.listAllAccounts);
+router.get('/', auth, AccountController.listAllAccounts);
 
-router.get('/:accountNumber', AccountController.listAccount);
+router.get('/:accountNumber', auth, validateAccount.listing, AccountController.listAccount);
 
-router.get('/:accountNumber/:transactions', AccountController.getTransactions);
+router.get('/:accountNumber/:transactions', auth, validateAccount.getTransactions, AccountController.getTransactions);
 
-router.get('/user/:userEmailAddress/:accounts', AccountController.getUserBankAccounts);
-
-// router.get('/:accounts?status=active', AccountController.getActiveAccounts);
+router.get('/user/:userEmailAddress/:accounts', auth, validateAccount.getUserBankAccounts, AccountController.getUserBankAccounts);
 
 
 export default router;
