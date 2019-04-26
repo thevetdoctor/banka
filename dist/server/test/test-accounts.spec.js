@@ -8,12 +8,15 @@ var _index = _interopRequireDefault(require("../../index"));
 
 var _accounts = _interopRequireDefault(require("../controllers/accounts"));
 
+var _testHelper = _interopRequireDefault(require("../test-helper.js"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 /* eslint-disable no-unused-expressions */
 
 /* eslint-disable no-undef */
-// eslint-disable-next-line no-unused-vars
+_testHelper["default"].createtables; // eslint-disable-next-line no-unused-vars
+
 var should = _chai["default"].should();
 
 _chai["default"].use(_chaiHttp["default"]); // test1-1

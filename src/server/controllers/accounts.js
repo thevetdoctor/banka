@@ -13,11 +13,13 @@ class AccountController {
 
 
     const newAccount = generateAccountNumber();
-    console.log(account.accountNumber);
+    console.log(newAccount, 16);
 
 
     const text = 'INSERT INTO accounts (accountnumber, createdOn, owner, type, status, balance) VALUES($1, $2, $3, $4, $5, $6) RETURNING *';
     const values = [newAccount, account.createdOn, owner, type, account.status, account.balance];
+
+    console.log(values);
 
     db.query(text, values)
       .then((result) => {
@@ -255,9 +257,17 @@ class AccountController {
           });
           return;
         }
+        const list = result.rows.map(item => (
+          {
+            createdOn: item.createdon,
+            accountNumber: item.accountnumber,
+            type: item.type,
+            status: item.status,
+            balance: item.balance,
+          }));
         res.status(200).json({
           status: 200,
-          accounts: result.rows,
+          accounts: list,
         });
       })
       .catch((err) => {

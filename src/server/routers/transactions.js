@@ -6,7 +6,7 @@ import auth from '../checkAuth';
 const router = express.Router();
 
 
-router.post('/:accountNumber/:type', auth, validateTransaction.validateCreditAndDebit, TransactionController.creditAndDebit);
+router.post('/:accountNumber/:type', validateTransaction.validateCreditAndDebit, TransactionController.creditAndDebit);
 
 router.get('/:transactionId', TransactionController.getTransaction);
 

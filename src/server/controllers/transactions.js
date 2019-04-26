@@ -4,7 +4,6 @@
 /* eslint-disable no-shadow */
 import db from '../db/connect';
 import Transaction from '../models/transactions';
-import cashierRecord from '../records/cashierRecord';
 import checkBalance from '../helper/checkBalance';
 
 const regExp = /[^0-9]/;
@@ -15,7 +14,8 @@ class TransactionController {
     const { accountNumber } = req.params;
     const { type } = req.params;
 
-    const currentBalance = checkBalance(accountNumber);
+    const currentBalance = checkBalance.checkBalance(accountNumber);
+    console.log(currentBalance);
 
     if (!currentBalance) {
       res.status(400).json({
@@ -30,6 +30,7 @@ class TransactionController {
 
 
     // Run this block for 'valid' transaction type
+    // And this block for debit transaction
     if (tranx.type === 'credit') {
       const newBalance = parseFloat(currentBalance + amount);
       const text1 = 'INSERT INTO transactions (createddate, type, accountnumber, cashier, amount, oldbalance, newbalance) VALUES ($1, $2, $3, $4, $5, $6, $7)';
