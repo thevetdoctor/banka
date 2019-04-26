@@ -4,7 +4,6 @@
 /* eslint-disable no-shadow */
 import db from '../db/connect';
 import Transaction from '../models/transactions';
-import cashierRecord from '../records/cashierRecord';
 import checkBalance from '../helper/checkBalance';
 
 const regExp = /[^0-9]/;
@@ -15,7 +14,8 @@ class TransactionController {
     const { accountNumber } = req.params;
     const { type } = req.params;
 
-    const currentBalance = checkBalance(accountNumber);
+    const currentBalance = checkBalance.checkBalance(accountNumber);
+    console.log(currentBalance);
 
     if (!currentBalance) {
       res.status(400).json({
@@ -30,6 +30,7 @@ class TransactionController {
 
 
     // Run this block for 'valid' transaction type
+<<<<<<< f317fd1627545f910f29f6eaacc8fa1e5dafff25
 <<<<<<< 90b9be4179a5a95e628216ad9e542791a94821f7
       // Search Account Records for specific bank account
       pool.connect((err, client, done) => {
@@ -70,6 +71,9 @@ class TransactionController {
 >>>>>>> immersive
               error: 'Account not available',
 =======
+=======
+    // And this block for debit transaction
+>>>>>>> addup-to-feedback-branch
     if (tranx.type === 'credit') {
       const newBalance = parseFloat(currentBalance + amount);
       const text1 = 'INSERT INTO transactions (createddate, type, accountnumber, cashier, amount, oldbalance, newbalance) VALUES ($1, $2, $3, $4, $5, $6, $7)';

@@ -4,7 +4,10 @@ import chai from 'chai';
 import chaiHttp from 'chai-http';
 import server from '../../index';
 import AccountController from '../controllers/accounts';
+import createtables from '../test-helper.js';
 
+
+createtables.createtables;
 // eslint-disable-next-line no-unused-vars
 const should = chai.should();
 

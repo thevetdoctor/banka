@@ -43,7 +43,7 @@ function () {
       var token = _jsonwebtoken["default"].sign({
         user: user
       }, 'secretKey', {
-        expiresIn: '1min'
+        expiresIn: '2h'
       });
 
       var hashed = _bcrypt["default"].hashSync(password, 10);
@@ -75,7 +75,8 @@ function () {
             firstname: firstname,
             lastname: lastname,
             email: email
-          }
+          },
+          user: user
         });
       })["catch"](function (err) {
         console.log(err);

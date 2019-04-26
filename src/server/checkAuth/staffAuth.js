@@ -1,8 +1,9 @@
-import jwtDecode from 'jwt-decode';
+/* eslint-disable no-console */
+import jwtdecode from 'jwt-decode';
 
 
 const staffAuth = (req, res, next) => {
-  const decoded = jwtDecode(req.token);
+  const decoded = jwtdecode.jwt_decode(req.token);
   console.log(decoded);
 
   next();

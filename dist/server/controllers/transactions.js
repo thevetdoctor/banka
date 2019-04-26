@@ -9,8 +9,6 @@ var _connect = _interopRequireDefault(require("../db/connect"));
 
 var _transactions = _interopRequireDefault(require("../models/transactions"));
 
-var _cashierRecord = _interopRequireDefault(require("../records/cashierRecord"));
-
 var _checkBalance = _interopRequireDefault(require("../helper/checkBalance"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
@@ -36,7 +34,10 @@ function () {
       var amount = req.body.amount;
       var accountNumber = req.params.accountNumber;
       var type = req.params.type;
-      var currentBalance = (0, _checkBalance["default"])(accountNumber);
+
+      var currentBalance = _checkBalance["default"].checkBalance(accountNumber);
+
+      console.log(currentBalance);
 
       if (!currentBalance) {
         res.status(400).json({
@@ -48,6 +49,7 @@ function () {
 
       var tranx = new _transactions["default"](type, accountNumber, amount);
       var cashierID = 10002; // Run this block for 'valid' transaction type
+      // And this block for debit transaction
 
       if (tranx.type === 'credit') {
         var newBalance = parseFloat(currentBalance + amount);
