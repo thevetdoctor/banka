@@ -17,7 +17,7 @@ class validateTransaction {
     }
 
     // eslint-disable-next-line no-restricted-globals
-    if (numberRegex.test(amount)) {
+    if (isNaN(amount)) {
       res.status(400).json({
         status: 400,
         error: 'Invalid Amount',

@@ -17,7 +17,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "d
 
 var router = _express["default"].Router();
 
-router.post('/:accountNumber/:type', _checkAuth["default"], _validateTransaction["default"].validateCreditAndDebit, _transactions["default"].creditAndDebit);
+router.post('/:accountNumber/:type', _validateTransaction["default"].validateCreditAndDebit, _transactions["default"].creditAndDebit);
 router.get('/:transactionId', _transactions["default"].getTransaction);
 var _default = router;
 exports["default"] = _default;

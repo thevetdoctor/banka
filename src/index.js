@@ -26,8 +26,8 @@ app.get('/', (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log('server started now');
-  console.log(path.join(__dirname.replace('src', '\\index.html')));
+  console.log(`server started now at port ${port}`);
+  // console.log(path.join(__dirname.replace('src', '\\index.html')));
 });
 
 export default app;
