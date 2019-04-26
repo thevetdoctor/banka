@@ -16,7 +16,7 @@ class UserController {
     } = req.body;
 
     const user = new User(email, firstName, lastName, password, sex, mobile);
-    const token = jwt.sign({ user }, 'secretKey', { expiresIn: '1min' });
+    const token = jwt.sign({ user }, 'secretKey', { expiresIn: '2h' });
     const hashed = bcrypt.hashSync(password, 10);
 
     const text = 'INSERT INTO users (email, firstName, lastName, password, hash, type, isAdmin, sex, mobile, active, createdDate) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING *';
@@ -42,6 +42,7 @@ class UserController {
             lastname,
             email,
           },
+          user,
         });
       })
       .catch((err) => {

@@ -134,7 +134,7 @@ class validateAccount {
       return;
     }
 
-    if (!validateEmail.test(userEmailAddress)) {
+    if (!validateEmail(userEmailAddress)) {
       res.status(400).json({
         status: 400,
         error: 'Invalid Email',

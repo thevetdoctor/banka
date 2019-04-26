@@ -7,19 +7,19 @@ import auth from '../checkAuth';
 const router = express.Router();
 
 
-router.post('/', auth, validateAccount.creation, AccountController.create);
+router.post('/', validateAccount.creation, AccountController.create);
 
-router.patch('/:accountNumber', auth, validateAccount.activation, AccountController.activate);
+router.patch('/:accountNumber', validateAccount.activation, AccountController.activate);
 
-router.delete('/:accountNumber', auth, validateAccount.deletion, AccountController.delete);
+router.delete('/:accountNumber', validateAccount.deletion, AccountController.delete);
 
-router.get('/', auth, AccountController.listAllAccounts);
+router.get('/', AccountController.listAllAccounts);
 
-router.get('/:accountNumber', auth, validateAccount.listing, AccountController.listAccount);
+router.get('/:accountNumber', validateAccount.listing, AccountController.listAccount);
 
-router.get('/:accountNumber/:transactions', auth, validateAccount.getTransactions, AccountController.getTransactions);
+router.get('/:accountNumber/:transactions', validateAccount.getTransactions, AccountController.getTransactions);
 
-router.get('/user/:userEmailAddress/:accounts', auth, validateAccount.getUserBankAccounts, AccountController.getUserBankAccounts);
+router.get('/user/:userEmailAddress/:accounts', validateAccount.getUserBankAccounts, AccountController.getUserBankAccounts);
 
 
 export default router;

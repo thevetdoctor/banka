@@ -37,8 +37,7 @@ app.get('/', function (req, res) {
   res.sendFile(_path["default"].join(__dirname.replace('src', '\\index.html'))); // res.sendFile(path.join(__dirname, '\\index.html'));
 });
 app.listen(port, function () {
-  console.log('server started now');
-  console.log(_path["default"].join(__dirname.replace('src', '\\index.html')));
+  console.log("server started now at port ".concat(port)); // console.log(path.join(__dirname.replace('src', '\\index.html')));
 });
 var _default = app;
 exports["default"] = _default;
