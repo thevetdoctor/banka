@@ -97,7 +97,7 @@ class AccountController {
     let { accountNumber } = req.params;
     accountNumber = parseInt(accountNumber, 10);
 
-    const text = 'DELETE * FROM accounts WHERE accountnumber = $1';
+    const text = 'DELETE FROM accounts WHERE accountnumber = $1';
     const values = [accountNumber];
 
     db.query(text, values)

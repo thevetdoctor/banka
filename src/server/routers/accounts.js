@@ -2,12 +2,13 @@ import express from 'express';
 import AccountController from '../controllers/accounts';
 import validateAccount from '../helper/validateAccount';
 import auth from '../checkAuth';
+import staffAuth from '../checkAuth/staffAuth';
 // import staffAuth from '../checkAuth/staffAuth';
 
 const router = express.Router();
 
 
-router.post('/', validateAccount.creation, AccountController.create);
+router.post('/', auth, staffAuth, validateAccount.creation, AccountController.create);
 
 router.patch('/:accountNumber', validateAccount.activation, AccountController.activate);
 

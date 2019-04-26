@@ -47,10 +47,26 @@ class validateTransaction {
   static getTransaction(req, res, next) {
     const { transactionId } = req.params;
 
+    if (!req.params) {
+      res.status(400).json({
+        status: 400,
+        error: 'Params not supplied',
+      });
+      return;
+    }
+
     if (numberRegex.test(transactionId)) {
       res.status(400).json({
         status: 400,
         error: 'Invalid transaction ID',
+      });
+      return;
+    }
+
+    if (transactionId === '' || transactionId === undefined) {
+      res.status(400).json({
+        status: 400,
+        error: 'Transaction ID not supplied',
       });
       return;
     }

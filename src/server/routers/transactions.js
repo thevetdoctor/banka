@@ -8,7 +8,7 @@ const router = express.Router();
 
 router.post('/:accountNumber/:type', validateTransaction.validateCreditAndDebit, TransactionController.creditAndDebit);
 
-router.get('/:transactionId', TransactionController.getTransaction);
+router.get('/:transactionId', validateTransaction.getTransaction, TransactionController.getTransaction);
 
 
 export default router;
