@@ -34,10 +34,9 @@ function () {
       var amount = req.body.amount;
       var accountNumber = req.params.accountNumber;
       var type = req.params.type;
-
-      var currentBalance = _checkBalance["default"].checkBalance(accountNumber);
-
+      var currentBalance = (0, _checkBalance["default"])(accountNumber);
       console.log(currentBalance);
+      console.log('getting in');
 
       if (!currentBalance) {
         res.status(400).json({
@@ -57,6 +56,7 @@ function () {
         var values1 = [tranx.createdOn, type, accountNumber, cashierID, amount, currentBalance, newBalance];
         var text2 = 'UPDATE accounts SET balance = $1 WHERE accountnumber = $2';
         var values2 = [accountNumber, newBalance];
+        console.log('getting in');
 
         _connect["default"].query(text1, values1).then(function (result) {
           console.log(result.rows);
@@ -68,7 +68,7 @@ function () {
         });
 
         _connect["default"].query(text2, values2).then(function (result) {
-          console.log(result.rows);
+          // console.log(result.rows);
           res.status(200).json({
             status: 200,
             data: {
@@ -88,12 +88,15 @@ function () {
         });
       } else {
         // And this block for debit transaction
+        console.log('getting in');
+
         var _newBalance = parseFloat(currentBalance - amount);
 
         var _text = 'INSERT INTO transactions (createddate, type, accountnumber, cashier, amount, oldbalance, newbalance) VALUES ($1, $2, $3, $4, $5, $6, $7)';
         var _values = [tranx.createdOn, type, accountNumber, cashierID, amount, currentBalance, _newBalance];
         var _text2 = 'UPDATE accounts SET balance = $1 WHERE accountnumber = $2';
         var _values2 = [accountNumber, _newBalance];
+        console.log('getting out');
 
         if (_newBalance < 0) {
           res.status(400).json({
@@ -101,8 +104,7 @@ function () {
             error: 'Insufficient balance in account'
           });
         } else {
-          _connect["default"].query(_text, _values).then(function (result) {
-            console.log(result.rows);
+          _connect["default"].query(_text, _values).then(function (result) {// console.log(result.rows);
           })["catch"](function (err) {
             res.status(400).json({
               status: 400,
@@ -111,7 +113,7 @@ function () {
           });
 
           _connect["default"].query(_text2, _values2).then(function (result) {
-            console.log(result.rows);
+            // console.log(result.rows);
             res.status(200).json({
               status: 200,
               data: {
@@ -141,8 +143,7 @@ function () {
       var values = [transactionId];
 
       _connect["default"].query(text, values).then(function (result) {
-        console.log(result.rows);
-
+        // console.log(result.rows);
         if (result.rows.length < 1) {
           res.status(400).json({
             status: 400,

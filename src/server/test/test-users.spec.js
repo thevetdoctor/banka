@@ -32,8 +32,8 @@ describe('Signup Endpoint', () => {
         lastName: 'Lola',
         password: '123456',
         sex: 'M',
-        email: 'dami@yahoo.com',
-        mobile: '1234567890',
+        email: 'demi@yahoo.com',
+        mobile: '12345678900',
       })
       .end((err, res) => {
         res.should.have.status(201);
@@ -239,8 +239,8 @@ describe('Signin Endpoint', () => {
     chai.request(server)
       .post('/api/v1/auth/signin')
       .send({
-        email: 'dami@gmail.com',
-        password: '123456',
+        email: 'b@banka.com',
+        password: 'password2',
       })
       .end((err, res) => {
         res.should.have.status(200);

@@ -13,6 +13,8 @@ var _users = _interopRequireDefault(require("../models/users"));
 
 var _connect = _interopRequireDefault(require("../db/connect"));
 
+var _removeWhitespace = _interopRequireDefault(require("../helper/removeWhitespace"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -20,6 +22,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var whiteSpace = /\s/g;
+var noWhiteSpace = '';
 
 var UserController =
 /*#__PURE__*/
@@ -38,7 +43,16 @@ function () {
           password = _req$body.password,
           sex = _req$body.sex,
           mobile = _req$body.mobile;
+      firstName.replace(whiteSpace, noWhiteSpace); // eslint-disable-next-line no-console
+
+      console.log(req.body, firstName, lastName);
       var user = new _users["default"](email, firstName, lastName, password, sex, mobile);
+      var type = req.body.type;
+
+      if (type) {
+        user.type = type;
+      } // console.log(user);
+
 
       var token = _jsonwebtoken["default"].sign({
         user: user
@@ -48,13 +62,10 @@ function () {
 
       var hashed = _bcrypt["default"].hashSync(password, 10);
 
-      var text = 'INSERT INTO users (email, firstName, lastName, password, hash, type, isAdmin, sex, mobile, active, createdDate) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING *';
+      var text = 'INSERT INTO users (email, firstname, lastname, password, hash, type, isAdmin, sex, mobile, active, createdDate) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING *';
       var values = [email, firstName, lastName, password, hashed, user.type, user.isAdmin, sex, mobile, user.active, user.createdDate];
 
       _connect["default"].query(text, values).then(function (result) {
-        console.log(result.rows[0]);
-        console.log('New User created');
-
         if (!result.rows[0]) {
           res.status(400).json({
             status: 400,
@@ -75,12 +86,10 @@ function () {
             firstname: firstname,
             lastname: lastname,
             email: email
-          },
-          user: user
+          }
         });
       })["catch"](function (err) {
-        console.log(err);
-
+        // console.log(err);
         if (err.routine === '_bt_check_unique') {
           var error = 'Email already used';
           res.status(400).json({
@@ -99,23 +108,28 @@ function () {
       var user = {
         email: email,
         password: password
-      }; // let position = 0;
-
-      var text = 'SELECT email, firstname, lastname, password, hash FROM users WHERE email = $1';
+      };
+      var text = 'SELECT * FROM users WHERE email = $1';
       var values = [email]; // Query User Record for credentials
 
-      _connect["default"].query(text, values).then(function (result) {
-        console.log(result.rows[0]);
+      _connect["default"].query(text, values).then(function (result, err) {
+        if (err) {
+          res.status(400).json({
+            error: err
+          });
+          return;
+        } // console.log(result.rows[0]);
+
 
         if (!result.rows[0]) {
           res.status(400).json({
             status: 400,
             error: 'Invalid Email'
           });
+          return;
         }
 
-        var newUser = result.rows[0];
-        console.log(newUser);
+        var newUser = result.rows[0]; // console.log(newUser);
 
         var compared = _bcrypt["default"].compareSync(user.password, newUser.hash);
 
@@ -124,6 +138,7 @@ function () {
             status: 400,
             error: 'Invalid password'
           });
+          return;
         }
 
         delete newUser.password;
@@ -131,7 +146,7 @@ function () {
         var token = _jsonwebtoken["default"].sign({
           newUser: newUser
         }, 'secretKey', {
-          expiresIn: '5min'
+          expiresIn: '2h'
         });
 
         res.status(200).json({
@@ -143,10 +158,6 @@ function () {
             lastName: newUser.lastname,
             email: newUser.email
           }
-        });
-      })["catch"](function (err) {
-        res.status(400).json({
-          error: err
         });
       });
     }

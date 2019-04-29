@@ -13,8 +13,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "d
 var checkBalance = function checkBalance(accountNumber) {
   var text = 'SELECT newbalance FROM accounts WHERE accountnumber = $1';
   var values = [accountNumber];
-
-  _connect["default"].query(text, values).then(function (result) {
+  return _connect["default"].query(text, values).then(function (result) {
     console.log(result.rows[0]);
     return result.rows;
   })["catch"](function (err) {

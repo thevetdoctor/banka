@@ -9,15 +9,15 @@ var _express = _interopRequireDefault(require("express"));
 
 var _users = _interopRequireDefault(require("../controllers/users"));
 
-var _validateSignup = _interopRequireDefault(require("../helper/validateSignup"));
-
-var _validateSignin = _interopRequireDefault(require("../helper/validateSignin"));
+var _validateUser = _interopRequireDefault(require("../helper/validateUser"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-var router = _express["default"].Router();
+var router = _express["default"].Router(); // User sign up
 
-router.post('/signup', _validateSignup["default"], _users["default"].signup);
-router.post('/signin', _validateSignin["default"], _users["default"].signin);
+
+router.post('/signup', _validateUser["default"].validateSignup, _users["default"].signup); // User sign in
+
+router.post('/signin', _validateUser["default"].validateSignin, _users["default"].signin);
 var _default = router;
 exports["default"] = _default;

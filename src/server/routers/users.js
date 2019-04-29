@@ -1,14 +1,14 @@
 import express from 'express';
 import UserController from '../controllers/users';
-import validateSignup from '../helper/validateSignup';
-import validateSignin from '../helper/validateSignin';
+import validateUser from '../helper/validateUser';
 
 const router = express.Router();
 
+// User sign up
+router.post('/signup', validateUser.validateSignup, UserController.signup);
 
-router.post('/signup', validateSignup, UserController.signup);
-
-router.post('/signin', validateSignin, UserController.signin);
+// User sign in
+router.post('/signin', validateUser.validateSignin, UserController.signin);
 
 
 export default router;

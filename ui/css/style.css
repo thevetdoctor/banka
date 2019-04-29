@@ -1,0 +1,211 @@
+/* style.css */
+
+body {
+    background-color: #256;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+    /* font-family: 'Raleway', sans-serif; */
+    font-size: 1.1em;
+    line-height: 1.5;
+    text-align: center;
+}
+
+.container {
+    background-color: rgb(9, 65, 83);
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-content: center;
+    width: 80%;
+    margin: 0 auto;
+    padding: 3px 10px;
+    border-radius: 10px;
+    position: relative;
+}
+
+header, nav {
+    order: 0;
+}
+
+header span {
+    font-size: 0.5em;
+}
+
+ul {
+    display: flex;
+    justify-content: center;
+    padding: 0;
+}
+
+li {
+    border: solid 1px #fff;
+    flex-basis: 20%;
+    text-align: center;
+    list-style-type: none;
+    border-radius: 10px;
+}
+
+nav li:hover {
+    background: #000;
+    text-transform: uppercase;
+}
+
+li a {
+    color: #fff;
+    text-decoration: none;
+}
+
+.row {
+    display: flex;
+    flex-flow: row wrap;
+    /* align-items: stretch; */
+    justify-content: center;
+    /* flex-basis: 50%; */
+}
+
+.row-top {
+    border-top: 1px solid #fff;
+}
+
+.meal {
+    border-top: #fff solid 1px;
+    margin-top: 10px;
+    padding-top: 10px;
+}
+
+.meal-class {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    padding: 4px;
+}
+
+.section {
+    border-radius: 10px;
+    flex-basis: 30%;
+    font-size: 0.7em;
+    padding: 5px;
+}
+
+img {
+    width: 70px;
+    height: 80px;
+    border-radius: 50%;
+}
+
+input, select, #add {
+    border-radius: 5px;
+    padding: 5px;
+    font-family: 'Raleway', sans-serif;
+    width: 80%;
+    font-size: 0.8em;
+    text-align: center;
+}
+
+footer {
+    position: relative;
+    bottom: 5px;
+    order: 4;
+    margin-top: 50px;
+    font-size: 0.7em;
+    border-top: #fff solid 1px;
+}
+
+#submit, #login, #add-meal {
+    background-color: green;
+    color: #fff;
+    font-weight: bold;
+}
+
+#refresh {
+    margin-top: 10px;
+    display: inline-block;
+}
+
+.btn , .edit{
+    border: #000 solid 1px;
+    background-color: green;
+    padding: 5px;
+    border-radius: 5px;
+    display: inline-block;
+}
+
+.btn:hover {
+    background-color: #000;
+}
+
+.delete {
+    border: #000 solid 1px;
+    background-color: rgb(214, 54, 14);
+    padding: 5px;
+    border-radius: 5px;
+    display: inline-block;
+}
+
+.orders {
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: center;
+}
+
+.orders li {
+    border: none;
+    border-bottom: 1px solid;
+    border-radius: 0;
+}
+
+.dropdown {
+    display: none;
+    position: relative;
+}
+
+@media screen  and (max-width: 550px) {
+
+    body {
+        font-size: 1em;
+    }
+
+    ul {
+        flex-direction: column;
+        font-size: 0.8em;
+        width: 50%;
+        margin: 20px auto;
+    }
+
+    .dropdown {
+        display: block;
+        position: relative;
+        margin-top: 25px;
+        margin-bottom: 0;
+    }
+
+    .dropdown-content {
+        display: none;
+        /* position: absolute; */
+        margin-top: 0;
+    }
+    /* .dropdown:hover .dropdown-content {
+        display: block !important;
+    } */
+  
+    li {
+        padding: 5px;
+    }
+
+    .row {
+        flex-direction: column;
+        order: 1;
+    }
+    
+    .section {
+        width: 100%;
+        padding: 10px;
+        display: flex;
+        justify-content: stretch;
+    }
+
+    img {
+        width: 50%;
+    }
+}
