@@ -34,8 +34,8 @@ describe('Signup Endpoint', function () {
       lastName: 'Lola',
       password: '123456',
       sex: 'M',
-      email: 'dami@yahoo.com',
-      mobile: '1234567890'
+      email: 'demi@yahoo.com',
+      mobile: '12345678900'
     }).end(function (err, res) {
       res.should.have.status(201);
       res.should.be.json;
@@ -214,8 +214,8 @@ describe('Signin Endpoint', function () {
   });
   it('Signin(POST) should sign in user', function (done) {
     _chai["default"].request(_index["default"]).post('/api/v1/auth/signin').send({
-      email: 'dami@gmail.com',
-      password: '123456'
+      email: 'b@banka.com',
+      password: 'password2'
     }).end(function (err, res) {
       res.should.have.status(200);
       res.should.be.json;

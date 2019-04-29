@@ -14,8 +14,10 @@ class TransactionController {
     const { accountNumber } = req.params;
     const { type } = req.params;
 
-    const currentBalance = checkBalance.checkBalance(accountNumber);
+    const currentBalance = checkBalance(accountNumber);
     console.log(currentBalance);
+
+    console.log('getting in');
 
     if (!currentBalance) {
       res.status(400).json({
@@ -81,6 +83,8 @@ class TransactionController {
       const text2 = 'UPDATE accounts SET balance = $1 WHERE accountnumber = $2';
       const values2 = [accountNumber, newBalance];
 
+      console.log('getting in');
+
       db.query(text1, values1)
         .then((result) => {
           console.log(result.rows);
@@ -94,7 +98,7 @@ class TransactionController {
 
       db.query(text2, values2)
         .then((result) => {
-          console.log(result.rows);
+          // console.log(result.rows);
           res.status(200).json({
             status: 200,
             data: {
@@ -115,12 +119,14 @@ class TransactionController {
         });
     } else {
       // And this block for debit transaction
+      console.log('getting in');
       const newBalance = parseFloat(currentBalance - amount);
       const text1 = 'INSERT INTO transactions (createddate, type, accountnumber, cashier, amount, oldbalance, newbalance) VALUES ($1, $2, $3, $4, $5, $6, $7)';
       const values1 = [tranx.createdOn, type, accountNumber, cashierID, amount, currentBalance, newBalance];
       const text2 = 'UPDATE accounts SET balance = $1 WHERE accountnumber = $2';
       const values2 = [accountNumber, newBalance];
 
+      console.log('getting out');
       if (newBalance < 0) {
         res.status(400).json({
           status: 400,
@@ -129,7 +135,7 @@ class TransactionController {
       } else {
         db.query(text1, values1)
           .then((result) => {
-            console.log(result.rows);
+            // console.log(result.rows);
           })
           .catch((err) => {
             res.status(400).json({
@@ -141,7 +147,7 @@ class TransactionController {
 
         db.query(text2, values2)
           .then((result) => {
-            console.log(result.rows);
+            // console.log(result.rows);
             res.status(200).json({
               status: 200,
               data: {
@@ -173,7 +179,7 @@ class TransactionController {
 
     db.query(text, values)
       .then((result) => {
-        console.log(result.rows);
+        // console.log(result.rows);
         if (result.rows.length < 1) {
           res.status(400).json({
             status: 400,

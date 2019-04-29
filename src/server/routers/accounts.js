@@ -2,24 +2,35 @@ import express from 'express';
 import AccountController from '../controllers/accounts';
 import validateAccount from '../helper/validateAccount';
 import auth from '../checkAuth';
-// import staffAuth from '../checkAuth/staffAuth';
+import staffAuth from '../checkAuth/staffAuth';
+import ownerAuth from '../checkAuth/ownerAuth';
+import ownerEmailAuth from '../checkAuth/ownerEmailAuth';
 
 const router = express.Router();
 
 
-router.post('/', validateAccount.creation, AccountController.create);
+// Create bank account
+router.post('/', auth, validateAccount.creation, AccountController.create);
 
-router.patch('/:accountNumber', validateAccount.activation, AccountController.activate);
+// Admin / Staff can activate or deactivate an account
+router.patch('/:accountNumber', auth, staffAuth, validateAccount.activation, AccountController.activate);
 
-router.delete('/:accountNumber', validateAccount.deletion, AccountController.delete);
+// Admin / Staff can delete an account
+router.delete('/:accountNumber', auth, staffAuth, validateAccount.deletion, AccountController.delete);
 
-router.get('/', AccountController.listAllAccounts);
+// User can view account transaction history
+router.get('/:accountNumber/:transactions', auth, validateAccount.getTransactions, ownerAuth, AccountController.getTransactions);
 
-router.get('/:accountNumber', validateAccount.listing, AccountController.listAccount);
+// User can view account details
+// Staff/Admin can view all active bank accounts
+// Staff/Admin can view all dormant bank accounts
+router.get('/:accountNumber', auth, validateAccount.listing, ownerAuth, AccountController.listAccount);
 
-router.get('/:accountNumber/:transactions', validateAccount.getTransactions, AccountController.getTransactions);
+// Admin / staff can view a list of accounts owned by a specific user
+router.get('/user/:userEmailAddress/:accounts', auth, validateAccount.getUserBankAccounts, ownerEmailAuth, AccountController.getUserBankAccounts);
 
-router.get('/user/:userEmailAddress/:accounts', validateAccount.getUserBankAccounts, AccountController.getUserBankAccounts);
+// Staff / Admin can view all bank accounts
+router.get('/', auth, staffAuth, AccountController.listAllAccounts);
 
 
 export default router;

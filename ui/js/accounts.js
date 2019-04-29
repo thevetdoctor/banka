@@ -56,7 +56,7 @@ const displayAccounts = () => {
   let accountList = '';
 
   bankAccounts.forEach((account) => {
-    accountList += `<div class="user-div tranx-div" id="${account.id}"> Account Type: ${account.type}
+    accountList += `<div class="tranx-div" id="${account.id}"> Account Type: ${account.type}
                         <p> Customer ID: ${account.userId} </p>
                         <p> Account Balance: ${account.balance} </p>
                         <p>Account No: ${account.number}</p>

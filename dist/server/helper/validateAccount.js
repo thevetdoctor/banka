@@ -17,7 +17,8 @@ var validateEmail = function validateEmail(email) {
   return validEmail;
 };
 
-var regExp = /[^0-9]/;
+var regExp = /[^0-9]/g;
+var specialCharacters = /[.*&%£$"!@"^><!¬+=-_`|?/;:')()]/;
 
 var validateAccount =
 /*#__PURE__*/
@@ -29,25 +30,7 @@ function () {
   _createClass(validateAccount, null, [{
     key: "creation",
     value: function creation(req, res, next) {
-      var owner = req.body.owner;
       var type = req.body.type;
-      type = type.trim();
-
-      if (regExp.test(owner)) {
-        res.status(400).json({
-          status: 400,
-          error: 'Invalid account owner supplied'
-        });
-        return;
-      }
-
-      if (owner === undefined || owner === '') {
-        res.status(400).json({
-          status: 400,
-          error: 'Account owner not supplied'
-        });
-        return;
-      }
 
       if (type === undefined || type === '') {
         res.status(400).json({
@@ -55,22 +38,33 @@ function () {
           error: 'Account type not supplied'
         });
         return;
-      } // if (type !== 'current' || type !== 'savings') {
-      //   console.log(type.trim());
-      //   res.status(400).json({
-      //     status: 400,
-      //     error: 'Account type must be CURRENT or SAVINGS',
-      //   });
-      //   return;
-      // }
-
+      }
 
       next();
     }
   }, {
     key: "activation",
     value: function activation(req, res, next) {
-      var accountStatus = req.body.status; // console.log(accountStatus);
+      var accountStatus = req.body.status;
+      var accountNumber = req.params.accountNumber; // accountNumber = parseInt(accountNumber, 10);
+
+      accountNumber = accountNumber.replace(/[^\w\s\][^,]/gi, '');
+
+      if (req.params === '') {
+        res.status(400).json({
+          status: 400,
+          error: 'No parameter supplied'
+        });
+        return;
+      }
+
+      if (accountStatus === undefined || accountStatus.trim() === '') {
+        res.status(400).json({
+          status: 400,
+          error: 'Status not supplied'
+        });
+        return;
+      }
 
       if (typeof accountStatus !== 'string') {
         res.status(400).json({
@@ -80,10 +74,18 @@ function () {
         return;
       }
 
-      if (accountStatus === undefined || accountStatus.trim() === '') {
+      if (regExp.test(accountNumber)) {
         res.status(400).json({
           status: 400,
-          error: 'Status not supplied'
+          error: 'Invalid account number supplied'
+        });
+        return;
+      }
+
+      if (specialCharacters.test(accountNumber)) {
+        res.status(400).json({
+          status: 400,
+          error: 'Special characters not allowed'
         });
         return;
       }
@@ -102,17 +104,10 @@ function () {
         });
       }
 
-      next();
-    }
-  }, {
-    key: "listing",
-    value: function listing(req, res, next) {
-      var accountNumber = req.params.accountNumber; // if no 'status' indicated as a req.query, proceed with get single account
-
-      if (regExp.test(accountNumber)) {
+      if (specialCharacters.test(accountNumber)) {
         res.status(400).json({
           status: 400,
-          error: 'Invalid account number'
+          error: 'Special characters not allowed'
         });
         return;
       }
@@ -123,12 +118,50 @@ function () {
     key: "getTransactions",
     value: function getTransactions(req, res, next) {
       var transactions = req.params.transactions;
-      console.log(req.params);
+      var accountNumber = req.params.accountNumber; // console.log(req.params);
 
       if (transactions !== 'transactions') {
         res.status(400).json({
           status: 400,
           error: 'Params can only be transactions'
+        });
+        return;
+      }
+
+      if (regExp.test(accountNumber)) {
+        res.status(400).json({
+          status: 400,
+          error: 'Invalid account number supplied'
+        });
+      }
+
+      if (specialCharacters.test(accountNumber)) {
+        res.status(400).json({
+          status: 400,
+          error: 'Invalid account supplied'
+        });
+        return;
+      }
+
+      next();
+    }
+  }, {
+    key: "listing",
+    value: function listing(req, res, next) {
+      var accountNumber = req.params.accountNumber; // if no 'status' indicated as a req.query, proceed with get single account
+
+      if (regExp.test(accountNumber)) {
+        res.status(411).json({
+          status: 411,
+          error: 'Invalid account number'
+        });
+        return;
+      }
+
+      if (specialCharacters.test(accountNumber)) {
+        res.status(412).json({
+          status: 412,
+          error: 'Invalid account supplied'
         });
         return;
       }
@@ -151,7 +184,7 @@ function () {
         return;
       }
 
-      if (!validateEmail.test(userEmailAddress)) {
+      if (!validateEmail(userEmailAddress)) {
         res.status(400).json({
           status: 400,
           error: 'Invalid Email'

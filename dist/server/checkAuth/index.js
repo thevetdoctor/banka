@@ -13,7 +13,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "d
 
 /* eslint-disable no-console */
 var auth = function auth(req, res, next) {
-  console.log(req.headers.authorization);
   var bearerHeader = req.headers.authorization;
 
   if (typeof bearerHeader !== 'undefined') {
@@ -21,14 +20,21 @@ var auth = function auth(req, res, next) {
     var bearerToken = bearer[1];
     req.token = bearerToken;
 
-    var decoded = _jsonwebtoken["default"].verify(req.token, _codes["default"].val);
+    _jsonwebtoken["default"].verify(req.token, _codes["default"].val, function (err, decoded) {
+      if (err) {
+        res.status(403).json({
+          status: 403,
+          error: "".concat(err, ", Authentication failed")
+        });
+        return;
+      }
 
-    if (decoded) {
-      next(req.token);
-    }
+      req.token = decoded.newUser;
+      next();
+    });
   } else {
-    res.status(401).json({
-      status: 401,
+    res.status(403).json({
+      status: 403,
       error: 'Authentication failed'
     });
   }

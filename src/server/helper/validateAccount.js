@@ -4,33 +4,13 @@ const validateEmail = (email) => {
   return validEmail;
 };
 
-const regExp = /[^0-9]/;
+const regExp = /[^0-9]/g;
+const specialCharacters = /[.*&%£$"!@"^><!¬+=-_`|?/;:')()]/;
 
 
 class validateAccount {
   static creation(req, res, next) {
-    const { owner } = req.body;
-    let { type } = req.body;
-    type = type.trim();
-
-
-    if (regExp.test(owner)) {
-      res.status(400).json({
-        status: 400,
-        error: 'Invalid account owner supplied',
-      });
-      return;
-    }
-
-
-    if (owner === undefined || owner === '') {
-      res.status(400).json({
-        status: 400,
-        error: 'Account owner not supplied',
-      });
-      return;
-    }
-
+    const { type } = req.body;
 
     if (type === undefined || type === '') {
       res.status(400).json({
@@ -40,23 +20,32 @@ class validateAccount {
       return;
     }
 
-    // if (type !== 'current' || type !== 'savings') {
-    //   console.log(type.trim());
-    //   res.status(400).json({
-    //     status: 400,
-    //     error: 'Account type must be CURRENT or SAVINGS',
-    //   });
-    //   return;
-    // }
-
     next();
   }
 
 
   static activation(req, res, next) {
     const accountStatus = req.body.status;
+    let { accountNumber } = req.params;
+    // accountNumber = parseInt(accountNumber, 10);
+    accountNumber = accountNumber.replace(/[^\w\s\][^,]/gi, '');
 
-    // console.log(accountStatus);
+    if (req.params === '') {
+      res.status(400).json({
+        status: 400,
+        error: 'No parameter supplied',
+      });
+      return;
+    }
+
+    if (accountStatus === undefined || accountStatus.trim() === '') {
+      res.status(400).json({
+        status: 400,
+        error: 'Status not supplied',
+      });
+      return;
+    }
+
     if (typeof accountStatus !== 'string') {
       res.status(400).json({
         status: 400,
@@ -64,10 +53,19 @@ class validateAccount {
       });
       return;
     }
-    if (accountStatus === undefined || accountStatus.trim() === '') {
+
+    if (regExp.test(accountNumber)) {
       res.status(400).json({
         status: 400,
-        error: 'Status not supplied',
+        error: 'Invalid account number supplied',
+      });
+      return;
+    }
+
+    if (specialCharacters.test(accountNumber)) {
+      res.status(400).json({
+        status: 400,
+        error: 'Special characters not allowed',
       });
       return;
     }
@@ -85,6 +83,46 @@ class validateAccount {
         error: 'Invalid account number supplied',
       });
     }
+
+    if (specialCharacters.test(accountNumber)) {
+      res.status(400).json({
+        status: 400,
+        error: 'Special characters not allowed',
+      });
+      return;
+    }
+
+    next();
+  }
+
+  static getTransactions(req, res, next) {
+    const { transactions } = req.params;
+    const { accountNumber } = req.params;
+    // console.log(req.params);
+
+    if (transactions !== 'transactions') {
+      res.status(400).json({
+        status: 400,
+        error: 'Params can only be transactions',
+      });
+      return;
+    }
+
+    if (regExp.test(accountNumber)) {
+      res.status(400).json({
+        status: 400,
+        error: 'Invalid account number supplied',
+      });
+    }
+
+    if (specialCharacters.test(accountNumber)) {
+      res.status(400).json({
+        status: 400,
+        error: 'Invalid account supplied',
+      });
+      return;
+    }
+
     next();
   }
 
@@ -95,27 +133,21 @@ class validateAccount {
 
     // if no 'status' indicated as a req.query, proceed with get single account
     if (regExp.test(accountNumber)) {
-      res.status(400).json({
-        status: 400,
+      res.status(411).json({
+        status: 411,
         error: 'Invalid account number',
       });
       return;
     }
-    next();
-  }
 
-
-  static getTransactions(req, res, next) {
-    const { transactions } = req.params;
-    console.log(req.params);
-
-    if (transactions !== 'transactions') {
-      res.status(400).json({
-        status: 400,
-        error: 'Params can only be transactions',
+    if (specialCharacters.test(accountNumber)) {
+      res.status(412).json({
+        status: 412,
+        error: 'Invalid account supplied',
       });
       return;
     }
+
     next();
   }
 
