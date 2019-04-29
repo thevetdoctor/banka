@@ -24,7 +24,7 @@ var auth = function auth(req, res, next) {
       if (err) {
         res.status(403).json({
           status: 403,
-          error: "".concat(err, ", Authentication failed")
+          error: "".concat(err, ", Not authorised")
         });
         return;
       }
@@ -35,7 +35,7 @@ var auth = function auth(req, res, next) {
   } else {
     res.status(403).json({
       status: 403,
-      error: 'Authentication failed'
+      error: 'Not authorised'
     });
   }
 };

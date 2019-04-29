@@ -14,7 +14,7 @@ const auth = (req, res, next) => {
       if (err) {
         res.status(403).json({
           status: 403,
-          error: `${err}, Authentication failed`,
+          error: `${err}, Not authorised`,
         });
         return;
       }
@@ -24,7 +24,7 @@ const auth = (req, res, next) => {
   } else {
     res.status(403).json({
       status: 403,
-      error: 'Authentication failed',
+      error: 'Not authorised',
     });
   }
 };

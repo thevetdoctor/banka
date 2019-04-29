@@ -129,23 +129,27 @@ class validateAccount {
 
   static listing(req, res, next) {
     const { accountNumber } = req.params;
+    const { status } = req.query;
 
 
     // if no 'status' indicated as a req.query, proceed with get single account
-    if (regExp.test(accountNumber)) {
-      res.status(411).json({
-        status: 411,
-        error: 'Invalid account number',
-      });
-      return;
-    }
 
-    if (specialCharacters.test(accountNumber)) {
-      res.status(412).json({
-        status: 412,
-        error: 'Invalid account supplied',
-      });
-      return;
+    if (status === undefined) {
+      if (regExp.test(accountNumber)) {
+        res.status(400).json({
+          status: 400,
+          error: 'Invalid account number',
+        });
+        return;
+      }
+
+      if (specialCharacters.test(accountNumber)) {
+        res.status(400).json({
+          status: 400,
+          error: 'Invalid account supplied',
+        });
+        return;
+      }
     }
 
     next();

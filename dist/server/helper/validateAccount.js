@@ -148,22 +148,25 @@ function () {
   }, {
     key: "listing",
     value: function listing(req, res, next) {
-      var accountNumber = req.params.accountNumber; // if no 'status' indicated as a req.query, proceed with get single account
+      var accountNumber = req.params.accountNumber;
+      var status = req.query.status; // if no 'status' indicated as a req.query, proceed with get single account
 
-      if (regExp.test(accountNumber)) {
-        res.status(411).json({
-          status: 411,
-          error: 'Invalid account number'
-        });
-        return;
-      }
+      if (status === undefined) {
+        if (regExp.test(accountNumber)) {
+          res.status(400).json({
+            status: 400,
+            error: 'Invalid account number'
+          });
+          return;
+        }
 
-      if (specialCharacters.test(accountNumber)) {
-        res.status(412).json({
-          status: 412,
-          error: 'Invalid account supplied'
-        });
-        return;
+        if (specialCharacters.test(accountNumber)) {
+          res.status(400).json({
+            status: 400,
+            error: 'Invalid account supplied'
+          });
+          return;
+        }
       }
 
       next();

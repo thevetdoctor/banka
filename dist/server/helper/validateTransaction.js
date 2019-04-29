@@ -12,6 +12,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
 var numberRegex = /[^0-9]/;
+var specialCharacters = /[.*&%£$"!@"]/;
 
 var validateTransaction =
 /*#__PURE__*/
@@ -50,6 +51,14 @@ function () {
           error: 'Invalid Amount Number'
         });
         return;
+      }
+
+      if (specialCharacters.test(accountNumber)) {
+        res.status(400).json({
+          status: 400,
+          error: 'Special characters not allowed'
+        });
+        return;
       } // Run this block if type of transaction is neither credit nor debit
 
 
@@ -58,8 +67,10 @@ function () {
           status: 400,
           error: 'Invalid Transaction type'
         });
-        next();
+        return;
       }
+
+      next();
     }
   }, {
     key: "getTransaction",

@@ -1,4 +1,5 @@
 const numberRegex = /[^0-9]/;
+const specialCharacters = /[.*&%£$"!@"]/;
 
 
 class validateTransaction {
@@ -33,16 +34,25 @@ class validateTransaction {
       return;
     }
 
+    if (specialCharacters.test(accountNumber)) {
+      res.status(400).json({
+        status: 400,
+        error: 'Special characters not allowed',
+      });
+      return;
+    }
+
     // Run this block if type of transaction is neither credit nor debit
     if (type !== 'credit' && type !== 'debit') {
       res.status(400).json({
         status: 400,
         error: 'Invalid Transaction type',
       });
-
-      next();
+      return;
     }
+    next();
   }
+
 
   static getTransaction(req, res, next) {
     const { transactionId } = req.params;

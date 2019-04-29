@@ -154,16 +154,17 @@ function () {
       var values = [accountNumber];
 
       _connect["default"].query(text, values).then(function (result) {
-        // if (result.rows.length > 0) {
-        res.status(200).json({
-          status: 200,
-          data: result.rows
-        }); // } else {
-        // res.status(400).json({
-        // status: 400,
-        // error: 'Not available',
-        // });
-        // }
+        if (result.rows.length > 0) {
+          res.status(200).json({
+            status: 200,
+            data: result.rows
+          });
+        } else {
+          res.status(400).json({
+            status: 400,
+            error: 'Not available'
+          });
+        }
       })["catch"](function (err) {
         res.status(400).json({
           status: 400,
@@ -186,8 +187,8 @@ function () {
         _connect["default"].query(text1, values1).then(function (result) {
           // console.log(result.rows);
           if (result.rows.length < 1) {
-            res.status(404).json({
-              status: 404,
+            res.status(400).json({
+              status: 400,
               error: "Account no: ".concat(accountNumber, " not available")
             });
           } else {
@@ -199,8 +200,8 @@ function () {
             });
           }
         })["catch"](function (err) {
-          res.status(403).json({
-            status: 403,
+          res.status(400).json({
+            status: 400,
             error: err
           });
         });
@@ -217,14 +218,14 @@ function () {
               });
             }
           })["catch"](function (err) {
-            res.status(402).json({
-              status: 402,
+            res.status(400).json({
+              status: 400,
               error: err
             });
           });
         } else {
-          res.status(401).json({
-            status: 401,
+          res.status(400).json({
+            status: 400,
             error: 'Query should be spelt \'active\' OR \'dormant\''
           });
         }
@@ -233,8 +234,8 @@ function () {
   }, {
     key: "getUserBankAccounts",
     value: function getUserBankAccounts(req, res) {
-      var userEmailAddress = req.params.userEmailAddress;
-      var accounts = req.params.accounts; // console.log(req.params);
+      var userEmailAddress = req.params.userEmailAddress; // const { accounts } = req.params;
+      // console.log(req.params);
       // console.log(userEmailAddress, accounts);
 
       var text = 'SELECT * FROM users INNER JOIN accounts ON users.id = accounts.owner WHERE EMAIL = $1';

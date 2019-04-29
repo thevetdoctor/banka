@@ -1,0 +1,44 @@
+version: 3.0.0
+
+path:
+  /api/v1/auth/signup/:   # signup endpoint
+    post:                 # endpoint request type (post request)
+      tags:               # Tag property
+        - user            # Value of the tag
+      summary: creates a new user
+      produces:
+      - application/json
+      parameters:         # request parameters
+      - in: body          # request body
+        name: user     # name of request, can be any name
+        description: The new user to be created
+        schema:           # Schema definition
+          $ref: '#/definitions/signUp'
+      responses:          # server responses
+        201:
+          description: An object with user details
+        400:
+        description: User not created
+definitions:        # Schema definition for request body
+  signUp:
+    type: object
+    required:
+      - firstName
+      - lastName
+      - email
+      - password
+      - sex
+      - mobile
+    properties:
+      firstName:
+        type: string
+        example: Demi
+      lastName:
+        type: string
+        example: Alade
+      email:
+        type: string
+        example: demi@gmail.com
+      password:
+        type: string
+        example: 123460

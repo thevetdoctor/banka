@@ -4,8 +4,8 @@
   "description": "banka",
   "main": "src/index.js",
   "scripts": {
-    "start": "node src/index.js",
-    "test": "mocha --require @babel/register src/server/test --exit",
+    "start": "npm run build && node dist/index.js",
+    "test": "npm run tables && mocha --require @babel/register src/server/test --exit",
     "dev": "npm run build && node dist/index.js",
     "build": "babel src --out-dir dist",
     "serve": "node dist/index.js",
@@ -36,6 +36,7 @@
     "jsonwebtoken": "^8.5.1",
     "jwt-decode": "^2.2.0",
     "pg": "^7.10.0",
+    "swagger-jsdoc": "^3.2.9",
     "swagger-ui-express": "^4.0.2"
   },
   "devDependencies": {

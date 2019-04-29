@@ -140,17 +140,17 @@ class AccountController {
 
     db.query(text, values)
       .then((result) => {
-        // if (result.rows.length > 0) {
-        res.status(200).json({
-          status: 200,
-          data: result.rows,
-        });
-        // } else {
-        // res.status(400).json({
-        // status: 400,
-        // error: 'Not available',
-        // });
-        // }
+        if (result.rows.length > 0) {
+          res.status(200).json({
+            status: 200,
+            data: result.rows,
+          });
+        } else {
+          res.status(400).json({
+            status: 400,
+            error: 'Not available',
+          });
+        }
       })
       .catch((err) => {
         res.status(400).json({
@@ -177,8 +177,8 @@ class AccountController {
         .then((result) => {
           // console.log(result.rows);
           if (result.rows.length < 1) {
-            res.status(404).json({
-              status: 404,
+            res.status(400).json({
+              status: 400,
               error: `Account no: ${accountNumber} not available`,
             });
           } else {
@@ -191,8 +191,8 @@ class AccountController {
           }
         })
         .catch((err) => {
-          res.status(403).json({
-            status: 403,
+          res.status(400).json({
+            status: 400,
             error: err,
           });
         });
@@ -211,14 +211,14 @@ class AccountController {
             }
           })
           .catch((err) => {
-            res.status(402).json({
-              status: 402,
+            res.status(400).json({
+              status: 400,
               error: err,
             });
           });
       } else {
-        res.status(401).json({
-          status: 401,
+        res.status(400).json({
+          status: 400,
           error: 'Query should be spelt \'active\' OR \'dormant\'',
         });
       }
@@ -228,7 +228,7 @@ class AccountController {
 
   static getUserBankAccounts(req, res) {
     const { userEmailAddress } = req.params;
-    const { accounts } = req.params;
+    // const { accounts } = req.params;
 
     // console.log(req.params);
     // console.log(userEmailAddress, accounts);

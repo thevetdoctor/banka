@@ -13,6 +13,10 @@ var _path = _interopRequireDefault(require("path"));
 
 var _dotenv = _interopRequireDefault(require("dotenv"));
 
+var _swaggerUiExpress = _interopRequireDefault(require("swagger-ui-express"));
+
+var _swaggerJsdoc = _interopRequireDefault(require("swagger-jsdoc"));
+
 var _users = _interopRequireDefault(require("./server/routers/users"));
 
 var _accounts = _interopRequireDefault(require("./server/routers/accounts"));
@@ -34,8 +38,35 @@ app.use('/api/v1/auth/', _users["default"]);
 app.use('/api/v1/accounts', _accounts["default"]);
 app.use('/api/v1/transactions', _transactions["default"]);
 app.get('/', function (req, res) {
-  res.sendFile(_path["default"].join(__dirname.replace('src', '\\index.html'))); // res.sendFile(path.join(__dirname, '\\index.html'));
+  res.sendFile(_path["default"].join(__dirname.replace('dist', '\\index.html'))); // res.sendFile(path.join(__dirname, '\\index.html'));
 });
+var swaggerDefinition = {
+  info: {
+    title: 'REST API for Banka',
+    // Title of the documentation
+    version: '1.0.0',
+    // Version of the app
+    description: 'This is the REST API for Banka' // short description of the app
+
+  },
+  host: 'localhost:3000',
+  // the host or url of the app
+  basePath: '/api/v1/' // the basepath of your endpoint
+
+}; // options for the swagger docs
+
+var options = {
+  // import swaggerDefinitions
+  swaggerDefinition: swaggerDefinition,
+  // path to the API docs
+  apis: ['./docs/**/*.yaml']
+}; // initialize swagger-jsdoc
+
+var swaggerSpec = (0, _swaggerJsdoc["default"])(options); // use swagger-Ui-express for your app documentation endpoint
+
+app.use('/docs', _swaggerUiExpress["default"].serve, _swaggerUiExpress["default"].setup(swaggerSpec)); // copywright:
+// https://medium.com/the-andela-way/splitting-your-swagger-spec-into-multiple-files-in-a-node-project-2019575b0ced
+
 app.listen(port, function () {
   console.log("server started now at port ".concat(port)); // console.log(path.join(__dirname.replace('src', '\\index.html')));
 });
