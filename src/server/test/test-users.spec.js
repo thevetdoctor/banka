@@ -1,12 +1,12 @@
 /* eslint-disable no-unused-expressions */
 /* eslint-disable no-undef */
-const chai = require('chai');
-const chaiHttp = require('chai-http');
-const server = require('../../index');
+import chai from 'chai';
+import chaiHttp from 'chai-http';
+import server from '../../index';
+import { UserController } from '../controllers/users';
 
 // eslint-disable-next-line no-unused-vars
 const should = chai.should();
-const { UserController } = require('../controllers/users');
 
 chai.use(chaiHttp);
 
@@ -28,21 +28,21 @@ describe('Signup Endpoint', () => {
     chai.request(server)
       .post('/api/v1/auth/signup')
       .send({
-        firstname: 'Dami',
-        lastname: 'Lola',
+        firstName: 'Dami',
+        lastName: 'Lola',
         password: '123456',
         sex: 'M',
         email: 'dami@yahoo.com',
         mobile: '1234567890',
       })
       .end((err, res) => {
-        res.should.have.status(400);
+        res.should.have.status(201);
         res.should.be.json;
         res.body.should.be.a('object');
         res.body.should.have.property('status');
-        res.body.status.should.equal(400);
-        // res.body.should.have.property('data');
-        // res.body.data.should.be.a('object');
+        res.body.status.should.equal(201);
+        res.body.should.have.property('data');
+        res.body.data.should.be.a('object');
       });
     done();
   });
@@ -55,7 +55,7 @@ describe('Signup Endpoint Error Handling', () => {
       .post('/api/v1/auth/signup')
       .send({
         // firstname: 'Dami',
-        lastname: 'Lola',
+        lastName: 'Lola',
         password: '123456',
         sex: 'M',
         email: 'dami@yahoo.com',
@@ -76,7 +76,7 @@ describe('Signup Endpoint Error Handling', () => {
     chai.request(server)
       .post('/api/v1/auth/signup')
       .send({
-        firstname: 'Dami',
+        firstName: 'Dami',
         // lastname: 'Lola',
         password: '123456',
         sex: 'M',
@@ -98,8 +98,8 @@ describe('Signup Endpoint Error Handling', () => {
     chai.request(server)
       .post('/api/v1/auth/signup')
       .send({
-        firstname: 'Dami',
-        lastname: 'Lola',
+        firstName: 'Dami',
+        lastName: 'Lola',
         password: '123456',
         sex: 'M',
         // email: 'dami@yahoo.com',
@@ -120,8 +120,8 @@ describe('Signup Endpoint Error Handling', () => {
     chai.request(server)
       .post('/api/v1/auth/signup')
       .send({
-        firstname: 'Dami',
-        lastname: 'Lola',
+        firstName: 'Dami',
+        lastName: 'Lola',
         // password: '123456',
         sex: 'M',
         email: 'dami@yahoo.com',
@@ -142,8 +142,8 @@ describe('Signup Endpoint Error Handling', () => {
     chai.request(server)
       .post('/api/v1/auth/signup')
       .send({
-        firstname: 'Dami',
-        lastname: 'Lola',
+        firstName: 'Dami',
+        lastName: 'Lola',
         password: '123456',
         // sex: 'M',
         email: 'dami@yahoo.com',
@@ -160,16 +160,62 @@ describe('Signup Endpoint Error Handling', () => {
     done();
   });
 
+
+  it('return an ERROR if wrong SEX not supplied', (done) => {
+    chai.request(server)
+      .post('/api/v1/auth/signup')
+      .send({
+        firstName: 'Dami',
+        lastName: 'Lola',
+        password: '123456',
+        sex: 'YY',
+        email: 'dami@yahoo.com',
+        mobile: '1234567890',
+      })
+      .end((err, res) => {
+        res.should.have.status(400);
+        res.should.be.json;
+        res.body.should.be.a('object');
+        res.body.should.have.property('status');
+        res.body.status.should.equal(400);
+        res.body.should.have.property('error');
+      });
+    done();
+  });
+
+
   it('return an ERROR if MOBILE is not supplied', (done) => {
     chai.request(server)
       .post('/api/v1/auth/signup')
       .send({
-        firstname: 'Dami',
-        lastname: 'Lola',
+        firstName: 'Dami',
+        lastName: 'Lola',
         password: '123456',
         sex: 'M',
         email: 'dami@yahoo.com',
         // mobile: '1234567890',
+      })
+      .end((err, res) => {
+        res.should.have.status(400);
+        res.should.be.json;
+        res.body.should.be.a('object');
+        res.body.should.have.property('status');
+        res.body.status.should.equal(400);
+        res.body.should.have.property('error');
+      });
+    done();
+  });
+
+  it('return an ERROR if WRONG MOBILE is supplied', (done) => {
+    chai.request(server)
+      .post('/api/v1/auth/signup')
+      .send({
+        firstName: 'Dami',
+        lastName: 'Lola',
+        password: '123456',
+        sex: 'M',
+        email: 'dami@yahoo.com',
+        mobile: '1234567890decoy',
       })
       .end((err, res) => {
         res.should.have.status(400);

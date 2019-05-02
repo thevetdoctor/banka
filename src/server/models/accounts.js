@@ -11,4 +11,4 @@ class Account {
 }
 
 
-module.exports = Account;
+export default Account;

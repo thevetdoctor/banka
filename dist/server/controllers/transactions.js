@@ -1,9 +1,8 @@
 /* eslint-disable no-lonely-if */
 /* eslint-disable no-console */
 /* eslint-disable max-len */
-const Transaction = require('../models/transactions');
-const { accountRecord } = require('../controllers/accounts');
-
+import Transaction from '../models/transactions';
+import { accountRecord } from '../controllers/accounts';
 
 const transactionRecord = [
   // {
@@ -38,29 +37,23 @@ const transactionRecord = [
   // },
 ];
 
+const cashierRecord = [{
+  id: 1,
+  firstName: 'AnalyserNode',
+  lastName: 'TreeWalker'
+}, {
+  id: 2,
+  firstName: 'Analyser',
+  lastName: 'Tree'
+}, {
+  id: 3,
+  firstName: 'Node',
+  lastName: 'Walker'
+}];
 
-const cashierRecord = [
-  {
-    id: 1,
-    firstName: 'AnalyserNode',
-    lastName: 'TreeWalker',
-  },
-  {
-    id: 2,
-    firstName: 'Analyser',
-    lastName: 'Tree',
-  },
-  {
-    id: 3,
-    firstName: 'Node',
-    lastName: 'Walker',
-  },
-];
+class TransactionController {
 
-
-const TransactionController = {
-
-  creDebit: (req, res) => {
+  creDebit(req, res) {
     const { amount } = req.body;
     const { accountNumber } = req.params;
     const { type } = req.params;
@@ -71,7 +64,7 @@ const TransactionController = {
     if (amount === undefined || amount === '') {
       res.status(400).json({
         status: 400,
-        error: 'Amount not supplied',
+        error: 'Amount not supplied'
       });
       return;
     }
@@ -80,7 +73,7 @@ const TransactionController = {
     if (isNaN(amount)) {
       res.status(400).json({
         status: 400,
-        error: 'Invalid Amount',
+        error: 'Invalid Amount'
       });
       return;
     }
@@ -89,10 +82,10 @@ const TransactionController = {
     if (tranx.type !== 'credit' && tranx.type !== 'debit') {
       res.status(400).json({
         status: 400,
-        error: 'Invalid Transaction type',
+        error: 'Invalid Transaction type'
       });
     } else {
-    // Run this block for 'valid' transaction type
+      // Run this block for 'valid' transaction type
       // Search Account Records for specific bank account
       const foundAccount = accountRecord.find(item => item.accountNumber === parseInt(tranx.accountNumber, 10));
       // console.log(foundAccount);
@@ -100,7 +93,7 @@ const TransactionController = {
       if (!foundAccount && foundAccount === undefined) {
         res.status(401).json({
           status: 401,
-          error: 'Account not available',
+          error: 'Account not available'
         });
       } else {
         // Assign a transaction ID
@@ -127,8 +120,8 @@ const TransactionController = {
               amount: tranx.amount,
               cashier: foundCashier.id,
               transactionType: tranx.type,
-              accountBalance: tranx.newBalance,
-            },
+              accountBalance: tranx.newBalance
+            }
           });
         } else {
           // And this block for debit transaction
@@ -136,7 +129,7 @@ const TransactionController = {
           if (tranx.oldBalance < Number(tranx.amount)) {
             res.status(400).json({
               status: 400,
-              error: 'Insufficient balance in account',
+              error: 'Insufficient balance in account'
             });
           } else {
             tranx.newBalance = tranx.oldBalance - Number(tranx.amount);
@@ -153,16 +146,14 @@ const TransactionController = {
                 amount: tranx.amount,
                 cashier: foundCashier.id,
                 transactionType: tranx.type,
-                accountBalance: tranx.newBalance,
-              },
+                accountBalance: tranx.newBalance
+              }
             });
           }
         } // End of debit transaction block
       }
     }
-  },
+  }
+}
 
-};
-
-
-module.exports = { TransactionController, transactionRecord };
+export { TransactionController, transactionRecord };

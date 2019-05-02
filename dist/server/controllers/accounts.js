@@ -1,40 +1,39 @@
 /* eslint-disable no-console */
-const Account = require('../models/accounts');
-const { userRecord } = require('../controllers/users');
+import Account from '../models/accounts';
+import { userRecord } from './users';
 
-const accountRecord = [
-  {
-    id: 1,
-    accountNumber: 2019031111,
-    createdOn: new Date().toDateString(),
-    owner: 1,
-    type: 'savings',
-    status: 'active',
-    balance: '12000.25',
-  },
-  {
-    id: 2,
-    accountNumber: 2019031112,
-    createdOn: new Date().toDateString(),
-    owner: 1,
-    type: 'current',
-    status: 'active',
-    balance: '4000.05',
-  },
-  {
-    id: 3,
-    accountNumber: 2019031113,
-    createdOn: new Date().toDateString(),
-    owner: 1,
-    type: 'current',
-    status: 'active',
-    balance: '40100.05',
-  },
-];
+const accountRecord = [{
+  id: 1,
+  accountNumber: 2019031111,
+  createdOn: new Date().toDateString(),
+  owner: 1,
+  type: 'savings',
+  status: 'active',
+  balance: '12000.25'
+}, {
+  id: 2,
+  accountNumber: 2019031112,
+  createdOn: new Date().toDateString(),
+  owner: 1,
+  type: 'current',
+  status: 'active',
+  balance: '4000.05'
+}, {
+  id: 3,
+  accountNumber: 2019031113,
+  createdOn: new Date().toDateString(),
+  owner: 1,
+  type: 'current',
+  status: 'active',
+  balance: '40100.05'
+}];
 
+class AccountController {
+  // constructor() {
+  //
+  // }
 
-const AccountController = {
-  create: (req, res) => {
+  create(req, res) {
     const { owner, type } = req.body;
 
     const account = new Account(owner, type);
@@ -44,7 +43,7 @@ const AccountController = {
     if (account.owner === undefined || account.owner === '') {
       res.status(400).json({
         status: 400,
-        error: 'Account owner not supplied',
+        error: 'Account owner not supplied'
       });
       return;
     }
@@ -52,7 +51,7 @@ const AccountController = {
     if (account.type === undefined || account.type === '') {
       res.status(400).json({
         status: 400,
-        error: 'Account type not supplied',
+        error: 'Account type not supplied'
       });
       return;
     }
@@ -70,7 +69,7 @@ const AccountController = {
     if (!accountOwner || accountOwner === undefined) {
       res.status(400).json({
         status: 400,
-        message: 'Account owner does not exist',
+        message: 'Account owner does not exist'
       });
     }
 
@@ -79,7 +78,6 @@ const AccountController = {
     let newAccountNumber = Math.max(...accountArray);
     newAccountNumber += 1;
     account.accountNumber = newAccountNumber;
-
 
     accountRecord.push(account);
     res.status(200).json({
@@ -90,13 +88,12 @@ const AccountController = {
         lastName: accountOwner.lastName,
         email: accountOwner.email,
         type: account.type,
-        openingBalance: account.balance,
-      },
+        openingBalance: account.balance
+      }
     });
-  },
+  }
 
-
-  activate: (req, res) => {
+  activate(req, res) {
     const accountStatus = req.body.status;
     let { accountNumber } = req.params;
     accountNumber = parseInt(accountNumber, 10);
@@ -105,7 +102,7 @@ const AccountController = {
     if (accountStatus === undefined || accountStatus === '') {
       res.status(400).json({
         status: 400,
-        error: 'Status not supplied',
+        error: 'Status not supplied'
       });
       return;
     }
@@ -124,7 +121,7 @@ const AccountController = {
     if (foundAccount === undefined) {
       res.status(400).json({
         status: 400,
-        error: 'Account not available',
+        error: 'Account not available'
       });
     } else {
       // eslint-disable-next-line max-len
@@ -133,53 +130,50 @@ const AccountController = {
         status: 200,
         data: {
           accountNumber,
-          status: foundAccount.status,
-        },
+          status: foundAccount.status
+        }
       });
     }
-  },
+  }
 
-
-  delete: (req, res) => {
+  delete(req, res) {
     let { accountNumber } = req.params;
     accountNumber = parseInt(accountNumber, 10);
 
     const foundAccount = accountRecord.find(item => item.accountNumber === accountNumber);
     if (foundAccount === undefined) {
-      res.status(400).json({
-        status: 400,
-        error: 'Account not available',
+      res.status(404).json({
+        status: 404,
+        error: 'Account not available'
       });
     } else {
       accountRecord.splice(foundAccount, 1);
 
       res.status(200).json({
         status: 200,
-        message: `Account No: ${foundAccount.accountNumber} successfully deleted`,
+        message: `Account No: ${foundAccount.accountNumber} successfully deleted`
       });
     }
-  },
+  }
 
-
-  list: (req, res) => {
+  list(req, res) {
     const accountList = [...accountRecord];
     if (accountList.length < 1) {
       res.status(400).json({
         status: 400,
-        message: 'No account available',
+        message: 'No account available'
       });
     } else {
       res.status(200).json({
         status: 200,
         data: {
-          accounts: accountList,
-        },
+          accounts: accountList
+        }
       });
     }
-  },
+  }
 
-
-  listOne: (req, res) => {
+  listOne(req, res) {
     const { accountNumber } = req.params;
     const accountList = [...accountRecord];
     const account = accountList.find(item => item.accountNumber === Number(accountNumber));
@@ -187,19 +181,17 @@ const AccountController = {
     if (!account) {
       res.status(400).json({
         status: 400,
-        message: `Account no: ${accountNumber} not available`,
+        message: `Account no: ${accountNumber} not available`
       });
     } else {
       res.status(200).json({
         status: 200,
         data: {
-          accountDetails: account,
-        },
+          accountDetails: account
+        }
       });
     }
-  },
+  }
+}
 
-};
-
-
-module.exports = { AccountController, accountRecord };
+export { AccountController, accountRecord };
